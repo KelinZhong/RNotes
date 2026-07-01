@@ -1,0 +1,52 @@
+name: Deploy Jupyter Book
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true   # use pre-built binaries instead of compiling from source -- much faster first-run installs
+
+      - name: Set up R dependencies (cached)
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            IRkernel
+            tidyverse
+            tidymodels
+            textrecipes
+            jsonlite
+            fs
+            timeDate
+          cache: true            # caches the compiled package library between runs
+
+      - name: Register IRkernel
+        run: Rscript -e 'IRkernel::installspec(name="ir", displayname="R", user=TRUE)'
+
+      - name: Set up Python (for jupyter-book itself)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Jupyter Book
+        run: pip install -r requirements.txt
+
+      - name: Build the book
+        run: jupyter-book build .
+
+      - name: Deploy to GitHub Pages
+        run: |
+          pip install ghp-import
+          ghp-import -n -p -f _build/html

@@ -1,0 +1,18 @@
+format: jb-book
+root: intro
+parts:
+  - caption: Data Manipulation
+    chapters:
+      - file: Data Manipulation/R_Data_Libs
+      - file: Data Manipulation/Reference_BaseR
+      - file: Data Manipulation/Reference_Tidyverse
+      - file: Data Manipulation/DM_Basic
+      - file: Data Manipulation/DM_Intermediate
+      - file: Data Manipulation/DM_Advanced
+      - file: Data Manipulation/metrics_R
+  - caption: Sampling Methods
+    chapters:
+      - file: Sampling Methods/Reference_Sampling
+  - caption: Statistical Inference
+    chapters:
+      - file: Statistical Inference/Reference_Inference
