@@ -14,3 +14,10 @@ chapters:
     title: Sampling Methods
   - file: Statistical Inference/Reference_Inference
     title: Statistical Inference
+  - file: Causal ML/cml0_overview
+    title: Causal Machine Learning
+    sections:
+      - file: Causal ML/cml1_foundations
+      - file: Causal ML/cml2_experiments
+      - file: Causal ML/cml3_observational
+      - file: Causal ML/cml4_heterogeneous

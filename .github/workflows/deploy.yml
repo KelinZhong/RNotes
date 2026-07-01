@@ -41,6 +41,15 @@ jobs:
             jsonlite
             fs
             timeDate
+            dagitty
+            ggdag
+            MatchIt
+            rdrobust
+            grf
+            DoubleML
+            ranger
+            xgboost
+            pracma
           cache: true
 
       # Now `jupyter` exists on PATH, so this succeeds

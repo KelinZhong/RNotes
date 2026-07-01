@@ -1,18 +1,33 @@
 # r-notes/install.R
-# Installs the R runtime dependencies needed to execute the notebooks in
-# this folder and to register the IRkernel with Jupyter.
-#
-# Run in CI as:  Rscript r-notes/install.R
+# Installs the R runtime dependencies needed to execute the notebooks
+# and registers the IRkernel with Jupyter.
+# Run in CI as: Rscript install.R
 
 pkgs <- c(
-  "IRkernel",     # Jupyter kernel for R
-  "tidyverse",    # dplyr, tidyr, ggplot2, stringr, readr, purrr, tibble
-  "lubridate",    # date/time handling (part of tidyverse but pinned explicitly)
-  "tidymodels",   # recipes, rsample, parsnip, workflows, yardstick
-  "textrecipes",  # step_tokenize / step_tfidf for text preprocessing
-  "jsonlite",     # JSON parsing (DM_Intermediate)
-  "fs",           # path handling, file discovery (DM_Intermediate)
-  "timeDate"      # holiday calendars (DM_Advanced, USFederalHolidayCalendar equivalent)
+  # Core
+  "IRkernel",
+
+  # Tidyverse and data manipulation
+  "tidyverse",
+  "lubridate",
+
+  # Modeling / feature engineering
+  "tidymodels",
+  "textrecipes",
+  "jsonlite",
+  "fs",
+  "timeDate",
+
+  # Causal inference
+  "dagitty",      # DAG specification and d-separation
+  "ggdag",        # ggplot2-based DAG visualization
+  "MatchIt",      # propensity score matching
+  "rdrobust",     # regression discontinuity
+  "grf",          # causal forests (Athey/Wager)
+  "DoubleML",     # double machine learning
+  "ranger",       # fast random forest (nuisance models)
+  "xgboost",      # gradient boosting (nuisance models)
+  "pracma"        # trapz() for Qini coefficient
 )
 
 installed <- rownames(installed.packages())
@@ -22,5 +37,5 @@ if (length(to_install) > 0) {
   install.packages(to_install, repos = "https://cloud.r-project.org")
 }
 
-# Register the kernel so Jupyter Book can find and execute against it.
+# Register the kernel so Jupyter Book can find and execute against it
 IRkernel::installspec(name = "ir", displayname = "R", user = TRUE)
