@@ -13,8 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Python + Jupyter Book FIRST - installs jupyter-client, which
-      # provides the `jupyter` command that IRkernel needs below.
+      # Python + Jupyter Book FIRST
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -30,27 +29,16 @@ jobs:
           r-version: 'release'
           use-public-rspm: true
 
-      - name: Set up R dependencies (cached)
-        uses: r-lib/actions/setup-r-dependencies@v2
+      # Cache the installed R library between runs
+      - name: Cache R packages
+        uses: actions/cache@v4
         with:
-          extra-packages: |
-            IRkernel
-            tidyverse
-            tidymodels
-            textrecipes
-            jsonlite
-            fs
-            timeDate
-            dagitty
-            ggdag
-            MatchIt
-            rdrobust
-            grf
-            DoubleML
-            ranger
-            xgboost
-            pracma
-          cache: true
+          path: ${{ env.R_LIBS_USER }}
+          key: r-${{ runner.os }}-${{ hashFiles('install.R') }}
+          restore-keys: r-${{ runner.os }}-
+
+      - name: Install R dependencies
+        run: Rscript install.R
 
       # Now `jupyter` exists on PATH, so this succeeds
       - name: Register IRkernel

@@ -1,41 +1,29 @@
-# r-notes/install.R
-# Installs the R runtime dependencies needed to execute the notebooks
-# and registers the IRkernel with Jupyter.
-# Run in CI as: Rscript install.R
+options(repos = c(
+  RSPM = "https://packagemanager.posit.co/cran/__linux__/jammy/latest",
+  CRAN = "https://cloud.r-project.org"
+))
 
 pkgs <- c(
-  # Core
   "IRkernel",
-
-  # Tidyverse and data manipulation
-  "tidyverse",
-  "lubridate",
-
-  # Modeling / feature engineering
-  "tidymodels",
-  "textrecipes",
-  "jsonlite",
-  "fs",
-  "timeDate",
-
-  # Causal inference
-  "dagitty",      # DAG specification and d-separation
-  "ggdag",        # ggplot2-based DAG visualization
-  "MatchIt",      # propensity score matching
-  "rdrobust",     # regression discontinuity
-  "grf",          # causal forests (Athey/Wager)
-  "DoubleML",     # double machine learning
-  "ranger",       # fast random forest (nuisance models)
-  "xgboost",      # gradient boosting (nuisance models)
-  "pracma"        # trapz() for Qini coefficient
+  "tidyverse", "lubridate",
+  "tidymodels", "textrecipes", "jsonlite", "fs", "timeDate",
+  "dagitty", "ggdag",
+  "MatchIt",
+  "rdrobust",
+  "grf",
+  "DoubleML",
+  "ranger", "xgboost", "pracma"
 )
 
 installed <- rownames(installed.packages())
 to_install <- setdiff(pkgs, installed)
 
 if (length(to_install) > 0) {
-  install.packages(to_install, repos = "https://cloud.r-project.org")
+  install.packages(to_install,
+                   dependencies = c("Depends", "Imports", "LinkingTo"),
+                   quiet = TRUE)
+  # Note: dependencies = c(...) excludes "Suggests" -- this is what
+  # prevents MatchIt from trying to pull in optional gurobi
 }
 
-# Register the kernel so Jupyter Book can find and execute against it
 IRkernel::installspec(name = "ir", displayname = "R", user = TRUE)
