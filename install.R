@@ -12,6 +12,7 @@ pkgs <- c(
   "rdrobust",
   "grf",
   "DoubleML",
+  "mlr3", "mlr3learners",   # required by DoubleML for lrn()
   "ranger", "xgboost", "pracma",
   "patchwork", "scales", "slider"
 )

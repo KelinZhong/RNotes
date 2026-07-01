@@ -14,7 +14,7 @@ Python chapters do.
 - **R Data Libraries** — cover / index (this chapter's table of contents)
 - **Base R Reference** — vectors, matrices, indexing, linear algebra,
   broadcasting (recycling), RNG — the R counterpart to the NumPy reference
-- **Tidyverse Reference** — `dplyr` / `tidyr` / `stringr` / `lubridate` —
+- **Common Packages Reference** — `dplyr` / `Tidyverse` / `tidyr` / `stringr` / `lubridate` —
   the R counterpart to the Pandas reference
 - **Data Manipulation: Basic** — cleaning patterns (types, nulls,
   duplicates, categories, outliers, column names)
