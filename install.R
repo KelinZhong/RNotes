@@ -12,18 +12,19 @@ pkgs <- c(
   "rdrobust",
   "grf",
   "DoubleML",
-  "ranger", "xgboost", "pracma"
+  "ranger", "xgboost", "pracma",
+  "patchwork", "scales", "slider"
 )
 
 installed <- rownames(installed.packages())
 to_install <- setdiff(pkgs, installed)
 
 if (length(to_install) > 0) {
-  install.packages(to_install,
-                   dependencies = c("Depends", "Imports", "LinkingTo"),
-                   quiet = TRUE)
-  # Note: dependencies = c(...) excludes "Suggests" -- this is what
-  # prevents MatchIt from trying to pull in optional gurobi
+  install.packages(
+    to_install,
+    dependencies = c("Depends", "Imports", "LinkingTo"),
+    quiet = TRUE
+  )
 }
 
 IRkernel::installspec(name = "ir", displayname = "R", user = TRUE)

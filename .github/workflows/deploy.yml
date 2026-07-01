@@ -13,7 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Python + Jupyter Book FIRST
+      # Python + Jupyter Book FIRST - installs jupyter-client, which
+      # provides the `jupyter` command that IRkernel needs below.
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
