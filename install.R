@@ -7,12 +7,11 @@ pkgs <- c(
   "IRkernel",
   "tidyverse", "lubridate",
   "tidymodels", "textrecipes", "jsonlite", "fs", "timeDate",
-  "dagitty", "ggdag",
   "MatchIt",
   "rdrobust",
   "grf",
   "DoubleML",
-  "mlr3", "mlr3learners",   # required by DoubleML for lrn()
+  "mlr3", "mlr3learners",
   "ranger", "xgboost", "pracma",
   "patchwork", "scales", "slider"
 )

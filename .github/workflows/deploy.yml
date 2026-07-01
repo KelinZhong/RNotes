@@ -27,6 +27,14 @@ jobs:
           r-version: 'release'
           use-public-rspm: true
 
+      # libnode is required by the V8 package, which dagitty depends on.
+      # ubuntu-latest ships libnode.so.79 but dagitty's V8 expects .72.
+      # Installing nodejs from the nodesource PPA provides the right version.
+      - name: Install system dependencies for dagitty (V8/libnode)
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+
       - name: Cache R packages
         uses: actions/cache@v4
         with:
