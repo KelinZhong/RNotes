@@ -12,8 +12,11 @@ chapters:
       - file: Data Manipulation/metrics_R
   - file: Sampling Methods/Reference_Sampling
     title: Sampling Methods
-  - file: Statistical Inference/Reference_Inference
+  - file: Statistical Inference/Statistical_Inference   
     title: Statistical Inference
+    sections:
+    - file: Statistical Inference/Reference_Inference    
+    - file: Statistical Inference/Reference_RareEvents
   - file: Causal ML/cml0_overview
     title: Causal Machine Learning
     sections:

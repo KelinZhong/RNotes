@@ -13,6 +13,7 @@ pkgs <- c(
   "DoubleML",
   "mlr3", "mlr3learners",
   "ranger", "xgboost", "pracma",
+  "MASS",                              # glm.nb for negative binomial (Reference_RareEvents SS7)
   "patchwork", "scales", "slider",
   "stopwords"
 )
