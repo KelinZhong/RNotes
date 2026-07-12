@@ -13,7 +13,8 @@ pkgs <- c(
   "DoubleML",
   "mlr3", "mlr3learners",
   "ranger", "xgboost", "pracma",
-  "patchwork", "scales", "slider"
+  "patchwork", "scales", "slider",
+  "stopwords"
 )
 
 installed <- rownames(installed.packages())
