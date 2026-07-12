@@ -1,0 +1,1487 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Data Manipulation — Intermediate &#8212; Data Science Study Notes - R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Data Manipulation/DM_Intermediate';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Manipulation — Advanced" href="DM_Advanced.html" />
+    <link rel="prev" title="Data Manipulation — Basic" href="DM_Basic.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Data Science Study Notes - R</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Topics
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Causal%20ML/cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Causal%20ML/cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Reference_BaseR.html">Base R — Technical Reference</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="Reference_dplyr.html">dplyr – Technical Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DM_Basic.html">Data Manipulation — Basic</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Manipulation — Intermediate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DM_Advanced.html">Data Manipulation — Advanced</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics_R.html">Business Metrics — R Reference</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reshaping-combining-data-r">Reshaping &amp; Combining Data (R)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decision-table">Decision Table</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#series-map">Series Map</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wide-vs-long-format">§1 — Wide vs Long Format</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-groupby-patterns">§2 — Advanced GroupBy Patterns</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-table-pipelines">§3 — Multi-table Pipelines</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#time-series-reshaping">§4 — Time-Series Reshaping</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nested-list-like-data">§5 — Nested &amp; List-like Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#combining-multiple-files">§6 — Combining Multiple Files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decision-guide">Decision Guide</a></li>
+</ul>
+  </nav></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../intro.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="R_Data_Libs.html" class="nav-link">R Data Libraries</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Data Manipulation — Intermediate</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="data-manipulation-intermediate">
+<h1>Data Manipulation — Intermediate<a class="headerlink" href="#data-manipulation-intermediate" title="Link to this heading">#</a></h1>
+<section id="reshaping-combining-data-r">
+<h2>Reshaping &amp; Combining Data (R)<a class="headerlink" href="#reshaping-combining-data-r" title="Link to this heading">#</a></h2>
+<p><strong>Philosophy:</strong> Assumes clean data and familiarity with the tidyverse API. Each
+section covers a multi-step pattern — not individual function syntax, but how
+to chain tools together to solve a real reshaping problem.</p>
+</section>
+<hr class="docutils" />
+<section id="decision-table">
+<h2>Decision Table<a class="headerlink" href="#decision-table" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>If your problem is…</p></th>
+<th class="head text-left"><p>Go to</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Data is wide and you need one row per observation</p></td>
+<td class="text-left"><p>§1 — Wide vs Long</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Need top-N per group, conditional aggregation, or filter-then-agg</p></td>
+<td class="text-left"><p>§2 — Advanced GroupBy</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Joining 3+ tables, row count explodes after merge, or need anti-join</p></td>
+<td class="text-left"><p>§3 — Multi-table Pipelines</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Need to change time frequency, align two time series, or forward-fill after resample</p></td>
+<td class="text-left"><p>§4 — Time-Series Reshaping</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Column contains JSON, lists, or list-columns</p></td>
+<td class="text-left"><p>§5 — Nested &amp; List-like Data</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Reading and combining many CSV or Excel files</p></td>
+<td class="text-left"><p>§6 — Combining Multiple Files</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="series-map">
+<h2>Series Map<a class="headerlink" href="#series-map" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Notebook</p></th>
+<th class="head text-left"><p>Use it for</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Basic</span></code></p></td>
+<td class="text-left"><p>Cleaning &amp; QC — audit, types, nulls, dupes, strings, outliers, column names</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Intermediate</span></code> <strong>(this note)</strong></p></td>
+<td class="text-left"><p>Reshaping &amp; combining — wide/long, group-by, multi-table joins, time-series, nested, many files</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Advanced</span></code></p></td>
+<td class="text-left"><p>Feature engineering — encoding, transforms, binning, date, lag/window, interactions, text, leakage</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Reference_Tidyverse</span> <span class="pre">/</span> <span class="pre">Reference_BaseR</span></code></p></td>
+<td class="text-left"><p>Syntax lookups for individual functions</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<div><p><strong>Environment:</strong> R 4.x / tidyverse 2.x. A small sample frame is defined below
+for runnable examples.</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">tidyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span>
+
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">),</span>
+<span class="w">  </span><span class="n">region</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;US&#39;</span><span class="p">,</span><span class="s">&#39;US&#39;</span><span class="p">,</span><span class="s">&#39;EU&#39;</span><span class="p">,</span><span class="s">&#39;EU&#39;</span><span class="p">,</span><span class="s">&#39;US&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">platform</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;iOS&#39;</span><span class="p">,</span><span class="s">&#39;Android&#39;</span><span class="p">,</span><span class="s">&#39;iOS&#39;</span><span class="p">,</span><span class="s">&#39;iOS&#39;</span><span class="p">,</span><span class="s">&#39;Web&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">150</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="m">120</span><span class="p">,</span><span class="w"> </span><span class="m">90</span><span class="p">),</span>
+<span class="w">  </span><span class="n">event_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ymd</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;2024-01-01&#39;</span><span class="p">,</span><span class="s">&#39;2024-02-01&#39;</span><span class="p">,</span><span class="s">&#39;2024-01-15&#39;</span><span class="p">,</span><span class="s">&#39;2024-03-01&#39;</span><span class="p">,</span><span class="s">&#39;2024-02-20&#39;</span><span class="p">))</span>
+<span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘lubridate’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    date, intersect, setdiff, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 5
+  user_id region platform revenue event_date
+    &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt; &lt;date&gt;    
+1       1 US     iOS          100 2024-01-01
+2       1 US     Android      150 2024-02-01
+3       2 EU     iOS          200 2024-01-15
+4       2 EU     iOS          120 2024-03-01
+5       3 US     Web           90 2024-02-20
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="wide-vs-long-format">
+<h2>§1 — Wide vs Long Format<a class="headerlink" href="#wide-vs-long-format" title="Link to this heading">#</a></h2>
+<p><strong>Wide:</strong> one row per entity, one column per time period or category. Easy to
+read, hard to aggregate.
+<strong>Long:</strong> one row per observation, categories stored as values in a column.
+Required for most group-by/plotting/modeling operations.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">tidyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span>
+
+<span class="c1"># Wide format (one row per user, one column per quarter)</span>
+<span class="n">wide</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">),</span>
+<span class="w">  </span><span class="n">Q1_revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="m">150</span><span class="p">),</span>
+<span class="w">  </span><span class="n">Q2_revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">120</span><span class="p">,</span><span class="w"> </span><span class="m">210</span><span class="p">,</span><span class="w"> </span><span class="m">160</span><span class="p">),</span>
+<span class="w">  </span><span class="n">Q3_revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">130</span><span class="p">,</span><span class="w"> </span><span class="m">190</span><span class="p">,</span><span class="w"> </span><span class="m">170</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Wide format:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">wide</span><span class="p">)</span>
+
+<span class="c1"># Wide -&gt; Long: pivot_longer</span>
+<span class="n">long</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">wide</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">pivot_longer</span><span class="p">(</span>
+<span class="w">  </span><span class="n">cols</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">Q1_revenue</span><span class="p">,</span><span class="w"> </span><span class="n">Q2_revenue</span><span class="p">,</span><span class="w"> </span><span class="n">Q3_revenue</span><span class="p">),</span>
+<span class="w">  </span><span class="n">names_to</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;quarter&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">values_to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;revenue&quot;</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">quarter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">str_remove</span><span class="p">(</span><span class="n">quarter</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;_revenue&quot;</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nLong format:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">long</span><span class="p">)</span>
+
+<span class="c1"># Long -&gt; Wide: pivot_wider</span>
+<span class="n">wide_again</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">long</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">pivot_wider</span><span class="p">(</span><span class="n">id_cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">names_from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quarter</span><span class="p">,</span><span class="w"> </span><span class="n">values_from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">revenue</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nBack to wide:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">wide_again</span><span class="p">)</span>
+
+<span class="c1"># Multiple value columns: .value sentinel</span>
+<span class="n">wide2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">),</span>
+<span class="w">  </span><span class="n">rev_Q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">),</span><span class="w"> </span><span class="n">cost_Q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">60</span><span class="p">,</span><span class="w"> </span><span class="m">110</span><span class="p">),</span>
+<span class="w">  </span><span class="n">rev_Q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">120</span><span class="p">,</span><span class="w"> </span><span class="m">210</span><span class="p">),</span><span class="w"> </span><span class="n">cost_Q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">70</span><span class="p">,</span><span class="w"> </span><span class="m">120</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">df_long</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">wide2</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">pivot_longer</span><span class="p">(</span>
+<span class="w">  </span><span class="n">cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">user_id</span><span class="p">,</span>
+<span class="w">  </span><span class="n">names_to</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;.value&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;quarter&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">names_sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;_&quot;</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nMulti-value pivot_longer (.value sentinel):\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">df_long</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Wide format:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 4
+  user_id Q1_revenue Q2_revenue Q3_revenue
+    &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+1       1        100        120        130
+2       2        200        210        190
+3       3        150        160        170
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Long format:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 9 × 3
+  user_id quarter revenue
+    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
+1       1 Q1          100
+2       1 Q2          120
+3       1 Q3          130
+4       2 Q1          200
+5       2 Q2          210
+6       2 Q3          190
+7       3 Q1          150
+8       3 Q2          160
+9       3 Q3          170
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Back to wide:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 4
+  user_id    Q1    Q2    Q3
+    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1       1   100   120   130
+2       2   200   210   190
+3       3   150   160   170
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Multi-value pivot_longer (.value sentinel):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 4 × 4
+  user_id quarter   rev  cost
+    &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;
+1       1 Q1        100    60
+2       1 Q2        120    70
+3       2 Q1        200   110
+4       2 Q2        210   120
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Forgetting <code class="docutils literal notranslate"><span class="pre">id_cols=</span></code> in <code class="docutils literal notranslate"><span class="pre">pivot_wider()</span></code> when extra grouping columns are still present — without it, dplyr may try to use every remaining column as part of the row key, producing more rows than expected</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pivot_wider()</span></code> raises (or produces list-columns) with duplicate index/column pairs unless <code class="docutils literal notranslate"><span class="pre">values_fn=</span></code> is supplied — pass <code class="docutils literal notranslate"><span class="pre">values_fn</span> <span class="pre">=</span> <span class="pre">sum</span></code> (or another aggregator) explicitly when duplicates are possible, the direct analog to pandas needing <code class="docutils literal notranslate"><span class="pre">pivot_table</span></code> instead of <code class="docutils literal notranslate"><span class="pre">pivot</span></code></p></li>
+<li><p>Forgetting that <code class="docutils literal notranslate"><span class="pre">pivot_longer</span></code>’s <code class="docutils literal notranslate"><span class="pre">.value</span></code> sentinel in <code class="docutils literal notranslate"><span class="pre">names_to</span></code> is what makes the stub-splitting pattern work — omitting it just produces one combined label column, not separate <code class="docutils literal notranslate"><span class="pre">rev</span></code>/<code class="docutils literal notranslate"><span class="pre">cost</span></code> columns</p></li>
+</ul>
+<p><strong>Verified — the <code class="docutils literal notranslate"><span class="pre">.value</span></code> / <code class="docutils literal notranslate"><span class="pre">names_sep</span></code> pattern, the R analog to <code class="docutils literal notranslate"><span class="pre">pd.wide_to_long</span></code>:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">wide2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">),</span>
+<span class="w">                        </span><span class="n">rev_Q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">),</span><span class="w"> </span><span class="n">cost_Q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">60</span><span class="p">,</span><span class="w"> </span><span class="m">110</span><span class="p">),</span>
+<span class="w">                        </span><span class="n">rev_Q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">120</span><span class="p">,</span><span class="w"> </span><span class="m">210</span><span class="p">),</span><span class="w"> </span><span class="n">cost_Q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">70</span><span class="p">,</span><span class="w"> </span><span class="m">120</span><span class="p">))</span>
+<span class="n">out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">wide2</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">pivot_longer</span><span class="p">(</span><span class="n">cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">names_to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;.value&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;quarter&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">names_sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 4 × 4
+  user_id quarter   rev  cost
+    &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;
+1       1 Q1        100    60
+2       1 Q2        120    70
+3       2 Q1        200   110
+4       2 Q2        210   120
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="advanced-groupby-patterns">
+<h2>§2 — Advanced GroupBy Patterns<a class="headerlink" href="#advanced-groupby-patterns" title="Link to this heading">#</a></h2>
+<p>Beyond basic <code class="docutils literal notranslate"><span class="pre">group_by()</span> <span class="pre">|&gt;</span> <span class="pre">summarise()</span></code> — patterns for filtering groups,
+selecting top-N within a group, and conditional aggregation. Syntax reference
+is in the Tidyverse reference (§6); this section focuses on the multi-step
+patterns.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">tidyr</span><span class="p">)</span>
+
+<span class="c1"># Richer sample for group-by patterns (5 rows is too small to show most patterns)</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">df_grp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">),</span>
+<span class="w">  </span><span class="n">region</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;US&quot;</span><span class="p">,</span><span class="s">&quot;EU&quot;</span><span class="p">,</span><span class="s">&quot;APAC&quot;</span><span class="p">),</span><span class="w"> </span><span class="m">60</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">platform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;iOS&quot;</span><span class="p">,</span><span class="s">&quot;Android&quot;</span><span class="p">,</span><span class="s">&quot;Web&quot;</span><span class="p">),</span><span class="w"> </span><span class="m">60</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">runif</span><span class="p">(</span><span class="m">60</span><span class="p">,</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="m">500</span><span class="p">),</span><span class="w"> </span><span class="m">2</span><span class="p">),</span>
+<span class="w">  </span><span class="n">month</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;2024-01&quot;</span><span class="p">,</span><span class="s">&quot;2024-02&quot;</span><span class="p">,</span><span class="s">&quot;2024-03&quot;</span><span class="p">),</span><span class="w"> </span><span class="m">20</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Pattern 1: Top-N per group (top 3 users by revenue in each region)</span>
+<span class="n">top3</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_grp</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">rev_rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">dense_rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">revenue</span><span class="p">)))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="n">rev_rank</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">rev_rank</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">ungroup</span><span class="p">()</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Top 3 by revenue per region:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">top3</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">rev_rank</span><span class="p">))</span>
+
+<span class="c1"># Pattern 2: Filter entire groups by aggregate condition</span>
+<span class="n">active</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_grp</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="n">revenue</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1000</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">ungroup</span><span class="p">()</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\nRegions with total revenue &gt; 1000: %s\n&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nf">paste</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">active</span><span class="o">$</span><span class="n">region</span><span class="p">),</span><span class="w"> </span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="p">)))</span>
+
+<span class="c1"># Pattern 3: Conditional aggregation</span>
+<span class="n">result</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_grp</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">total_rev</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">ios_rev</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">if_else</span><span class="p">(</span><span class="n">platform</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;iOS&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">unique_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">user_id</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">ios_share</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">ios_rev</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total_rev</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nConditional aggregation (iOS revenue share):\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="c1"># Pattern 4: Group-level features back on each row</span>
+<span class="n">df_grp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_grp</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">region_avg</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">pct_of_region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">revenue</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">ungroup</span><span class="p">()</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nGroup features on original rows (first 6):\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df_grp</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">region_avg</span><span class="p">,</span><span class="w"> </span><span class="n">pct_of_region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="m">6</span><span class="p">))</span>
+
+<span class="c1"># Pattern 5: Custom aggregation (90th percentile)</span>
+<span class="n">result_p90</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_grp</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">p90_rev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">0.9</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cv_rev</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">sd</span><span class="p">(</span><span class="n">revenue</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">revenue</span><span class="p">),</span><span class="w"> </span><span class="m">3</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n90th percentile revenue per region:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">result_p90</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top 3 by revenue per region:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 9 × 4
+  region user_id revenue rev_rank
+  &lt;chr&gt;    &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;
+1 APAC         8    460.        1
+2 APAC        14    444.        2
+3 APAC         7    399.        3
+4 EU          16    484.        1
+5 EU          19    421.        2
+6 EU          10    399.        3
+7 US           1    468.        1
+8 US          10    460.        2
+9 US           8    433.        3
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Regions with total revenue &gt; 1000: US, EU, APAC
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Conditional aggregation (iOS revenue share):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 5
+  region total_rev ios_rev unique_users ios_share
+  &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;        &lt;int&gt;     &lt;dbl&gt;
+1 APAC       3138.   1560.           10     0.497
+2 EU         5590.   2996.           14     0.536
+3 US         6281.   3120.           12     0.497
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Group features on original rows (first 6):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 6 × 5
+  user_id region revenue region_avg pct_of_region
+    &lt;int&gt; &lt;chr&gt;    &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1       1 US        343.       299.        0.0547
+2       1 US        468.       299.        0.0745
+3       1 US        280.       299.        0.0445
+4       2 US        305.       299.        0.0485
+5       2 EU        107.       215.        0.0191
+6       2 EU        272.       215.        0.0487
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>90th percentile revenue per region:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 3
+  region p90_rev cv_rev
+  &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+1 APAC      435.  0.602
+2 EU        396.  0.621
+3 US        433.  0.384
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Pattern selection:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Goal</p></th>
+<th class="head text-left"><p>Tool</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Top-N per group</p></td>
+<td class="text-left"><p>`group_by()</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Remove entire groups that fail a condition</p></td>
+<td class="text-left"><p>`group_by()</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Conditional sum/count within a group</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">if_else()</span></code> to zero-out + <code class="docutils literal notranslate"><span class="pre">summarise()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Group stats back on each row</p></td>
+<td class="text-left"><p>`group_by()</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Custom aggregation (percentile, CV)</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">summarise(stat</span> <span class="pre">=</span> <span class="pre">quantile(x,</span> <span class="pre">...))</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">summarise()</span></code> when <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> is needed — <code class="docutils literal notranslate"><span class="pre">summarise()</span></code> collapses rows and loses the join-back to original data, the same trap as pandas’ <code class="docutils literal notranslate"><span class="pre">agg</span></code> vs <code class="docutils literal notranslate"><span class="pre">transform</span></code></p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">group_by()</span> <span class="pre">|&gt;</span> <span class="pre">filter()</span></code> when you only want to flag — filter removes rows permanently; use <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> to add a logical flag column instead</p></li>
+<li><p>Forgetting <code class="docutils literal notranslate"><span class="pre">ungroup()</span></code> after a grouped <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> or <code class="docutils literal notranslate"><span class="pre">filter()</span></code> — the grouping silently persists into later pipe steps and corrupts subsequent aggregate computations</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="multi-table-pipelines">
+<h2>§3 — Multi-table Pipelines<a class="headerlink" href="#multi-table-pipelines" title="Link to this heading">#</a></h2>
+<p>Single-join operations are in the Tidyverse reference (§5). This section covers
+sequences of joins, diagnosing unexpected row count changes, and anti-join patterns.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Sample tables for all multi-table patterns in this section</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">users</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span>
+<span class="w">  </span><span class="n">name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Alice&quot;</span><span class="p">,</span><span class="s">&quot;Bob&quot;</span><span class="p">,</span><span class="s">&quot;Carol&quot;</span><span class="p">,</span><span class="s">&quot;Dan&quot;</span><span class="p">,</span><span class="s">&quot;Eve&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">region</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;US&quot;</span><span class="p">,</span><span class="s">&quot;EU&quot;</span><span class="p">,</span><span class="s">&quot;US&quot;</span><span class="p">,</span><span class="s">&quot;APAC&quot;</span><span class="p">,</span><span class="s">&quot;EU&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">orders</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">order_id</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">8</span><span class="p">,</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">5</span><span class="p">),</span>
+<span class="w">  </span><span class="n">amount</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">runif</span><span class="p">(</span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">),</span><span class="w"> </span><span class="m">2</span><span class="p">),</span>
+<span class="w">  </span><span class="n">order_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.Date</span><span class="p">(</span><span class="s">&quot;2024-01-01&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="m">0</span><span class="o">:</span><span class="m">90</span><span class="p">,</span><span class="w"> </span><span class="m">8</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">order_items</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">order_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">),</span>
+<span class="w">  </span><span class="n">item_id</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">16</span><span class="p">,</span>
+<span class="w">  </span><span class="n">price</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">runif</span><span class="p">(</span><span class="m">16</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="m">80</span><span class="p">),</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">tags</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">),</span>
+<span class="w">  </span><span class="n">tag</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;vip&quot;</span><span class="p">,</span><span class="s">&quot;loyal&quot;</span><span class="p">,</span><span class="s">&quot;new&quot;</span><span class="p">,</span><span class="s">&quot;loyal&quot;</span><span class="p">,</span><span class="s">&quot;vip&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">created_at</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.Date</span><span class="p">(</span><span class="s">&quot;2024-01-01&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">10</span><span class="p">,</span><span class="m">20</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">30</span><span class="p">,</span><span class="m">15</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">churned_users</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">))</span>
+<span class="n">user_roles</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">),</span><span class="w"> </span><span class="n">role_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="p">))</span>
+<span class="n">roles</span><span class="w">      </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">role_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">),</span><span class="w"> </span><span class="n">role_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;admin&quot;</span><span class="p">,</span><span class="s">&quot;viewer&quot;</span><span class="p">))</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Sample tables created: users, orders, order_items, tags, churned_users\n\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Pattern 1: Sequential 3-table join ───────────────────────────────────────</span>
+<span class="n">result</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">left_join</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span><span class="w">      </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user_id&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">left_join</span><span class="p">(</span><span class="n">order_items</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;order_id&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Sequential join: %d users -&gt; %d order rows -&gt; %d item rows\n&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nf">nrow</span><span class="p">(</span><span class="n">users</span><span class="p">),</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="nf">left_join</span><span class="p">(</span><span class="n">users</span><span class="p">,</span><span class="w"> </span><span class="n">orders</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="s">&quot;user_id&quot;</span><span class="p">)),</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">result</span><span class="p">)))</span>
+
+<span class="c1"># ── Diagnosing row count explosion ───────────────────────────────────────────</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\norders per user_id:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">orders</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="n">user_id</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Max orders per user:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">orders</span><span class="o">$</span><span class="n">user_id</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;(&gt;1 means fan-out risk)\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Pattern 2: Aggregate before joining to avoid fan-out ─────────────────────</span>
+<span class="n">orders_agg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">orders</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">order_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span><span class="w"> </span><span class="n">total_spend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">amount</span><span class="p">),</span><span class="w"> </span><span class="n">last_order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">order_date</span><span class="p">),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span><span class="p">)</span>
+<span class="n">result_1to1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">left_join</span><span class="p">(</span><span class="n">orders_agg</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user_id&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n1-to-1 join after aggregation:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">result_1to1</span><span class="p">)</span>
+
+<span class="c1"># ── Pattern 3: Anti-join ─────────────────────────────────────────────────────</span>
+<span class="n">active_users</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">anti_join</span><span class="p">(</span><span class="n">churned_users</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user_id&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nActive users (anti-join removes churned):\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">active_users</span><span class="p">)</span>
+
+<span class="c1"># ── Pattern 4: Many-to-many -- aggregate tags first ──────────────────────────</span>
+<span class="n">tags_agg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tags</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">tag_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span><span class="p">)</span>
+<span class="n">result_tags</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">left_join</span><span class="p">(</span><span class="n">tags_agg</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user_id&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nUsers with tag list:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">result_tags</span><span class="p">)</span>
+
+<span class="c1"># ── Pattern 5: Bridge table join ──────────────────────────────────────────────</span>
+<span class="n">result_roles</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">inner_join</span><span class="p">(</span><span class="n">user_roles</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user_id&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">left_join</span><span class="p">(</span><span class="n">roles</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;role_id&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nUsers with roles:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">result_roles</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample tables created: users, orders, order_items, tags, churned_users
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sequential join: 5 users -&gt; 8 order rows -&gt; 16 item rows
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>orders per user_id:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 2
+  user_id     n
+    &lt;dbl&gt; &lt;int&gt;
+1       1     2
+2       2     1
+3       3     3
+4       4     1
+5       5     1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Max orders per user: 3 (&gt;1 means fan-out risk)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1-to-1 join after aggregation:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 6
+  user_id name  region order_count total_spend last_order
+    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;        &lt;int&gt;       &lt;dbl&gt; &lt;date&gt;    
+1       1 Alice US               2       373.  2024-02-18
+2       2 Bob   EU               1        71.5 2024-01-24
+3       3 Carol US               3       418.  2024-03-11
+4       4 Dan   APAC             1       153.  2024-01-26
+5       5 Eve   EU               1        44.2 2024-01-03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Active users (anti-join removes churned):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 3
+  user_id name  region
+    &lt;int&gt; &lt;chr&gt; &lt;chr&gt; 
+1       1 Alice US    
+2       3 Carol US    
+3       5 Eve   EU    
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Users with tag list:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 4
+  user_id name  region tag_list 
+    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;    
+1       1 Alice US     vip,loyal
+2       2 Bob   EU     new      
+3       3 Carol US     loyal    
+4       4 Dan   APAC   vip      
+5       5 Eve   EU     <span class=" -Color -Color-Red">NA</span>       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Users with roles:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 5
+  user_id name  region role_id role_name
+    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;    
+1       1 Alice US           1 admin    
+2       2 Bob   EU           2 viewer   
+3       3 Carol US           1 admin    
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Row count change after join — diagnostic guide:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Row count change</p></th>
+<th class="head text-left"><p>Likely cause</p></th>
+<th class="head text-left"><p>Fix</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Count stays same</p></td>
+<td class="text-left"><p>1-to-1 match ✅</p></td>
+<td class="text-left"><p>—</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Count increases</p></td>
+<td class="text-left"><p>Right table has multiple rows per key</p></td>
+<td class="text-left"><p>Aggregate right table first</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Count decreases</p></td>
+<td class="text-left"><p>Inner join dropped non-matching rows</p></td>
+<td class="text-left"><p>Switch to <code class="docutils literal notranslate"><span class="pre">left_join</span></code> if needed</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Count drops to near zero</p></td>
+<td class="text-left"><p>Join key type mismatch (numeric vs character)</p></td>
+<td class="text-left"><p>Cast keys to same type</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Joining without checking key uniqueness — row explosion is silent and hard to detect later</p></li>
+<li><p>Joining on columns with different types — <code class="docutils literal notranslate"><span class="pre">*_join()</span></code> raises a type-mismatch <strong>error</strong> in R (unlike pandas, which silently produces zero matches), so this failure mode is actually caught earlier, but the fix is the same: cast both keys to the same type first</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">inner_join()</span></code> when you need all rows from the left table — rows drop silently</p></li>
+</ul>
+<p><strong>Two §3 additions: join cardinality checks and <code class="docutils literal notranslate"><span class="pre">coalesce()</span></code> across frames.</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">join_check</span></code> helper above prints row counts to <em>detect</em> fan-out after the
+fact; dplyr’s <code class="docutils literal notranslate"><span class="pre">*_join()</span></code> functions accept a <code class="docutils literal notranslate"><span class="pre">relationship</span> <span class="pre">=</span></code> argument (dplyr
+1.1+) that <strong>guards</strong> against it directly, raising an error the moment a join
+would violate the cardinality you expect — the direct equivalent of pandas’
+<code class="docutils literal notranslate"><span class="pre">merge(...,</span> <span class="pre">validate=...)</span></code>. <code class="docutils literal notranslate"><span class="pre">coalesce()</span></code> fills gaps in a primary vector from a
+backup, position-aligned (R has no separate <code class="docutils literal notranslate"><span class="pre">combine_first()</span></code> — <code class="docutils literal notranslate"><span class="pre">coalesce()</span></code>
+covers both the single-vector and whole-frame cases).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="n">users</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">),</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="s">&#39;b&#39;</span><span class="p">,</span><span class="s">&#39;c&#39;</span><span class="p">))</span>
+<span class="n">orders</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">),</span><span class="w"> </span><span class="n">amt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="m">30</span><span class="p">))</span><span class="w">   </span><span class="c1"># user 1 appears twice</span>
+
+<span class="n">result</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tryCatch</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">left_join</span><span class="p">(</span><span class="n">users</span><span class="p">,</span><span class="w"> </span><span class="n">orders</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">relationship</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;one-to-one&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">cat</span><span class="p">(</span><span class="s">&#39;relationship=&quot;one-to-one&quot; -&gt;&#39;</span><span class="p">,</span><span class="w"> </span><span class="nf">conditionMessage</span><span class="p">(</span><span class="n">e</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;\n&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="kc">NULL</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&#39;relationship=&quot;one-to-many&quot; -&gt; rows:&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nf">nrow</span><span class="p">(</span><span class="nf">left_join</span><span class="p">(</span><span class="n">users</span><span class="p">,</span><span class="w"> </span><span class="n">orders</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">relationship</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;one-to-many&quot;</span><span class="p">)),</span><span class="w"> </span><span class="s">&#39;\n&#39;</span><span class="p">)</span>
+
+<span class="c1"># coalesce -- fill NAs in primary from backup, position-aligned (R&#39;s combine_first equivalent)</span>
+<span class="n">primary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
+<span class="n">backup</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">9</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w">  </span><span class="m">9</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&#39;coalesce(primary, backup):&#39;</span><span class="p">,</span><span class="w"> </span><span class="nf">coalesce</span><span class="p">(</span><span class="n">primary</span><span class="p">,</span><span class="w"> </span><span class="n">backup</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;\n&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>relationship=&quot;one-to-one&quot; -&gt; Each row in `x` must match at most 1 row in `y`.
+<span class=" -Color -Color-Cyan">ℹ</span> Row 1 of `x` matches multiple rows in `y`. 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>relationship=&quot;one-to-many&quot; -&gt; rows: 4 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>coalesce(primary, backup): 1 2 3 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="time-series-reshaping">
+<h2>§4 — Time-Series Reshaping<a class="headerlink" href="#time-series-reshaping" title="Link to this heading">#</a></h2>
+<p>Covers changing temporal granularity, filling gaps in time series, and aligning
+two series that run on different frequencies. R has no single <code class="docutils literal notranslate"><span class="pre">.resample()</span></code>
+method tied to a <code class="docutils literal notranslate"><span class="pre">DatetimeIndex</span></code> the way pandas does — instead, you derive a
+period column with <code class="docutils literal notranslate"><span class="pre">lubridate::floor_date()</span></code> and <code class="docutils literal notranslate"><span class="pre">group_by()</span></code> on it, which is
+slightly more verbose but makes the aggregation step fully explicit.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">tidyr</span><span class="p">)</span>
+
+<span class="c1"># Add a parsed date column (event_date is already Date from SS0)</span>
+<span class="n">df_ts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_date</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+
+<span class="c1"># Pattern 1: Downsample daily -&gt; monthly</span>
+<span class="n">monthly</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_ts</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">floor_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;month&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">period</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">user_id</span><span class="p">),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Monthly summary:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">monthly</span><span class="p">)</span>
+
+<span class="c1"># Pattern 2: Resample to weekly</span>
+<span class="n">weekly</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_ts</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">floor_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;week&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">period</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nWeekly summary:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">weekly</span><span class="p">)</span>
+
+<span class="c1"># Pattern 3: Create a complete date spine (fill gaps)</span>
+<span class="n">date_spine</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="nf">min</span><span class="p">(</span><span class="n">df_ts</span><span class="o">$</span><span class="n">date</span><span class="p">),</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">df_ts</span><span class="o">$</span><span class="n">date</span><span class="p">),</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;month&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">complete_ts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">date_spine</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">left_join</span><span class="p">(</span><span class="n">monthly</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">rename</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">period</span><span class="p">),</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;date&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">replace_na</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nComplete monthly spine (gaps filled with 0):\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">complete_ts</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Monthly summary:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 3
+  period     revenue users
+  &lt;date&gt;       &lt;dbl&gt; &lt;int&gt;
+1 2024-01-01     300     2
+2 2024-02-01     240     2
+3 2024-03-01     120     1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Weekly summary:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 2
+  period     revenue
+  &lt;date&gt;       &lt;dbl&gt;
+1 2023-12-31     100
+2 2024-01-14     200
+3 2024-01-28     150
+4 2024-02-18      90
+5 2024-02-25     120
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Complete monthly spine (gaps filled with 0):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 3
+  date       revenue users
+  &lt;date&gt;       &lt;dbl&gt; &lt;int&gt;
+1 2024-01-01     300     2
+2 2024-02-01     240     2
+3 2024-03-01     120     1
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Forward-filling before checking sort order — <code class="docutils literal notranslate"><span class="pre">fill()</span></code> fills in current row order; always <code class="docutils literal notranslate"><span class="pre">arrange()</span></code> by date first</p></li>
+<li><p>Reaching for a single <code class="docutils literal notranslate"><span class="pre">.resample()</span></code>-style call out of pandas habit — R’s <code class="docutils literal notranslate"><span class="pre">floor_date()</span> <span class="pre">|&gt;</span> <span class="pre">group_by()</span> <span class="pre">|&gt;</span> <span class="pre">summarise()</span></code> pattern is the idiomatic replacement; there is no equivalent single function, but the explicit version makes the aggregation choice (<code class="docutils literal notranslate"><span class="pre">sum</span></code> vs <code class="docutils literal notranslate"><span class="pre">mean</span></code>) unmissable</p></li>
+<li><p>Downsampling with <code class="docutils literal notranslate"><span class="pre">mean()</span></code> when <code class="docutils literal notranslate"><span class="pre">sum()</span></code> is correct — e.g. daily revenue should be summed, not averaged, when going monthly, identical trap to pandas</p></li>
+<li><p>Building a date spine with <code class="docutils literal notranslate"><span class="pre">seq(...,</span> <span class="pre">by</span> <span class="pre">=</span> <span class="pre">&quot;day&quot;)</span></code> but the original dates have time-of-day components — strip to date-only with <code class="docutils literal notranslate"><span class="pre">as_date()</span></code> first, the R equivalent of pandas’ <code class="docutils literal notranslate"><span class="pre">.dt.normalize()</span></code></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="nested-list-like-data">
+<h2>§5 — Nested &amp; List-like Data<a class="headerlink" href="#nested-list-like-data" title="Link to this heading">#</a></h2>
+<p>Common when working with API responses, JSON exports, or data where one cell
+contains a list. R’s native list-column support (any column can hold arbitrary
+R objects, including other vectors) makes this somewhat more natural than
+pandas’ object-dtype columns, but flattening/exploding still needs the same
+deliberate handling.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">tidyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span>
+
+<span class="c1"># Pattern 1: Flatten a list-column</span>
+<span class="n">df_list</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">),</span>
+<span class="w">  </span><span class="n">metadata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;organic&quot;</span><span class="p">,</span><span class="w">  </span><span class="n">campaign</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;summer&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;paid&quot;</span><span class="p">,</span><span class="w">     </span><span class="n">campaign</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;winter&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">list</span><span class="p">(</span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;referral&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">campaign</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;spring&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">meta_expanded</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_list</span><span class="o">$</span><span class="n">metadata</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">purrr</span><span class="o">::</span><span class="nf">map_dfr</span><span class="p">(</span><span class="n">as_tibble</span><span class="p">)</span>
+<span class="n">df_flat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_list</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="o">-</span><span class="n">metadata</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">bind_cols</span><span class="p">(</span><span class="n">meta_expanded</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Flattened list-column:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">df_flat</span><span class="p">)</span>
+
+<span class="c1"># Pattern 2: Unnest (explode) a list-column -- one row per element</span>
+<span class="n">df_tags</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">),</span>
+<span class="w">  </span><span class="n">tags</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;python&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sql&quot;</span><span class="p">),</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;r&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tidyverse&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ggplot2&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nBefore unnest:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">df_tags</span><span class="p">)</span>
+<span class="n">df_exploded</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_tags</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">unnest</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;After unnest (one row per tag):\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">df_exploded</span><span class="p">)</span>
+
+<span class="c1"># Pattern 3: Parse stringified JSON</span>
+<span class="n">df_json</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">id</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">),</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;{&quot;score&quot;: 85, &quot;grade&quot;: &quot;B&quot;}&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;{&quot;score&quot;: 92, &quot;grade&quot;: &quot;A&quot;}&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">df_parsed</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_json</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">parsed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">purrr</span><span class="o">::</span><span class="nf">map</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">jsonlite</span><span class="o">::</span><span class="n">fromJSON</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">tidyr</span><span class="o">::</span><span class="nf">unnest_wider</span><span class="p">(</span><span class="n">parsed</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nParsed JSON strings:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">df_parsed</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Flattened list-column:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 3
+  user_id source   campaign
+    &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;   
+1       1 organic  summer  
+2       2 paid     winter  
+3       3 referral spring  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Before unnest:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 2 × 2
+  user_id tags     
+    &lt;dbl&gt; &lt;list&gt;   
+1       1 &lt;chr [2]&gt;
+2       2 &lt;chr [3]&gt;
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>After unnest (one row per tag):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 2
+  user_id tags     
+    &lt;dbl&gt; &lt;chr&gt;    
+1       1 python   
+2       1 sql      
+3       2 r        
+4       2 tidyverse
+5       2 ggplot2  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Parsed JSON strings:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 2 × 4
+     id data                                score grade
+  &lt;dbl&gt; &lt;chr&gt;                               &lt;int&gt; &lt;chr&gt;
+1     1 &quot;{\&quot;score\&quot;: 85, \&quot;grade\&quot;: \&quot;B\&quot;}&quot;    85 B    
+2     2 &quot;{\&quot;score\&quot;: 92, \&quot;grade\&quot;: \&quot;A\&quot;}&quot;    92 A    
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Reaching for <code class="docutils literal notranslate"><span class="pre">eval(parse(text</span> <span class="pre">=</span> <span class="pre">...))</span></code> to “parse” a stringified structure — this is R’s <code class="docutils literal notranslate"><span class="pre">eval()</span></code> equivalent and carries the same security risk as Python’s <code class="docutils literal notranslate"><span class="pre">eval()</span></code>; if the string is JSON-like, parse it with <code class="docutils literal notranslate"><span class="pre">jsonlite::fromJSON()</span></code> instead, never by evaluating it as code</p></li>
+<li><p>Calling <code class="docutils literal notranslate"><span class="pre">jsonlite::fromJSON()</span></code> on a column with <code class="docutils literal notranslate"><span class="pre">NA</span></code> values without checking first — raises an error; filter or replace <code class="docutils literal notranslate"><span class="pre">NA</span></code> with an empty JSON object string (<code class="docutils literal notranslate"><span class="pre">&quot;{}&quot;</span></code>) first</p></li>
+<li><p>Forgetting that <code class="docutils literal notranslate"><span class="pre">unnest()</span></code> requires the column to actually be a <strong>list-column</strong> (<code class="docutils literal notranslate"><span class="pre">is.list(df$col)</span></code> is <code class="docutils literal notranslate"><span class="pre">TRUE</span></code>) — a plain character column holding text that merely <em>looks</em> like a list needs Pattern 3’s parsing step first</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="combining-multiple-files">
+<h2>§6 — Combining Multiple Files<a class="headerlink" href="#combining-multiple-files" title="Link to this heading">#</a></h2>
+<p>Common in real-world data pipelines: monthly data exports, partitioned data
+dumps, or multi-sheet Excel files. The challenge is schema consistency across
+files.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">purrr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span>
+
+<span class="c1"># Create sample CSV files in a temp directory so this cell is self-contained</span>
+<span class="n">tmp_dir</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tempdir</span><span class="p">()</span>
+<span class="n">months</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;2024-01&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2024-02&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2024-03&quot;</span><span class="p">)</span>
+
+<span class="c1"># Write three monthly CSV files</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">months</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">monthly_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">    </span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">20</span><span class="p">),</span>
+<span class="w">    </span><span class="n">date</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="p">,</span>
+<span class="w">    </span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">runif</span><span class="p">(</span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="m">500</span><span class="p">),</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="w">  </span><span class="nf">write_csv</span><span class="p">(</span><span class="n">monthly_df</span><span class="p">,</span><span class="w"> </span><span class="nf">file.path</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">,</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.csv&quot;</span><span class="p">)))</span>
+<span class="p">}</span>
+
+<span class="c1"># ── Pattern 1: Read and combine many CSVs ────────────────────────────────────</span>
+<span class="n">files</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list.files</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;\\.csv$&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">full.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;CSV files found:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">basename</span><span class="p">(</span><span class="n">files</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n\n&quot;</span><span class="p">)</span>
+
+<span class="n">df_combined</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">map_dfr</span><span class="p">(</span><span class="n">read_csv</span><span class="p">,</span><span class="w"> </span><span class="n">show_col_types</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Combined: %d rows from %d files\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">df_combined</span><span class="p">),</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">files</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Columns:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">df_combined</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Pattern 2: Add source file column ────────────────────────────────────────</span>
+<span class="n">df_sourced</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">map_dfr</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">chunk</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">show_col_types</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="w">  </span><span class="n">chunk</span><span class="o">$</span><span class="n">source_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tools</span><span class="o">::</span><span class="nf">file_path_sans_ext</span><span class="p">(</span><span class="nf">basename</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+<span class="w">  </span><span class="n">chunk</span>
+<span class="p">})</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;With source column (first 4 rows):\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">head</span><span class="p">(</span><span class="n">df_sourced</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">))</span>
+
+<span class="c1"># ── Pattern 3: Validate schema before combining ───────────────────────────────</span>
+<span class="n">dfs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="nf">read_csv</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">show_col_types</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">))</span>
+<span class="n">expected_cols</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">dfs</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+<span class="n">all_match</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="nf">map_lgl</span><span class="p">(</span><span class="n">dfs</span><span class="p">[</span><span class="m">-1</span><span class="p">],</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">setequal</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">.x</span><span class="p">),</span><span class="w"> </span><span class="n">expected_cols</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\nSchema consistent across all files: %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">all_match</span><span class="p">))</span>
+
+<span class="c1"># ── Pattern 4: bind_rows() with mismatched schemas ───────────────────────────</span>
+<span class="n">df_extra</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">999</span><span class="p">,</span><span class="w"> </span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2024-04&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="n">extra_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;new&quot;</span><span class="p">)</span>
+<span class="n">df_combined_outer</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bind_rows</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span><span class="w"> </span><span class="n">df_extra</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\nbind_rows() with extra column: %d rows x %d cols (extra_col filled with NA)\n&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nf">nrow</span><span class="p">(</span><span class="n">df_combined_outer</span><span class="p">),</span><span class="w"> </span><span class="nf">ncol</span><span class="p">(</span><span class="n">df_combined_outer</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">tail</span><span class="p">(</span><span class="n">df_combined_outer</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘purrr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following object is masked from ‘package:jsonlite’:
+
+    flatten
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CSV files found: 2024-01.csv 2024-02.csv 2024-03.csv 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Combined: 60 rows from 3 files
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Columns: user_id date revenue 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>With source column (first 4 rows):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 4 × 4
+  user_id date    revenue source_file
+    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;      
+1      24 2024-01   350.  2024-01    
+2      30 2024-01   128.  2024-01    
+3      43 2024-01    31.1 2024-01    
+4      15 2024-01    78.8 2024-01    
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Schema consistent across all files: TRUE
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>bind_rows() with extra column: 61 rows x 4 cols (extra_col filled with NA)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 2 × 4
+  user_id date    revenue extra_col
+    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;    
+1      47 2024-03    460. <span class=" -Color -Color-Red">NA</span>       
+2     999 2024-04    100  new      
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Assuming all files have the same schema — always validate before combining, especially with data from different time periods</p></li>
+<li><p>Loading all columns from all files when only a few are needed — use <code class="docutils literal notranslate"><span class="pre">col_select</span></code> to limit memory usage</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">bind_rows()</span></code> with mismatched types across files (e.g. <code class="docutils literal notranslate"><span class="pre">integer</span></code> in one file, <code class="docutils literal notranslate"><span class="pre">double</span></code> in another) — readr/dplyr will coerce, but check <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> after combining to verify the result is what you expect, same discipline as checking <code class="docutils literal notranslate"><span class="pre">df.dtypes</span></code> after <code class="docutils literal notranslate"><span class="pre">pd.concat</span></code></p></li>
+<li><p>Forgetting that <code class="docutils literal notranslate"><span class="pre">bind_rows()</span></code> has no row-index concept to manage — unlike pandas’ <code class="docutils literal notranslate"><span class="pre">pd.concat</span></code> (where <code class="docutils literal notranslate"><span class="pre">ignore_index=True</span></code> is an easy-to-forget but essential argument), tibbles simply don’t carry duplicate row indices in the first place, so there is nothing to remember here</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="decision-guide">
+<h2>Decision Guide<a class="headerlink" href="#decision-guide" title="Link to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Need to change data shape?
++-- Wide -&gt; Long (many columns -&gt; one value column)  -&gt; pivot_longer(cols, names_to, values_to)   (§1)
++-- Long -&gt; Wide (categories -&gt; separate columns)    -&gt; pivot_wider(id_cols, names_from, values_from) (§1)
+\-- Multi-value wide -&gt; long                         -&gt; pivot_longer(names_to = c(&quot;.value&quot;, ...))  (§1)
+
+Need advanced group-by?
++-- Top-N per group                                  -&gt; group_by() |&gt; mutate(dense_rank()) + filter (§2)
++-- Remove groups failing a condition                -&gt; group_by() |&gt; filter(aggregate_condition)   (§2)
++-- Conditional sum within group (SUM CASE WHEN)     -&gt; if_else() + group_by() |&gt; summarise()        (§2)
++-- Group stats back on each row                     -&gt; group_by() |&gt; mutate()                       (§2)
+\-- Custom aggregation (percentile, ratio)           -&gt; summarise(stat = quantile(x, ...))           (§2)
+
+Combining multiple tables?
++-- Row count grows after join                       -&gt; aggregate right table first                  (§3)
++-- Rows in A with no match in B                      -&gt; anti_join()                                  (§3)
++-- Many-to-many relationship                         -&gt; aggregate one side or use a bridge table      (§3)
+\-- Key type mismatch (rows drop to zero / error)    -&gt; cast both keys to same type                  (§3)
+
+Working with time series?
++-- Change frequency (daily -&gt; monthly)               -&gt; floor_date() |&gt; group_by() |&gt; summarise()    (§4)
++-- Fill gaps in time series                          -&gt; build date spine + left_join                 (§4)
++-- Carry last known value forward                    -&gt; fill(.direction = &quot;down&quot;)                    (§4)
+\-- Align different frequencies                      -&gt; left_join + fill                              (§4)
+
+Column contains lists / JSON?
+\-- Flatten nested JSON                              -&gt; jsonlite::fromJSON(flatten = TRUE)            (§5)
+
+Column contains list-columns?
++-- One row per list element                          -&gt; unnest(col)                                  (§5)
++-- Fixed-length list -&gt; separate columns             -&gt; purrr::map_dfr() + bind_cols()                (§5)
+\-- Stringified JSON list                            -&gt; jsonlite::fromJSON() (never eval/parse text)  (§5)
+
+Reading many files?
++-- Same schema, just combine                         -&gt; dir_ls() + map_dfr(read_csv)                 (§6)
++-- Track source file                                 -&gt; add &#39;source_file&#39; column per chunk            (§6)
++-- Schema may differ across files                    -&gt; validate columns first, bind_rows() to align (§6)
+\-- Multiple Excel sheets                            -&gt; map over excel_sheets() + bind_rows(.id=)     (§6)
+</pre></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./Data Manipulation"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="DM_Basic.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Data Manipulation — Basic</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="DM_Advanced.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Data Manipulation — Advanced</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1903 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Rare-Event Inference – DS Interview Reference (R) &#8212; Data Science Study Notes - R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Statistical Inference/Reference_RareEvents';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Causal Machine Learning (R)" href="../Causal%20ML/cml0_overview.html" />
+    <link rel="prev" title="Statistical Inference – DS Interview Reference (R)" href="Reference_Inference.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Data Science Study Notes - R</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Topics
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Data%20Manipulation/R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Causal%20ML/cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Data%20Manipulation/R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Causal%20ML/cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Reference_Inference.html">Statistical Inference – DS Interview Reference (R)</a></li>
+
+
+
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Rare-Event Inference – DS Interview Reference (R)</a></li>
+
+
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Rare-Event Inference – DS Interview Reference (R)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-index">Quick Index</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#series-map">Series Map</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-reach-for-each-section">When to Reach for Each Section</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shared-helpers-used-throughout">Shared Helpers (used throughout)</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#part-1-the-poisson-model">Part 1 – The Poisson Model</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss1-poisson-model-exposure-thinking">SS1 – Poisson Model &amp; Exposure Thinking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss2-exact-cis-for-a-single-rate">SS2 – Exact CIs for a Single Rate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss3-comparing-two-rates">SS3 – Comparing Two Rates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss4-power-and-required-exposure">SS4 – Power and Required Exposure</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#part-2-adjusting-for-confounders">Part 2 – Adjusting for Confounders</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss5-poisson-glm-with-exposure-offset">SS5 – Poisson GLM with Exposure Offset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss6-zero-events-the-rule-of-three">SS6 – Zero Events: The Rule of Three</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss7-overdispersion-negative-binomial">SS7 – Overdispersion &amp; Negative Binomial</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss8-base-rates-detector-alarms">SS8 – Base Rates &amp; Detector Alarms</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decision-guide">Decision Guide</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sessionization-appendix">Sessionization Appendix</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../intro.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="Statistical_Inference.html" class="nav-link">Statistical Inference in R</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Rare-Event Inference – DS Interview Reference (R)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="rare-event-inference-ds-interview-reference-r">
+<h1>Rare-Event Inference – DS Interview Reference (R)<a class="headerlink" href="#rare-event-inference-ds-interview-reference-r" title="Link to this heading">#</a></h1>
+<p>Sibling to the <em>Statistical Inference</em> notebook. Where that notebook covers means
+and proportions, this one covers <strong>what changes when events are rare</strong> – counts
+instead of means, exposure instead of sample size, exact intervals instead of
+normal approximations. All examples are framed around fleet safety data (contacts,
+disengagements, injuries per million miles) because that is the interview context.</p>
+<section id="quick-index">
+<h2>Quick Index<a class="headerlink" href="#quick-index" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Goal</p></th>
+<th class="head text-left"><p>Section</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Why Poisson? Exposure thinking, rate vs. proportion</p></td>
+<td class="text-left"><p>SS1</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Exact CIs for a single rate</p></td>
+<td class="text-left"><p>SS2</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Comparing two rates (before vs. after, fleet A vs. B)</p></td>
+<td class="text-left"><p>SS3</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Power and required exposure (“how many miles?”)</p></td>
+<td class="text-left"><p>SS4</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Adjust for confounders / ODD shift – Poisson GLM</p></td>
+<td class="text-left"><p>SS5</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Zero events so far – what can we say?</p></td>
+<td class="text-left"><p>SS6</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Overdispersion – when variance &gt;&gt; mean</p></td>
+<td class="text-left"><p>SS7</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Base rates &amp; detector alarms (Bayes application)</p></td>
+<td class="text-left"><p>SS8</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="series-map">
+<h2>Series Map<a class="headerlink" href="#series-map" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Notebook</p></th>
+<th class="head text-left"><p>Use it for</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Basic</span></code></p></td>
+<td class="text-left"><p>Cleaning &amp; QC</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Intermediate</span></code></p></td>
+<td class="text-left"><p>Reshaping &amp; combining</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Advanced</span></code></p></td>
+<td class="text-left"><p>Feature engineering</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Reference_BaseR</span></code></p></td>
+<td class="text-left"><p>Base R syntax</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Reference_dplyr</span></code></p></td>
+<td class="text-left"><p>dplyr / tidyverse syntax</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Reference_Sampling</span></code></p></td>
+<td class="text-left"><p>Sampling methods &amp; bootstrap</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Reference_Inference</span></code></p></td>
+<td class="text-left"><p>Hypothesis testing, A/B design</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Reference_RareEvents</span></code> <strong>(this note)</strong></p></td>
+<td class="text-left"><p>Rare-event rates, exact inference, Poisson GLM</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<blockquote>
+<div><p><strong>Interview note:</strong> Rare-event inference is the <em>highest-differentiation</em> topic
+in a Waymo-style DS screen. Most candidates answer means/proportions questions
+fluently but freeze on “2 contact events in 10 million miles – give me a CI.”
+The three things to demonstrate: (1) use exposure (miles), not sample size (trips);
+(2) reach for <code class="docutils literal notranslate"><span class="pre">poisson.test()</span></code> not a z-interval; (3) know <em>why</em> the normal
+approximation fails at small counts.</p>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="when-to-reach-for-each-section">
+<h2>When to Reach for Each Section<a class="headerlink" href="#when-to-reach-for-each-section" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Interview signal</p></th>
+<th class="head text-left"><p>Section</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>“Events per million miles”, “rate not proportion”</p></td>
+<td class="text-left"><p>SS1</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>“Give me a CI for this rate”, “2 events in 10M miles”</p></td>
+<td class="text-left"><p>SS2</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>“Did the rate change after the update?”, “compare two fleets”</p></td>
+<td class="text-left"><p>SS3</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>“How many miles to prove we’re safer than humans?”</p></td>
+<td class="text-left"><p>SS4</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>“The ODD / city mix changed too”, “adjust for confounders”</p></td>
+<td class="text-left"><p>SS5</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>“Zero events so far – what can we claim?”</p></td>
+<td class="text-left"><p>SS6</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>“Some vehicles have way more events than others”</p></td>
+<td class="text-left"><p>SS7</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>“Anomaly alarm fired – is it real?”</p></td>
+<td class="text-left"><p>SS8</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="shared-helpers-used-throughout">
+<h2>Shared Helpers (used throughout)<a class="headerlink" href="#shared-helpers-used-throughout" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Reusable bootstrap CI (mirrors Reference_Sampling SS5 exactly) ─────────────</span>
+<span class="n">bootstrap_ci</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">stat_fn</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2000</span><span class="p">,</span><span class="w"> </span><span class="n">confidence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.95</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">42</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">set.seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<span class="w">  </span><span class="n">n</span><span class="w">          </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="w">  </span><span class="n">observed</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">stat_fn</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="w">  </span><span class="n">boot_stats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">replicate</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="nf">stat_fn</span><span class="p">(</span><span class="nf">sample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)))</span>
+<span class="w">  </span><span class="n">alpha</span><span class="w">      </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">confidence</span>
+<span class="w">  </span><span class="n">lo</span><span class="w">         </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">boot_stats</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+<span class="w">  </span><span class="n">hi</span><span class="w">         </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">boot_stats</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">observed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">observed</span><span class="p">,</span><span class="w"> </span><span class="n">lo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lo</span><span class="p">,</span><span class="w"> </span><span class="n">hi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hi</span><span class="p">,</span><span class="w"> </span><span class="n">boot_stats</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boot_stats</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># ── Rate helpers ──────────────────────────────────────────────────────────────</span>
+<span class="n">rate_per_million</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">events</span><span class="p">,</span><span class="w"> </span><span class="n">miles</span><span class="p">)</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">events</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">miles</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">1e6</span>
+
+<span class="c1"># Quick self-check</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;rate_per_million(c(2,3), c(5e6,5e6)) =&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nf">rate_per_million</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">),</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">5e6</span><span class="p">,</span><span class="w"> </span><span class="m">5e6</span><span class="p">)),</span>
+<span class="w">    </span><span class="s">&quot;(expect 0.5)\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>rate_per_million(c(2,3), c(5e6,5e6)) = 0.5 (expect 0.5)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section class="tex2jax_ignore mathjax_ignore" id="part-1-the-poisson-model">
+<h1>Part 1 – The Poisson Model<a class="headerlink" href="#part-1-the-poisson-model" title="Link to this heading">#</a></h1>
+<hr class="docutils" />
+<section id="ss1-poisson-model-exposure-thinking">
+<h2>SS1 – Poisson Model &amp; Exposure Thinking<a class="headerlink" href="#ss1-poisson-model-exposure-thinking" title="Link to this heading">#</a></h2>
+<p><strong>Intuition:</strong> A proportion answers “what fraction of trials succeeded?” A <strong>rate</strong>
+answers “how many events per unit of exposure?”. When events are rare and exposure
+varies across units, rates are the right frame: two vehicles each driving 1 million
+miles with 1 contact each have the <em>same</em> safety rate even though vehicle A drove
+city routes and vehicle B drove highways.</p>
+<p>The Poisson distribution models counts of rare, independent events over a fixed
+exposure. Its single parameter λ is the <strong>expected count</strong>; for a rate r over
+exposure T, λ = r × T.</p>
+<blockquote>
+<div><p><strong>Interview prompts:</strong>
+<em>(a) Why use Poisson rather than Binomial for fleet contact events?</em>
+<em>(b) Our two cities have very different mileage. How do you compute the fleet rate?</em></p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+
+<span class="c1"># ── Simulate a fleet of 200 vehicles with unequal exposure ────────────────────</span>
+<span class="n">true_rate</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="w">          </span><span class="c1"># 2 contact events per million miles (human baseline ~2/M)</span>
+<span class="n">n_vehicles</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">200</span>
+
+<span class="n">fleet</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">vehicle_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">n_vehicles</span><span class="p">,</span>
+<span class="w">  </span><span class="n">city</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;SF&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Phoenix&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">n_vehicles</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">prob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0.6</span><span class="p">,</span><span class="w"> </span><span class="m">0.4</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">miles</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nf">pmax</span><span class="p">(</span><span class="nf">ifelse</span><span class="p">(</span><span class="n">city</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;SF&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n_vehicles</span><span class="p">,</span><span class="w"> </span><span class="m">40000</span><span class="p">,</span><span class="w"> </span><span class="m">8000</span><span class="p">),</span><span class="w">     </span><span class="c1"># SF vehicles drive less (dense city)</span>
+<span class="w">                 </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n_vehicles</span><span class="p">,</span><span class="w"> </span><span class="m">70000</span><span class="p">,</span><span class="w"> </span><span class="m">12000</span><span class="p">)),</span><span class="w">   </span><span class="c1"># Phoenix vehicles drive more</span>
+<span class="w">               </span><span class="m">5000</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rpois</span><span class="p">(</span><span class="n">n_vehicles</span><span class="p">,</span><span class="w"> </span><span class="n">lambda</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true_rate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">miles</span><span class="p">))</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Fleet summary:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">fleet</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">city</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">vehicles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span><span class="w"> </span><span class="n">total_miles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">miles</span><span class="p">),</span><span class="w"> </span><span class="n">total_events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">events</span><span class="p">),</span>
+<span class="w">            </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span><span class="p">))</span>
+
+<span class="c1"># ── Rule 1: rate = sum(events) / sum(miles), NOT mean(per_vehicle_rate) ────────</span>
+<span class="n">per_vehicle_rate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fleet</span><span class="o">$</span><span class="n">events</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">fleet</span><span class="o">$</span><span class="n">miles</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">1e6</span>
+<span class="n">wrong_rate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">per_vehicle_rate</span><span class="p">)</span><span class="w">          </span><span class="c1"># Simpson&#39;s-paradox trap</span>
+<span class="n">correct_rate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rate_per_million</span><span class="p">(</span><span class="n">fleet</span><span class="o">$</span><span class="n">events</span><span class="p">,</span><span class="w"> </span><span class="n">fleet</span><span class="o">$</span><span class="n">miles</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- Simpson&#39;s paradox / unequal exposure trap --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Wrong  (mean of per-vehicle rates) : %.4f per million miles\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">wrong_rate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Correct (sum/sum)                  : %.4f per million miles\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">correct_rate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  True rate                          : %.4f per million miles\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">true_rate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">1e6</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n  The &#39;wrong&#39; approach over-weights low-mileage vehicles (numerically noisy)\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  Phoenix vehicles drive ~1.75x more miles -- pooling without weighting distorts the rate.\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Rule 2: check Poisson assumptions ────────────────────────────────────────</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- Poisson goodness-of-fit: mean vs. variance (should be ~equal) --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  mean(events)  = %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">fleet</span><span class="o">$</span><span class="n">events</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  var(events)   = %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="n">fleet</span><span class="o">$</span><span class="n">events</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  (Large var &gt;&gt; mean signals overdispersion -&gt; see SS7)\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Fleet summary:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 2 × 4
+  city    vehicles total_miles total_events
+  &lt;chr&gt;      &lt;int&gt;       &lt;dbl&gt;        &lt;int&gt;
+1 Phoenix       92    6271816.           13
+2 SF           108    4277156.            9
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Simpson&#39;s paradox / unequal exposure trap --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Wrong  (mean of per-vehicle rates) : 2.1059 per million miles
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Correct (sum/sum)                  : 2.0855 per million miles
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  True rate                          : 2.0000 per million miles
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  The &#39;wrong&#39; approach over-weights low-mileage vehicles (numerically noisy)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Phoenix vehicles drive ~1.75x more miles -- pooling without weighting distorts the rate.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Poisson goodness-of-fit: mean vs. variance (should be ~equal) --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  mean(events)  = 0.110
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  var(events)   = 0.118
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  (Large var &gt;&gt; mean signals overdispersion -&gt; see SS7)
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Poisson vs. Binomial – when to use which:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p></p></th>
+<th class="head text-left"><p>Binomial</p></th>
+<th class="head text-left"><p>Poisson</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Frame</p></td>
+<td class="text-left"><p>n trials, each succeeds/fails</p></td>
+<td class="text-left"><p>Events arrive over continuous exposure</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Parameter</p></td>
+<td class="text-left"><p>n, p</p></td>
+<td class="text-left"><p>λ = rate × exposure</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Exposure varies?</p></td>
+<td class="text-left"><p>Awkward (n changes per unit)</p></td>
+<td class="text-left"><p>Natural (offset term)</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Events per trial</p></td>
+<td class="text-left"><p>At most 1</p></td>
+<td class="text-left"><p>Unlimited</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Rare-event limit</p></td>
+<td class="text-left"><p>Bin(n, p) → Poisson(np) as n→∞, p→0</p></td>
+<td class="text-left"><p>Exact</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Fleet safety use</p></td>
+<td class="text-left"><p>Inappropriate</p></td>
+<td class="text-left"><p>Correct</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Computing <code class="docutils literal notranslate"><span class="pre">mean(events</span> <span class="pre">/</span> <span class="pre">miles)</span></code> instead of <code class="docutils literal notranslate"><span class="pre">sum(events)</span> <span class="pre">/</span> <span class="pre">sum(miles)</span></code> – low-mileage
+vehicles have noisy per-vehicle rates that dominate the average; always pool numerator and
+denominator separately.</p></li>
+<li><p>Assuming equal exposure across vehicles and using a plain proportion test – this is the
+setup for Simpson’s paradox when cities / ODDs have different mileage distributions.</p></li>
+<li><p>Forgetting that λ = rate × T: if you halve the observation window, expected counts halve
+even if the true rate is unchanged.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss2-exact-cis-for-a-single-rate">
+<h2>SS2 – Exact CIs for a Single Rate<a class="headerlink" href="#ss2-exact-cis-for-a-single-rate" title="Link to this heading">#</a></h2>
+<p>Three methods, same structure as Inference SS2. <strong>Lead with <code class="docutils literal notranslate"><span class="pre">poisson.test()</span></code> in
+an interview</strong> – it is exact, requires no assumptions about count size, and is one
+line. Show the normal approximation only to explain <em>why</em> it fails.</p>
+<blockquote>
+<div><p><strong>Interview prompt:</strong>
+<em>“We observed 2 contact events in 10 million miles. Give me a 95% CI for the rate.”</em></p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Observed data (the classic Waymo-style screen question) ─────────────────</span>
+<span class="n">x</span><span class="w">     </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">2</span><span class="w">          </span><span class="c1"># events</span>
+<span class="n">T_mi</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">10e6</span><span class="w">       </span><span class="c1"># miles of exposure</span>
+
+<span class="c1"># ── Method 1: Normal approximation (and its failure) ─────────────────────────</span>
+<span class="n">rate_hat</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">T_mi</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">1e6</span><span class="w">                </span><span class="c1"># estimated rate per million miles</span>
+<span class="n">se_approx</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">T_mi</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">1e6</span><span class="w">         </span><span class="c1"># SE for Poisson count: sqrt(lambda) / T</span>
+<span class="n">ci_norm</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rate_hat</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">se_approx</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;-- Method 1: Normal approximation --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Rate estimate : %.4f per million miles\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rate_hat</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  95%% CI        : (%.4f, %.4f)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ci_norm</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">ci_norm</span><span class="p">[</span><span class="m">2</span><span class="p">]))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Lower bound   : %.4f  &lt;-- can go negative at small x!\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ci_norm</span><span class="p">[</span><span class="m">1</span><span class="p">]))</span>
+
+<span class="c1"># ── Method 2: Exact Poisson CI via poisson.test() ────────────────────────────</span>
+<span class="n">pt_result</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">poisson.test</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T_mi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="p">)</span><span class="w">   </span><span class="c1"># T in same units as rate (per million miles)</span>
+<span class="n">ci_exact</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">pt_result</span><span class="o">$</span><span class="n">conf.int</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">1</span><span class="w">             </span><span class="c1"># already per-million-miles scaled</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- Method 2: Exact (poisson.test) -- PREFERRED --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  95%% CI        : (%.4f, %.4f)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ci_exact</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">ci_exact</span><span class="p">[</span><span class="m">2</span><span class="p">]))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  p-value vs H0: rate=0  : %.4f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pt_result</span><span class="o">$</span><span class="n">p.value</span><span class="p">))</span>
+
+<span class="c1"># ── Method 3: Bootstrap over vehicles ────────────────────────────────────────</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">n_v</span><span class="w">     </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">200</span>
+<span class="n">fleet_s</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">miles</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">pmax</span><span class="p">(</span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n_v</span><span class="p">,</span><span class="w"> </span><span class="m">50000</span><span class="p">,</span><span class="w"> </span><span class="m">10000</span><span class="p">),</span><span class="w"> </span><span class="m">5000</span><span class="p">),</span>
+<span class="w">  </span><span class="n">events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rpois</span><span class="p">(</span><span class="n">n_v</span><span class="p">,</span><span class="w"> </span><span class="n">lambda</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">T_mi</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">miles</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">boot_rate_fn</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">rate_per_million</span><span class="p">(</span><span class="n">fleet_s</span><span class="o">$</span><span class="n">events</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span><span class="w"> </span><span class="n">fleet_s</span><span class="o">$</span><span class="n">miles</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+<span class="p">}</span>
+<span class="n">boot_stats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">replicate</span><span class="p">(</span><span class="m">2000</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">idx</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="n">n_v</span><span class="p">,</span><span class="w"> </span><span class="n">n_v</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">boot_rate_fn</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="p">})</span>
+<span class="n">ci_boot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">boot_stats</span><span class="p">,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0.025</span><span class="p">,</span><span class="w"> </span><span class="m">0.975</span><span class="p">))</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- Method 3: Bootstrap over vehicles --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  95%% CI        : (%.4f, %.4f)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ci_boot</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">ci_boot</span><span class="p">[</span><span class="m">2</span><span class="p">]))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  (Useful when fleet heterogeneity, not just count noise, drives uncertainty)\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Side-by-side comparison ───────────────────────────────────────────────────</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- Summary --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-22s  lower   upper\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Method&quot;</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-22s  %.4f  %.4f   &lt;- can go negative\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Normal approx&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ci_norm</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">ci_norm</span><span class="p">[</span><span class="m">2</span><span class="p">]))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-22s  %.4f  %.4f   &lt;- use this\n&quot;</span><span class="p">,</span><span class="w">        </span><span class="s">&quot;Exact (poisson.test)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ci_exact</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">ci_exact</span><span class="p">[</span><span class="m">2</span><span class="p">]))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-22s  %.4f  %.4f   &lt;- for fleet heterogeneity\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Bootstrap (vehicle)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ci_boot</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">ci_boot</span><span class="p">[</span><span class="m">2</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Method 1: Normal approximation --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Rate estimate : 0.2000 per million miles
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  95% CI        : (-0.0772, 0.4772)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Lower bound   : -0.0772  &lt;-- can go negative at small x!
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Method 2: Exact (poisson.test) -- PREFERRED --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  95% CI        : (0.0242, 0.7225)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  p-value vs H0: rate=0  : 0.0062
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Method 3: Bootstrap over vehicles --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  95% CI        : (0.0000, 0.5076)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  (Useful when fleet heterogeneity, not just count noise, drives uncertainty)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Summary --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Method                  lower   upper
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Normal approx           -0.0772  0.4772   &lt;- can go negative
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Exact (poisson.test)    0.0242  0.7225   &lt;- use this
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Bootstrap (vehicle)     0.0000  0.5076   &lt;- for fleet heterogeneity
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Method comparison:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Method</p></th>
+<th class="head text-left"><p>Requires</p></th>
+<th class="head text-left"><p>Fails when</p></th>
+<th class="head text-left"><p>Use in interview</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Normal approximation</p></td>
+<td class="text-left"><p>x ≥ ~30</p></td>
+<td class="text-left"><p>x is small (CI goes negative)</p></td>
+<td class="text-left"><p>Only to show the failure mode</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">poisson.test(x,</span> <span class="pre">T)</span></code></p></td>
+<td class="text-left"><p>Independence</p></td>
+<td class="text-left"><p>Rate varies across exposure</p></td>
+<td class="text-left"><p>Yes – one line, exact</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Bootstrap over vehicles</p></td>
+<td class="text-left"><p>Vehicle-level data</p></td>
+<td class="text-left"><p>Only have aggregate count</p></td>
+<td class="text-left"><p>When fleet heterogeneity matters</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">prop.test</span></code> or a z-interval – these assume binomial, not Poisson; the denominator
+is exposure (miles), not a trial count.</p></li>
+<li><p>Passing raw miles as <code class="docutils literal notranslate"><span class="pre">T</span></code> without matching units to the rate scale – if your rate is “per
+million miles”, pass <code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">miles</span> <span class="pre">/</span> <span class="pre">1e6</span></code> so <code class="docutils literal notranslate"><span class="pre">poisson.test</span></code> returns CIs on the same scale.</p></li>
+<li><p>Treating the CI as symmetric – Poisson CIs are right-skewed at small counts; the exact
+CI lower bound is not <code class="docutils literal notranslate"><span class="pre">estimate</span> <span class="pre">-</span> <span class="pre">margin</span></code> and the upper bound is not <code class="docutils literal notranslate"><span class="pre">estimate</span> <span class="pre">+</span> <span class="pre">margin</span></code>.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss3-comparing-two-rates">
+<h2>SS3 – Comparing Two Rates<a class="headerlink" href="#ss3-comparing-two-rates" title="Link to this heading">#</a></h2>
+<p>The “did the software update reduce the contact rate?” question.
+<code class="docutils literal notranslate"><span class="pre">poisson.test()</span></code> handles two-sample rate comparison exactly – pass vectors
+of counts and exposures.</p>
+<blockquote>
+<div><p><strong>Interview prompts:</strong>
+<em>(a) Contact rate dropped from 2.1 to 1.4 per million miles after a software update.</em>
+<em>Is this statistically significant?</em>
+<em>(b) What confounders would you worry about? (Bridge to SS5.)</em></p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Observed before / after data ─────────────────────────────────────────────</span>
+<span class="n">x_before</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">21L</span><span class="p">;</span><span class="w">   </span><span class="n">T_before</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">10e6</span><span class="w">   </span><span class="c1"># 21 events in 10M miles (2.1 / M)</span>
+<span class="n">x_after</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">14L</span><span class="p">;</span><span class="w">   </span><span class="n">T_after</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">10e6</span><span class="w">   </span><span class="c1"># 14 events in 10M miles (1.4 / M)</span>
+
+<span class="n">rate_before</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">x_before</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">T_before</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">1e6</span>
+<span class="n">rate_after</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">x_after</span><span class="w">  </span><span class="o">/</span><span class="w"> </span><span class="n">T_after</span><span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="m">1e6</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Rate before: %.2f  |  Rate after: %.2f  |  Observed reduction: %.1f%%\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">rate_before</span><span class="p">,</span><span class="w"> </span><span class="n">rate_after</span><span class="p">,</span>
+<span class="w">            </span><span class="p">(</span><span class="n">rate_before</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">rate_after</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">rate_before</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="p">))</span>
+
+<span class="c1"># ── Method 1: Exact two-sample Poisson test ───────────────────────────────────</span>
+<span class="n">pt2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">poisson.test</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">x_after</span><span class="p">,</span><span class="w"> </span><span class="n">x_before</span><span class="p">),</span>
+<span class="w">                    </span><span class="bp">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">T_after</span><span class="p">,</span><span class="w"> </span><span class="n">T_before</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">alternative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;less&quot;</span><span class="p">)</span><span class="w">   </span><span class="c1"># test: after rate &lt; before rate</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- Exact two-sample Poisson test --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Rate ratio (after/before)   : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pt2</span><span class="o">$</span><span class="n">estimate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  95%% CI on ratio             : (%.3f, %.3f)\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">pt2</span><span class="o">$</span><span class="n">conf.int</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">pt2</span><span class="o">$</span><span class="n">conf.int</span><span class="p">[</span><span class="m">2</span><span class="p">]))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  p-value (one-sided, less)   : %.4f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pt2</span><span class="o">$</span><span class="n">p.value</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Significant at alpha=0.05?  : %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">pt2</span><span class="o">$</span><span class="n">p.value</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0.05</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;YES&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NO&quot;</span><span class="p">)))</span>
+
+<span class="c1"># ── Method 2: Conditional simulation (from-scratch, no package) ───────────────</span>
+<span class="c1"># Key fact: the exact two-sample Poisson test CONDITIONS on the total count.</span>
+<span class="c1"># Under H0 (equal rates), given total = x_after + x_before, the after-count is</span>
+<span class="c1"># Binomial(total, T_after / (T_after + T_before)). Simulate that directly:</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">total</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">x_before</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x_after</span>
+<span class="n">p_null</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">T_after</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">T_after</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">T_before</span><span class="p">)</span><span class="w">   </span><span class="c1"># = 0.5 for equal exposure</span>
+
+<span class="n">B</span><span class="w">         </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">50000</span>
+<span class="n">sim_after</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rbinom</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total</span><span class="p">,</span><span class="w"> </span><span class="n">prob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_null</span><span class="p">)</span>
+<span class="n">p_sim</span><span class="w">     </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">sim_after</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">x_after</span><span class="p">)</span><span class="w">    </span><span class="c1"># one-sided: as extreme or lower</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- Conditional simulation test (from scratch) --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Observed after-count        : %d of %d total events\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x_after</span><span class="p">,</span><span class="w"> </span><span class="n">total</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  p-value (simulation, B=%d): %.4f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">p_sim</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  (Agrees with poisson.test because both condition on the total --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;   explaining WHY you condition is a strong interview signal)\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Effect size: rate difference and ratio with CIs ──────────────────────────</span>
+<span class="n">rate_diff</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rate_before</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">rate_after</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\n-- Effect size --\n&quot;</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Absolute reduction: %.2f events per million miles\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rate_diff</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Relative reduction: %.1f%%\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rate_diff</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">rate_before</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n  Confounders to name in the interview:\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;    - ODD shift: did the update deploy to easier routes first?\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;    - Seasonal / weather change between periods\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;    - Mileage composition (city vs highway mix changed)\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;    -&gt; If any of these, stratify by confounder or move to GLM (SS5)\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rate before: 2.10  |  Rate after: 1.40  |  Observed reduction: 33.3%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Exact two-sample Poisson test --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Rate ratio (after/before)   : 0.667
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  95% CI on ratio             : (0.000, 1.236)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  p-value (one-sided, less)   : 0.1553
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Significant at alpha=0.05?  : NO
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Conditional simulation test (from scratch) --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Observed after-count        : 14 of 35 total events
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  p-value (simulation, B=50000): 0.1586
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  (Agrees with poisson.test because both condition on the total --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   explaining WHY you condition is a strong interview signal)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Effect size --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Absolute reduction: 0.70 events per million miles
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Relative reduction: 33.3%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Confounders to name in the interview:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    - ODD shift: did the update deploy to easier routes first?
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    - Seasonal / weather change between periods
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    - Mileage composition (city vs highway mix changed)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    -&gt; If any of these, stratify by confounder or move to GLM (SS5)
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Comparing raw event counts without normalizing by exposure – 21 vs. 14 events
+means nothing if the “before” period had twice the mileage.</p></li>
+<li><p>Using a two-sample t-test on counts – counts are non-negative and skewed; the
+Poisson model is correct here.</p></li>
+<li><p>Forgetting the direction of <code class="docutils literal notranslate"><span class="pre">alternative</span></code> – <code class="docutils literal notranslate"><span class="pre">&quot;less&quot;</span></code> tests whether the <em>first</em>
+argument’s rate is less than the second’s; double-check your argument order.</p></li>
+<li><p>Stopping at significance without naming confounders – Waymo interviewers
+specifically probe whether the ODD or route mix changed between periods.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss4-power-and-required-exposure">
+<h2>SS4 – Power and Required Exposure<a class="headerlink" href="#ss4-power-and-required-exposure" title="Link to this heading">#</a></h2>
+<p>“How many miles do we need to drive to prove we’re safer than a human driver?”
+This is Waymo’s most quantitative interview question. Answer it with simulation
+(the pattern from Inference SS8) adapted for Poisson counts.</p>
+<blockquote>
+<div><p><strong>Interview prompt:</strong>
+<em>The human baseline is ~2 contact events per million miles. Our system is at 1.4.</em>
+<em>How many miles of driving gives us 80% power to detect this improvement at α=0.05?</em></p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Parameters ────────────────────────────────────────────────────────────────</span>
+<span class="n">rate_human</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">2.0</span><span class="w">     </span><span class="c1"># per million miles (human baseline, publicly reported)</span>
+<span class="n">rate_av</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1.4</span><span class="w">     </span><span class="c1"># per million miles (AV target -- the SS3 post-update rate)</span>
+<span class="n">alpha</span><span class="w">      </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0.05</span>
+<span class="n">target_pwr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0.80</span>
+<span class="n">B</span><span class="w">          </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5000</span><span class="w">    </span><span class="c1"># simulations per mileage candidate</span>
+
+<span class="c1"># ── Simulation power function ──────────────────────────────────────────────────</span>
+<span class="n">power_at_miles</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">miles</span><span class="p">,</span><span class="w"> </span><span class="n">r_av</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rate_av</span><span class="p">,</span><span class="w"> </span><span class="n">r_human</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rate_human</span><span class="p">,</span>
+<span class="w">                           </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.05</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5000</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">42</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">set.seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<span class="w">  </span><span class="n">T_mil</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">miles</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="w">    </span><span class="c1"># convert to per-million scale used by poisson.test</span>
+<span class="w">  </span><span class="n">rejections</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">replicate</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">x_av</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rpois</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">r_av</span><span class="w">    </span><span class="o">*</span><span class="w"> </span><span class="n">T_mil</span><span class="p">)</span>
+<span class="w">    </span><span class="n">x_human</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rpois</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">r_human</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">T_mil</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># one-sided: test H0: rate_av &gt;= rate_human</span>
+<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">poisson.test</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">x_av</span><span class="p">,</span><span class="w"> </span><span class="n">x_human</span><span class="p">),</span>
+<span class="w">                      </span><span class="bp">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">T_mil</span><span class="p">,</span><span class="w"> </span><span class="n">T_mil</span><span class="p">),</span>
+<span class="w">                      </span><span class="n">alternative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;less&quot;</span><span class="p">)</span><span class="o">$</span><span class="n">p.value</span>
+<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">alpha</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="nf">mean</span><span class="p">(</span><span class="n">rejections</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># ── Power curve across mileage candidates ─────────────────────────────────────</span>
+<span class="n">miles_grid</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1e6</span><span class="p">,</span><span class="w"> </span><span class="m">2e6</span><span class="p">,</span><span class="w"> </span><span class="m">5e6</span><span class="p">,</span><span class="w"> </span><span class="m">10e6</span><span class="p">,</span><span class="w"> </span><span class="m">20e6</span><span class="p">,</span><span class="w"> </span><span class="m">50e6</span><span class="p">,</span><span class="w"> </span><span class="m">100e6</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;-- Power curve: rate_av=1.4 vs rate_human=2.0 per million miles --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-18s  %8s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Miles driven&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Power&quot;</span><span class="p">))</span>
+<span class="n">power_vals</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">numeric</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">miles_grid</span><span class="p">))</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">seq_along</span><span class="p">(</span><span class="n">miles_grid</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">power_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">power_at_miles</span><span class="p">(</span><span class="n">miles_grid</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-18s  %7.1f%%\n&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nf">format</span><span class="p">(</span><span class="n">miles_grid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">big.mark</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">scientific</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">),</span>
+<span class="w">              </span><span class="n">power_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="c1"># ── Find the required miles for 80% power ─────────────────────────────────────</span>
+<span class="c1"># Interpolate between grid points</span>
+<span class="n">above</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="n">power_vals</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">target_pwr</span><span class="p">)[</span><span class="m">1</span><span class="p">]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">above</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n  80% power not reached in grid -- increase miles_grid upper bound\n&quot;</span><span class="p">)</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\n  ~%.0fM miles needed for 80%% power (30%% relative improvement)\n&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="n">miles_grid</span><span class="p">[</span><span class="n">above</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="c1"># ── One-sample variant: human baseline treated as a KNOWN constant ────────────</span>
+<span class="c1"># In practice the human rate comes from billions of human-driven miles, so it is</span>
+<span class="c1"># effectively known. Testing against a fixed r halves the noise -&gt; less mileage.</span>
+<span class="n">power_one_sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">miles</span><span class="p">,</span><span class="w"> </span><span class="n">r_av</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rate_av</span><span class="p">,</span><span class="w"> </span><span class="n">r_human</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rate_human</span><span class="p">,</span>
+<span class="w">                             </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.05</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5000</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">42</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">set.seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<span class="w">  </span><span class="n">T_mil</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">miles</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span>
+<span class="w">  </span><span class="nf">mean</span><span class="p">(</span><span class="nf">replicate</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">x_av</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rpois</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">r_av</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">T_mil</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">poisson.test</span><span class="p">(</span><span class="n">x_av</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T_mil</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r_human</span><span class="p">,</span><span class="w"> </span><span class="n">alternative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;less&quot;</span><span class="p">)</span><span class="o">$</span><span class="n">p.value</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">alpha</span>
+<span class="w">  </span><span class="p">}))</span>
+<span class="p">}</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- One-sample power (baseline known) vs. two-sample --\n&quot;</span><span class="p">)</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">10e6</span><span class="p">,</span><span class="w"> </span><span class="m">20e6</span><span class="p">,</span><span class="w"> </span><span class="m">50e6</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %5.0fM miles : one-sample %.1f%%  vs  two-sample %.1f%%\n&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="p">,</span><span class="w"> </span><span class="nf">power_one_sample</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="nf">power_at_miles</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3000</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="p">))</span>
+<span class="p">}</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  Treating the baseline as known cuts required mileage roughly in half.\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── The Kalra &amp; Paddock insight: detecting a SMALL improvement is very hard ────</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- Kalra &amp; Paddock insight --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;   Detecting only a 20% improvement (2.0 -&gt; 1.6 per M miles) is far harder.\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;   Power at 100M miles for 20% improvement:\n&quot;</span><span class="p">)</span>
+<span class="n">p_small</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">power_at_miles</span><span class="p">(</span><span class="m">100e6</span><span class="p">,</span><span class="w"> </span><span class="n">r_av</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.6</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3000</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;   Power = %.1f%% at 100M miles  (human-driven comparison feasibility)\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">p_small</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;   This is why Waymo uses counterfactual / simulation benchmarking\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;   rather than waiting for head-to-head statistical significance.\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Power curve: rate_av=1.4 vs rate_human=2.0 per million miles --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Miles driven           Power
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1,000,000               1.7%
+  2,000,000               5.2%
+  5,000,000              12.7%
+  10,000,000             21.7%
+  20,000,000             38.3%
+  50,000,000             72.4%
+  100,000,000            94.1%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  ~100M miles needed for 80% power (30% relative improvement)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- One-sample power (baseline known) vs. two-sample --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     10M miles : one-sample 35.8%  vs  two-sample 21.4%
+     20M miles : one-sample 62.6%  vs  two-sample 39.2%
+     50M miles : one-sample 94.6%  vs  two-sample 72.4%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Treating the baseline as known cuts required mileage roughly in half.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Kalra &amp; Paddock insight --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   Detecting only a 20% improvement (2.0 -&gt; 1.6 per M miles) is far harder.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   Power at 100M miles for 20% improvement:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   Power = 66.2% at 100M miles  (human-driven comparison feasibility)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   This is why Waymo uses counterfactual / simulation benchmarking
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   rather than waiting for head-to-head statistical significance.
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Key takeaways for the interview:</strong></p>
+<ul class="simple">
+<li><p>At a 30% relative improvement (2.0 → 1.4 per M miles), the two-sample design needs
+roughly <strong>100M miles</strong> for 80% power; treating the human baseline as a known constant
+(one-sample test) roughly halves that – still tens of millions of miles.</p></li>
+<li><p>At a 20% improvement, the required mileage enters the <strong>billions</strong> – this is the
+Kalra &amp; Paddock (2016) result, and the reason Waymo uses simulation-based and
+counterfactual benchmarking rather than direct statistical comparison.</p></li>
+<li><p>Always state your assumptions: equal exposure in both arms, constant rate, no
+confounders. Each relaxation requires more miles or a richer model.</p></li>
+</ul>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">power.t.test</span></code> for count/rate data – that function assumes normally distributed
+outcomes; at the event counts relevant here, the Poisson simulation is necessary.</p></li>
+<li><p>Forgetting to state the minimum detectable effect (MDE) alongside required miles –
+power is always conditional on an assumed effect size.</p></li>
+<li><p>Quoting a single miles number without a power curve – always show how power grows
+with mileage; interviewers follow up on what happens at half the exposure.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section class="tex2jax_ignore mathjax_ignore" id="part-2-adjusting-for-confounders">
+<h1>Part 2 – Adjusting for Confounders<a class="headerlink" href="#part-2-adjusting-for-confounders" title="Link to this heading">#</a></h1>
+<hr class="docutils" />
+<section id="ss5-poisson-glm-with-exposure-offset">
+<h2>SS5 – Poisson GLM with Exposure Offset<a class="headerlink" href="#ss5-poisson-glm-with-exposure-offset" title="Link to this heading">#</a></h2>
+<p>When confounders (city, weather, ODD) differ between periods or fleets, a raw
+rate comparison is biased. The Poisson GLM with <code class="docutils literal notranslate"><span class="pre">offset(log(miles))</span></code> is the
+standard fix: it models the log-rate as a linear function of covariates, so
+each coefficient is a <strong>rate ratio</strong> after adjustment.</p>
+<blockquote>
+<div><p><strong>Interview prompts:</strong>
+<em>(a) The ODD changed between your before/after periods. How do you handle it?</em>
+<em>(b) Interpret the output: what does exp(coef) mean here?</em></p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+
+<span class="c1"># ── Simulate confounded fleet data ────────────────────────────────────────────</span>
+<span class="c1"># True rate: 20% lower post-update, but Phoenix (hot/dry) has 40% higher base rate</span>
+<span class="n">n</span><span class="w">         </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">400</span>
+<span class="n">true_base</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">2.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="w">   </span><span class="c1"># base rate (SF, pre-update)</span>
+
+<span class="c1"># NOTE: rows here are multi-year vehicle aggregates (~1M miles each), not single</span>
+<span class="c1"># vehicles -- with rare events you need substantial pooled exposure per row for</span>
+<span class="c1"># the GLM to have any information. At 50k miles/row you&#39;d have ~0.1 expected</span>
+<span class="c1"># events per row and the model could not recover the effects.</span>
+<span class="n">fleet_glm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">vehicle_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span>
+<span class="w">  </span><span class="n">period</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;pre&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;post&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">city</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;SF&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Phoenix&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">prob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="m">0.5</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">miles</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nf">pmax</span><span class="p">(</span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="m">1e6</span><span class="p">,</span><span class="w"> </span><span class="m">2e5</span><span class="p">),</span><span class="w"> </span><span class="m">1e5</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">rate_true</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true_base</span><span class="w"> </span><span class="o">*</span>
+<span class="w">    </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">period</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;post&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">0.80</span><span class="p">,</span><span class="w"> </span><span class="m">1.00</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w">   </span><span class="c1"># 20% update benefit</span>
+<span class="w">    </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">city</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Phoenix&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">1.40</span><span class="p">,</span><span class="w"> </span><span class="m">1.00</span><span class="p">),</span><span class="w">   </span><span class="c1"># Phoenix harder ODD</span>
+<span class="w">  </span><span class="n">events</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">rpois</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">lambda</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rate_true</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">miles</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;-- Confounded naive comparison --\n&quot;</span><span class="p">)</span>
+<span class="n">naive</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fleet_glm</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">period</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">events</span><span class="p">),</span><span class="w"> </span><span class="n">miles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">miles</span><span class="p">),</span>
+<span class="w">            </span><span class="n">rate_per_M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">events</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">miles</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">1e6</span><span class="p">,</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">naive</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  Naive ratio (post/pre):&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">naive</span><span class="o">$</span><span class="n">rate_per_M</span><span class="p">[</span><span class="n">naive</span><span class="o">$</span><span class="n">period</span><span class="o">==</span><span class="s">&quot;post&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">/</span>
+<span class="w">                                       </span><span class="n">naive</span><span class="o">$</span><span class="n">rate_per_M</span><span class="p">[</span><span class="n">naive</span><span class="o">$</span><span class="n">period</span><span class="o">==</span><span class="s">&quot;pre&quot;</span><span class="p">],</span><span class="w"> </span><span class="m">3</span><span class="p">),</span>
+<span class="w">    </span><span class="s">&quot;  &lt;- confounded by city mix\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Poisson GLM with offset ───────────────────────────────────────────────────</span>
+<span class="n">fleet_glm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fleet_glm</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">relevel</span><span class="p">(</span><span class="nf">factor</span><span class="p">(</span><span class="n">period</span><span class="p">),</span><span class="w"> </span><span class="n">ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;pre&quot;</span><span class="p">),</span>
+<span class="w">         </span><span class="n">city</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">relevel</span><span class="p">(</span><span class="nf">factor</span><span class="p">(</span><span class="n">city</span><span class="p">),</span><span class="w">   </span><span class="n">ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SF&quot;</span><span class="p">))</span>
+
+<span class="n">fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="n">events</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">period</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">city</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">offset</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">miles</span><span class="p">)),</span>
+<span class="w">           </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fleet_glm</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">poisson</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- Poisson GLM with offset(log(miles)) --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  Coefficients (log rate ratios):\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">round</span><span class="p">(</span><span class="nf">coef</span><span class="p">(</span><span class="n">fit</span><span class="p">),</span><span class="w"> </span><span class="m">4</span><span class="p">))</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n  Rate ratios = exp(coef)  [interpret as multiplicative effects on rate]:\n&quot;</span><span class="p">)</span>
+<span class="n">rr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">RateRatio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">fit</span><span class="p">),</span><span class="w"> </span><span class="nf">confint</span><span class="p">(</span><span class="n">fit</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">round</span><span class="p">(</span><span class="n">rr</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">))</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n  Interpretation:\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  periodpost  : post-update rate is %.1f%% of pre-update rate (adj. for city)\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nf">exp</span><span class="p">(</span><span class="nf">coef</span><span class="p">(</span><span class="n">fit</span><span class="p">)[</span><span class="s">&quot;periodpost&quot;</span><span class="p">])</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  cityPhoenix : Phoenix rate is %.1f%% of SF rate (adj. for period)\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nf">exp</span><span class="p">(</span><span class="nf">coef</span><span class="p">(</span><span class="n">fit</span><span class="p">)[</span><span class="s">&quot;cityPhoenix&quot;</span><span class="p">])</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  True effects: 80% (update), 140% (Phoenix) -- both inside the 95% CIs.\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Confounded naive comparison --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 2 × 4
+  period events      miles rate_per_M
+  &lt;chr&gt;   &lt;int&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+1 post      415 197528611.       2.10
+2 pre       473 195041275.       2.43
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Naive ratio (post/pre): 0.866   &lt;- confounded by city mix
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Poisson GLM with offset(log(miles)) --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Coefficients (log rate ratios):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(Intercept)  periodpost cityPhoenix 
+   -13.0787     -0.1656      0.2848 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Rate ratios = exp(coef)  [interpret as multiplicative effects on rate]:
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Waiting for profiling to be done...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>            RateRatio 2.5 % 97.5 %
+(Intercept)     0.000 0.000  0.000
+periodpost      0.847 0.742  0.967
+cityPhoenix     1.329 1.163  1.522
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Interpretation:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  periodpost  : post-update rate is 84.7% of pre-update rate (adj. for city)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  cityPhoenix : Phoenix rate is 132.9% of SF rate (adj. for period)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  True effects: 80% (update), 140% (Phoenix) -- both inside the 95% CIs.
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong><code class="docutils literal notranslate"><span class="pre">poisson.test</span></code> vs. Poisson GLM:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p></p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">poisson.test</span></code></p></th>
+<th class="head text-left"><p>Poisson <code class="docutils literal notranslate"><span class="pre">glm</span></code> with offset</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Covariates</p></td>
+<td class="text-left"><p>None</p></td>
+<td class="text-left"><p>Any number</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Inference</p></td>
+<td class="text-left"><p>Exact</p></td>
+<td class="text-left"><p>Asymptotic (Wald / profile)</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Exposure</p></td>
+<td class="text-left"><p>Single T per group</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">offset(log(miles))</span></code> per row</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Output</p></td>
+<td class="text-left"><p>Rate ratio + exact CI</p></td>
+<td class="text-left"><p>Rate ratios via <code class="docutils literal notranslate"><span class="pre">exp(coef)</span></code> + <code class="docutils literal notranslate"><span class="pre">confint</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>When to use</p></td>
+<td class="text-left"><p>Clean two-group, no confounders</p></td>
+<td class="text-left"><p>Confounders, interactions, multiple groups</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Omitting <code class="docutils literal notranslate"><span class="pre">offset(log(miles))</span></code> – without it the model predicts log-count, not
+log-rate; coefficients lose their rate-ratio interpretation.</p></li>
+<li><p>Passing <code class="docutils literal notranslate"><span class="pre">log(miles)</span></code> inside a <code class="docutils literal notranslate"><span class="pre">mutate</span></code> and adding it as a regular predictor –
+this forces its coefficient to be estimated (not fixed at 1), which is wrong;
+always use <code class="docutils literal notranslate"><span class="pre">offset()</span></code>.</p></li>
+<li><p>Exponentiating before checking model fit – run <code class="docutils literal notranslate"><span class="pre">summary(fit)</span></code> and check
+residual deviance / df ≈ 1; if it’s &gt;&gt; 1, you have overdispersion (see SS7)
+and the SEs are underestimated.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss6-zero-events-the-rule-of-three">
+<h2>SS6 – Zero Events: The Rule of Three<a class="headerlink" href="#ss6-zero-events-the-rule-of-three" title="Link to this heading">#</a></h2>
+<p>When x = 0, <code class="docutils literal notranslate"><span class="pre">poisson.test(0,</span> <span class="pre">T)</span></code> gives the exact upper bound. The <strong>rule of
+three</strong> is the one-line interview answer: the 95% upper bound on the rate is
+approximately 3 / T.</p>
+<blockquote>
+<div><p><strong>Interview prompt:</strong>
+<em>“We’ve driven 5 million miles with zero injuries. What’s the most we can claim?”</em></p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Exact upper bound via poisson.test ───────────────────────────────────────</span>
+<span class="n">T_miles</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5e6</span><span class="w">      </span><span class="c1"># miles with zero events</span>
+
+<span class="c1"># CAREFUL: poisson.test&#39;s conf.int is TWO-sided. The rule of three is a</span>
+<span class="c1"># ONE-sided 95% bound, so we must ask poisson.test for conf.level = 0.90</span>
+<span class="c1"># (two-sided 90% &lt;=&gt; one-sided 95% upper).</span>
+<span class="n">pt_zero</span><span class="w">     </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">poisson.test</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T_miles</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="p">,</span><span class="w"> </span><span class="n">conf.level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.90</span><span class="p">)</span>
+<span class="n">upper_exact</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">pt_zero</span><span class="o">$</span><span class="n">conf.int</span><span class="p">[</span><span class="m">2</span><span class="p">]</span>
+
+<span class="c1"># Or directly: exact one-sided upper bound is qgamma(0.95, shape = x + 1) / T</span>
+<span class="n">upper_gamma</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qgamma</span><span class="p">(</span><span class="m">0.95</span><span class="p">,</span><span class="w"> </span><span class="n">shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">T_miles</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;-- Zero events in 5M miles --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Exact one-sided 95%% upper bound     : %.4f per million miles\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">upper_exact</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Same via qgamma(0.95, x+1)/T        : %.4f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">upper_gamma</span><span class="p">))</span>
+
+<span class="c1"># ── Rule of three (approximation) ────────────────────────────────────────────</span>
+<span class="n">upper_rule3</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">T_miles</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Rule of three (3 / T)               : %.4f per million miles\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">upper_rule3</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  Rule of three matches the exact ONE-sided bound (2.996 ≈ 3).\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  (A naive poisson.test() call gives 0.7378 -- that&#39;s the TWO-sided\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;   upper bound, i.e. a 97.5% one-sided bound. Know the difference.)\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Why &quot;3&quot;? Derive it ────────────────────────────────────────────────────────</span>
+<span class="c1"># P(X=0 | lambda) = exp(-lambda). Set = 0.05 and solve for lambda:</span>
+<span class="c1"># exp(-lambda) = 0.05  =&gt;  lambda = -log(0.05) = 2.996 ≈ 3</span>
+<span class="n">lambda_upper</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="o">-</span><span class="nf">log</span><span class="p">(</span><span class="m">0.05</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\n-- Why &#39;3&#39;? --\n&quot;</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  P(X=0 | lambda) = exp(-lambda) = 0.05  =&gt;  lambda = %.4f ≈ 3\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">lambda_upper</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  So &#39;rate × T &lt; 3&#39; ensures P(zero events) &gt;= 5% even under the worst-case rate.\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── How does the upper bound tighten with more miles? ────────────────────────</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- One-sided 95% upper bound vs. miles driven (zero events) --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-15s  %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Miles driven&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Upper bound (per M miles)&quot;</span><span class="p">))</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1e6</span><span class="p">,</span><span class="w"> </span><span class="m">5e6</span><span class="p">,</span><span class="w"> </span><span class="m">10e6</span><span class="p">,</span><span class="w"> </span><span class="m">20e6</span><span class="p">,</span><span class="w"> </span><span class="m">50e6</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">ub</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qgamma</span><span class="p">(</span><span class="m">0.95</span><span class="p">,</span><span class="w"> </span><span class="n">shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-15s  %.4f\n&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nf">format</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">big.mark</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">scientific</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">),</span><span class="w"> </span><span class="n">ub</span><span class="p">))</span>
+<span class="p">}</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  Upper bound scales as 3/T -- double the miles, halve the worst-case rate.\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Zero events in 5M miles --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Exact one-sided 95% upper bound     : 0.5991 per million miles
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Same via qgamma(0.95, x+1)/T        : 0.5991
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Rule of three (3 / T)               : 0.6000 per million miles
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Rule of three matches the exact ONE-sided bound (2.996 ≈ 3).
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  (A naive poisson.test() call gives 0.7378 -- that&#39;s the TWO-sided
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   upper bound, i.e. a 97.5% one-sided bound. Know the difference.)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Why &#39;3&#39;? --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  P(X=0 | lambda) = exp(-lambda) = 0.05  =&gt;  lambda = 2.9957 ≈ 3
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  So &#39;rate × T &lt; 3&#39; ensures P(zero events) &gt;= 5% even under the worst-case rate.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- One-sided 95% upper bound vs. miles driven (zero events) --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Miles driven     Upper bound (per M miles)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1,000,000        2.9957
+  5,000,000        0.5991
+  10,000,000       0.2996
+  20,000,000       0.1498
+  50,000,000       0.0599
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Upper bound scales as 3/T -- double the miles, halve the worst-case rate.
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Claiming “we proved zero risk” – zero events only bounds the rate from above;
+it does not prove the rate is zero.</p></li>
+<li><p>Comparing the rule of three to <code class="docutils literal notranslate"><span class="pre">poisson.test</span></code>’s default <code class="docutils literal notranslate"><span class="pre">conf.int</span></code> – that
+interval is two-sided, so its upper limit is a 97.5% one-sided bound
+(-log(0.025) ≈ 3.69, not 3). Use <code class="docutils literal notranslate"><span class="pre">conf.level</span> <span class="pre">=</span> <span class="pre">0.90</span></code> or <code class="docutils literal notranslate"><span class="pre">qgamma(0.95,</span> <span class="pre">x+1)/T</span></code>.</p></li>
+<li><p>Using the rule for non-zero counts – the approximation only holds at x = 0;
+for x ≥ 1, use <code class="docutils literal notranslate"><span class="pre">poisson.test(x,</span> <span class="pre">T)</span></code>.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss7-overdispersion-negative-binomial">
+<h2>SS7 – Overdispersion &amp; Negative Binomial<a class="headerlink" href="#ss7-overdispersion-negative-binomial" title="Link to this heading">#</a></h2>
+<p>Poisson assumes variance = mean. Real fleets violate this: some vehicles always
+operate in hard ODDs, some drivers are riskier. When variance &gt;&gt; mean, Poisson
+SEs are underestimated and CIs are too narrow. Detect with residual deviance;
+fix with quasi-Poisson or <code class="docutils literal notranslate"><span class="pre">MASS::glm.nb</span></code>.</p>
+<blockquote>
+<div><p><strong>Interview prompt:</strong>
+<em>“Your Poisson model has residual deviance of 480 on 197 df. What does that tell you?”</em></p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">MASS</span><span class="p">,</span><span class="w"> </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;select&quot;</span><span class="p">)</span><span class="w">   </span><span class="c1"># glm.nb; exclude= avoids masking dplyr::select</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+
+<span class="c1"># ── Simulate overdispersed fleet (heterogeneous vehicles) ─────────────────────</span>
+<span class="c1"># Rows are cumulative vehicle histories (~2M miles) so expected counts are large</span>
+<span class="c1"># enough for overdispersion to be VISIBLE: NB variance = mu + mu^2/theta, and the</span>
+<span class="c1"># mu^2/theta term is negligible when mu ~ 0.1 but dominant when mu ~ 4.</span>
+<span class="n">n</span><span class="w">       </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">200</span>
+<span class="n">miles_v</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">pmax</span><span class="p">(</span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="m">2e6</span><span class="p">,</span><span class="w"> </span><span class="m">4e5</span><span class="p">),</span><span class="w"> </span><span class="m">2e5</span><span class="p">)</span>
+
+<span class="c1"># Overdispersion: each vehicle has its own latent rate (Gamma mixing -&gt; Neg Binomial)</span>
+<span class="n">theta_true</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">2</span><span class="w">              </span><span class="c1"># NB dispersion (lower = more overdispersed)</span>
+<span class="n">mu_v</span><span class="w">        </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">miles_v</span>
+<span class="n">events_od</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rnbinom</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theta_true</span><span class="p">,</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mu_v</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;-- Overdispersion check: Poisson assumption --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  mean(events)  = %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">events_od</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  var(events)   = %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="n">events_od</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Ratio var/mean= %.2f  (should be ~1 for Poisson; &gt;&gt;1 = overdispersed)\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nf">var</span><span class="p">(</span><span class="n">events_od</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">events_od</span><span class="p">)))</span>
+
+<span class="c1"># ── Fit Poisson (misspecified) vs. Quasi-Poisson vs. NB ──────────────────────</span>
+<span class="n">df_od</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">events_od</span><span class="p">,</span><span class="w"> </span><span class="n">miles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">miles_v</span><span class="p">)</span>
+
+<span class="n">fit_pois</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="n">events</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">offset</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">miles</span><span class="p">)),</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_od</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">poisson</span><span class="p">)</span>
+<span class="n">fit_quasi</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="n">events</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">offset</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">miles</span><span class="p">)),</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_od</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quasipoisson</span><span class="p">)</span>
+<span class="n">fit_nb</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm.nb</span><span class="p">(</span><span class="n">events</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">offset</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">miles</span><span class="p">)),</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_od</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- Residual deviance diagnostic --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Poisson  deviance/df = %.2f  (expect ~1; &gt;&gt; 1 confirms overdispersion)\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">fit_pois</span><span class="o">$</span><span class="n">deviance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">fit_pois</span><span class="o">$</span><span class="n">df.residual</span><span class="p">))</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- SE comparison (intercept / rate coefficient) --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-20s  SE = %.4f  (underestimated -- invalid)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Poisson&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nf">summary</span><span class="p">(</span><span class="n">fit_pois</span><span class="p">)</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">]))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-20s  SE = %.4f  (correct for overdispersion)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Quasi-Poisson&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nf">summary</span><span class="p">(</span><span class="n">fit_quasi</span><span class="p">)</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">]))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-20s  SE = %.4f  (correct; estimates theta)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Neg. Binomial&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nf">summary</span><span class="p">(</span><span class="n">fit_nb</span><span class="p">)</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">]))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Estimated NB theta: %.2f  (true: %.1f)\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">fit_nb</span><span class="o">$</span><span class="n">theta</span><span class="p">,</span><span class="w"> </span><span class="n">theta_true</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n  Quasi-Poisson and NB give similar SEs; NB is preferred when theta is of interest.\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Overdispersion check: Poisson assumption --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  mean(events)  = 3.835
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  var(events)   = 10.249
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Ratio var/mean= 2.67  (should be ~1 for Poisson; &gt;&gt;1 = overdispersed)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Residual deviance diagnostic --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Poisson  deviance/df = 2.54  (expect ~1; &gt;&gt; 1 confirms overdispersion)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- SE comparison (intercept / rate coefficient) --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Poisson               SE = 0.0361  (underestimated -- invalid)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Quasi-Poisson         SE = 0.0575  (correct for overdispersion)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Neg. Binomial         SE = 0.0578  (correct; estimates theta)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Estimated NB theta: 2.49  (true: 2.0)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Quasi-Poisson and NB give similar SEs; NB is preferred when theta is of interest.
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Overdispersion detection &amp; response:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Signal</p></th>
+<th class="head text-left"><p>What it means</p></th>
+<th class="head text-left"><p>Fix</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Residual deviance / df &gt;&gt; 1</p></td>
+<td class="text-left"><p>Variance &gt;&gt; mean (overdispersed)</p></td>
+<td class="text-left"><p>Quasi-Poisson or NB</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Residual deviance / df ≈ 1</p></td>
+<td class="text-left"><p>Poisson variance assumption holds</p></td>
+<td class="text-left"><p>Keep Poisson</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Residual deviance / df &lt;&lt; 1</p></td>
+<td class="text-left"><p>Underdispersion (rare in safety data)</p></td>
+<td class="text-left"><p>Investigate model</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Why fleets overdisperse:</strong> vehicles differ in ODD difficulty, driver behaviour,
+and maintenance state. The Gamma-Poisson mixture (which gives the Negative Binomial)
+is the natural model for this latent heterogeneity.</p>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Reporting Poisson CIs without checking deviance/df – narrow CIs from a
+misspecified Poisson model give false confidence.</p></li>
+<li><p>Choosing NB over quasi-Poisson based on comfort – both fix the SE; use NB
+when you want to report θ or make predictions; quasi-Poisson is simpler and
+sufficient for inference.</p></li>
+<li><p>Confusing overdispersion with outliers – a single vehicle with 50 events
+warrants investigation before modelling, not just a distributional fix.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss8-base-rates-detector-alarms">
+<h2>SS8 – Base Rates &amp; Detector Alarms<a class="headerlink" href="#ss8-base-rates-detector-alarms" title="Link to this heading">#</a></h2>
+<p>When true events are rare, even a highly accurate detector produces mostly false
+alarms – the base-rate neglect problem. This section grounds the Bayes theorem
+application in the “unreliable radar alarm” interview question.</p>
+<blockquote>
+<div><p><strong>Interview prompt:</strong>
+<em>“An anomaly detector fires on a vehicle. The detector has 95% sensitivity and
+98% specificity. Vehicle anomalies occur 1 in 1,000 trips. Should you intervene?”</em></p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Base rate neglect: compute PPV (precision) at different priors ─────────────</span>
+<span class="n">ppv</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">prevalence</span><span class="p">,</span><span class="w"> </span><span class="n">sensitivity</span><span class="p">,</span><span class="w"> </span><span class="n">specificity</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">tp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">prevalence</span><span class="w">       </span><span class="o">*</span><span class="w"> </span><span class="n">sensitivity</span>
+<span class="w">  </span><span class="n">fp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">prevalence</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">specificity</span><span class="p">)</span>
+<span class="w">  </span><span class="n">tp</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">tp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fp</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">npv</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">prevalence</span><span class="p">,</span><span class="w"> </span><span class="n">sensitivity</span><span class="p">,</span><span class="w"> </span><span class="n">specificity</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">tn</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">prevalence</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">specificity</span>
+<span class="w">  </span><span class="n">fn</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">prevalence</span><span class="w">       </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">sensitivity</span><span class="p">)</span>
+<span class="w">  </span><span class="n">tn</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">tn</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fn</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">sens</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0.95</span><span class="w">   </span><span class="c1"># P(alarm | true event)</span>
+<span class="n">spec</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0.98</span><span class="w">   </span><span class="c1"># P(no alarm | no event)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;-- P(true event | alarm) at varying base rates --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  Detector: sensitivity=%.0f%%, specificity=%.0f%%\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sens</span><span class="o">*</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="n">spec</span><span class="o">*</span><span class="m">100</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-20s  %8s  %8s  %8s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Prevalence (base rate)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PPV&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NPV&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;FP per TP&quot;</span><span class="p">))</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">prev</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="o">/</span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="o">/</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="o">/</span><span class="m">1000</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="o">/</span><span class="m">10000</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ppv</span><span class="p">(</span><span class="n">prev</span><span class="p">,</span><span class="w"> </span><span class="n">sens</span><span class="p">,</span><span class="w"> </span><span class="n">spec</span><span class="p">)</span>
+<span class="w">  </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">npv</span><span class="p">(</span><span class="n">prev</span><span class="p">,</span><span class="w"> </span><span class="n">sens</span><span class="p">,</span><span class="w"> </span><span class="n">spec</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-20s  %7.1f%%  %7.1f%%  %8.1f\n&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;1 in %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">format</span><span class="p">(</span><span class="m">1</span><span class="o">/</span><span class="n">prev</span><span class="p">,</span><span class="w"> </span><span class="n">big.mark</span><span class="o">=</span><span class="s">&quot;,&quot;</span><span class="p">)),</span>
+<span class="w">              </span><span class="n">p</span><span class="o">*</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="o">*</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="o">-</span><span class="n">p</span><span class="p">)</span><span class="o">/</span><span class="n">p</span><span class="p">))</span>
+<span class="p">}</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n  Key insight: at 1/1000 prevalence, ~95% of alarms are FALSE POSITIVES.\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Threshold tuning: precision-recall tradeoff ───────────────────────────────</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n-- Threshold tuning: FP cost vs. missed-event cost --\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  In safety contexts, the cost asymmetry drives threshold choice:\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  - Low threshold (high sensitivity): catch more true events, more false alarms\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;    -&gt; Appropriate when missing a real event is catastrophic (e.g., brake failure)\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  - High threshold (high specificity): fewer false alarms, miss some real events\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;    -&gt; Appropriate when intervention cost is high (e.g., pulling vehicle from service)\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Simulation: show alarm distribution under H0 and H1 ──────────────────────</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">n_trips</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">100000</span>
+<span class="n">prev</span><span class="w">      </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1000</span>
+<span class="n">true_anom</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rbinom</span><span class="p">(</span><span class="n">n_trips</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">prev</span><span class="p">)</span>
+<span class="n">score</span><span class="w">     </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">true_anom</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">,</span>
+<span class="w">                    </span><span class="nf">rbeta</span><span class="p">(</span><span class="n">n_trips</span><span class="p">,</span><span class="w"> </span><span class="m">6</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">),</span><span class="w">     </span><span class="c1"># anomalies score high (mean 0.75) but overlap...</span>
+<span class="w">                    </span><span class="nf">rbeta</span><span class="p">(</span><span class="n">n_trips</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">6</span><span class="p">))</span><span class="w">      </span><span class="c1"># ...with normals (mean 0.25) -&gt; real tradeoff</span>
+
+<span class="n">thresholds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="m">0.3</span><span class="p">,</span><span class="w"> </span><span class="m">0.9</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\n  %-10s  %8s  %8s  %8s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Threshold&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Precision&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Recall&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;F1&quot;</span><span class="p">))</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">thr</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">thresholds</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">preds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">score</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">thr</span><span class="p">)</span>
+<span class="w">  </span><span class="n">tp</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">preds</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">true_anom</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="w">  </span><span class="n">fp</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">preds</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">true_anom</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="w">  </span><span class="n">fn</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">preds</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">true_anom</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="w">  </span><span class="n">prec</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="n">tp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fp</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="n">tp</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">tp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fp</span><span class="p">)</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="kc">NA</span>
+<span class="w">  </span><span class="n">rec</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="n">tp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fn</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="n">tp</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">tp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fn</span><span class="p">)</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="kc">NA</span>
+<span class="w">  </span><span class="n">f1</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">prec</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">prec</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rec</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="w">             </span><span class="m">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">prec</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rec</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">prec</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rec</span><span class="p">)</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="kc">NA</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-10.1f  %7.1f%%  %7.1f%%  %7.3f\n&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="n">thr</span><span class="p">,</span><span class="w"> </span><span class="n">prec</span><span class="o">*</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="n">rec</span><span class="o">*</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="n">f1</span><span class="p">))</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- P(true event | alarm) at varying base rates --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Detector: sensitivity=95%, specificity=98%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Prevalence (base rate)       PPV       NPV  FP per TP
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1 in 10                  84.1%     99.4%       0.2
+  1 in 100                 32.4%     99.9%       2.1
+  1 in 1,000                4.5%    100.0%      21.0
+  1 in 10,000               0.5%    100.0%     210.5
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Key insight: at 1/1000 prevalence, ~95% of alarms are FALSE POSITIVES.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Threshold tuning: FP cost vs. missed-event cost --
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  In safety contexts, the cost asymmetry drives threshold choice:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  - Low threshold (high sensitivity): catch more true events, more false alarms
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    -&gt; Appropriate when missing a real event is catastrophic (e.g., brake failure)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  - High threshold (high specificity): fewer false alarms, miss some real events
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    -&gt; Appropriate when intervention cost is high (e.g., pulling vehicle from service)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Threshold   Precision    Recall        F1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0.3             0.3%    100.0%    0.006
+  0.4             0.6%    100.0%    0.012
+  0.5             1.4%     94.7%    0.028
+  0.6             4.0%     83.2%    0.076
+  0.7            14.8%     71.6%    0.245
+  0.8            48.9%     46.3%    0.476
+  0.9            81.8%      9.5%    0.170
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Equating sensitivity with precision – sensitivity is P(alarm | true event);
+precision (PPV) is P(true event | alarm). At low prevalence, high sensitivity
+does not imply high precision.</p></li>
+<li><p>Choosing a threshold without stating the cost asymmetry – in safety, false
+negatives (missed real events) typically cost more than false positives; make
+the asymmetry explicit.</p></li>
+<li><p>Forgetting to update the prior – if a second independent alarm fires on the
+same vehicle, use the posterior from the first alarm as the new prior.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="decision-guide">
+<h2>Decision Guide<a class="headerlink" href="#decision-guide" title="Link to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Rare-event question?
+│
+├─ Single rate, need CI
+│   ├─ x = 0              -&gt; Rule of three: upper ≈ 3/T  (SS6)
+│   └─ x &gt;= 1             -&gt; poisson.test(x, T)  (SS2)
+│
+├─ Compare two rates (before/after, two fleets)
+│   ├─ No confounders     -&gt; poisson.test(c(x1,x2), T=c(T1,T2))  (SS3)
+│   └─ Confounders exist  -&gt; Poisson GLM + offset(log(miles))  (SS5)
+│
+├─ How many miles for target power?
+│                          -&gt; Simulate power curve  (SS4)
+│
+├─ variance &gt;&gt; mean in fleet data
+│                          -&gt; Check deviance/df; use quasi-Poisson or glm.nb  (SS7)
+│
+└─ Interpreting an alarm / detector
+                           -&gt; Bayes: PPV depends on base rate  (SS8)
+</pre></div>
+</div>
+<p><strong>Sanity habits for every rate answer:</strong></p>
+<ol class="arabic simple">
+<li><p>Always report <strong>exposure alongside counts</strong> (<code class="docutils literal notranslate"><span class="pre">21</span> <span class="pre">events</span> <span class="pre">/</span> <span class="pre">10M</span> <span class="pre">miles</span></code>, not just <code class="docutils literal notranslate"><span class="pre">21</span></code>).</p></li>
+<li><p>Always state the <strong>CI method</strong> (<code class="docutils literal notranslate"><span class="pre">poisson.test</span></code>, bootstrap, GLM Wald).</p></li>
+<li><p>Always ask <strong>“did the denominator change too?”</strong> before comparing rates across periods.</p></li>
+<li><p>When the result is surprising, check for <strong>ODD / city mix shift</strong> before claiming
+the rate truly changed.</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="sessionization-appendix">
+<h2>Sessionization Appendix<a class="headerlink" href="#sessionization-appendix" title="Link to this heading">#</a></h2>
+<p><em>(Fits here because exposure computation starts with pings → trips.)</em></p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sessionize GPS pings into trips: a new trip starts after a gap &gt; threshold</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span>
+
+<span class="n">pings</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="n">vehicle_id</span><span class="p">,</span><span class="w"> </span><span class="n">timestamp</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">vehicle_id</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">gap_sec</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">timestamp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">lag</span><span class="p">(</span><span class="n">timestamp</span><span class="p">),</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;secs&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">new_trip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">coalesce</span><span class="p">(</span><span class="n">gap_sec</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">300</span><span class="p">,</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span><span class="w">   </span><span class="c1"># &gt;5 min gap = new trip; TRUE for first row</span>
+<span class="w">    </span><span class="n">trip_id</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">cumsum</span><span class="p">(</span><span class="n">new_trip</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">ungroup</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then compute miles per trip (e.g., cumulative haversine) and use <code class="docutils literal notranslate"><span class="pre">trip_id</span></code>
+as the unit of exposure in the rate calculations above.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./Statistical Inference"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Reference_Inference.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Statistical Inference – DS Interview Reference (R)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../Causal%20ML/cml0_overview.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Causal Machine Learning (R)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

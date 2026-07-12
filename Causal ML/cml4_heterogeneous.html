@@ -1,0 +1,1488 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>How do you estimate individual-level treatment effects? &#8212; Data Science Study Notes - R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Causal ML/cml4_heterogeneous';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="How do you estimate causal effects from observational data?" href="cml3_observational.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Data Science Study Notes - R</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Topics
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Data%20Manipulation/R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Data%20Manipulation/R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="cml1_foundations.html">Why does causality matter?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cml2_experiments.html">How do you design and analyze experiments?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cml3_observational.html">How do you estimate causal effects from observational data?</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">How do you estimate individual-level treatment effects?</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss0-shared-toy-dataset">SS0 – Shared Toy Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss1-cate-meta-learners-overview">SS1 – CATE &amp; Meta-Learners Overview</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-it-is">What it is</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assumptions-all-meta-learners">Assumptions (all meta-learners)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validation">Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#learner-comparison">Learner comparison</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss2-r-learner-robinson-decomposition">SS2 – R-Learner (Robinson Decomposition)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">What it is</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robinson-decomposition">Robinson decomposition</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss3-double-machine-learning-doubleml">SS3 – Double Machine Learning (DoubleML)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">What it is</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-key-ideas">Two key ideas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#r-doubleml-package">R: <code class="docutils literal notranslate"><span class="pre">DoubleML</span></code> package</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Reference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss4-causal-forests-grf">SS4 – Causal Forests (grf)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">What it is</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-differences-from-standard-random-forest">Key differences from standard Random Forest</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cate-validation-without-ground-truth-blp-gates">CATE validation without ground truth (BLP / GATES)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Reference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss5-uplift-modeling-qini">SS5 – Uplift Modeling &amp; Qini</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">What it is</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-four-segments">The four segments</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qini-coefficient">Qini coefficient</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#formula">Formula</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss6-policy-learning">SS6 – Policy Learning</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">What it is</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-value-estimation">Policy value estimation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Reference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#method-comparison">Method Comparison</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interview-q-a">Interview Q&amp;A</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gotchas">Gotchas</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../intro.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="cml0_overview.html" class="nav-link">Causal Machine Learning (R)</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">How do you estimate individual-level treatment effects?</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="how-do-you-estimate-individual-level-treatment-effects">
+<h1>How do you estimate individual-level treatment effects?<a class="headerlink" href="#how-do-you-estimate-individual-level-treatment-effects" title="Link to this heading">#</a></h1>
+<p><strong>Topics:</strong> CATE  - S/T/X/R-Learners  - Double Machine Learning (DoubleML)  - Causal Forests (grf)  - Uplift Modeling  - Qini  - Policy Learning</p>
+<blockquote>
+<div><p><strong>Toy dataset:</strong> discount offer for an e-commerce platform. Users receive a discount
+email (treatment). Purchase probability (outcome) depends on age and tenure – the
+treatment effect is <em>heterogeneous</em>: older, high-tenure users respond more.
+The same dataset runs through all sections.</p>
+</div></blockquote>
+<hr class="docutils" />
+<section id="ss0-shared-toy-dataset">
+<h2>SS0 – Shared Toy Dataset<a class="headerlink" href="#ss0-shared-toy-dataset" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">patchwork</span><span class="p">)</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">3000</span>
+
+<span class="n">age</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">runif</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="m">18</span><span class="p">,</span><span class="w"> </span><span class="m">65</span><span class="p">)</span><span class="w">    </span><span class="c1"># effect modifier</span>
+<span class="n">tenure</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">runif</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">60</span><span class="p">)</span><span class="w">     </span><span class="c1"># effect modifier</span>
+
+<span class="c1"># True CATE: heterogeneous -- varies with age and tenure</span>
+<span class="n">true_cate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0.05</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.002</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">age</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">40</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.001</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">tenure</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">30</span><span class="p">)</span>
+<span class="n">true_cate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">pmax</span><span class="p">(</span><span class="nf">pmin</span><span class="p">(</span><span class="n">true_cate</span><span class="p">,</span><span class="w"> </span><span class="m">0.20</span><span class="p">),</span><span class="w"> </span><span class="m">-0.05</span><span class="p">)</span><span class="w">   </span><span class="c1"># clip to reasonable range</span>
+
+<span class="c1"># Confounded observational assignment: older/longer-tenure users more likely to get the offer</span>
+<span class="n">T_obs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rbinom</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="nf">plogis</span><span class="p">(</span><span class="m">0.3</span><span class="o">*</span><span class="p">(</span><span class="n">age</span><span class="m">-40</span><span class="p">)</span><span class="o">/</span><span class="m">10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.2</span><span class="o">*</span><span class="p">(</span><span class="n">tenure</span><span class="m">-30</span><span class="p">)</span><span class="o">/</span><span class="m">15</span><span class="p">))</span>
+
+<span class="c1"># Outcome: purchase probability</span>
+<span class="n">base_prob</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">pmax</span><span class="p">(</span><span class="nf">pmin</span><span class="p">(</span><span class="m">0.10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.001</span><span class="o">*</span><span class="n">tenure</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">0.0005</span><span class="o">*</span><span class="p">(</span><span class="n">age</span><span class="m">-40</span><span class="p">),</span><span class="w"> </span><span class="m">0.5</span><span class="p">),</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="n">Y</span><span class="w">         </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rbinom</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="nf">pmin</span><span class="p">(</span><span class="n">base_prob</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">true_cate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">T_obs</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">age</span><span class="o">=</span><span class="n">age</span><span class="p">,</span><span class="w"> </span><span class="n">tenure</span><span class="o">=</span><span class="n">tenure</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="o">=</span><span class="n">T_obs</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="o">=</span><span class="n">Y</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">true_cate</span><span class="o">=</span><span class="n">true_cate</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;n = %d  (%d treated, %.0f%%)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">T_obs</span><span class="p">),</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">T_obs</span><span class="p">)</span><span class="o">*</span><span class="m">100</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;True ATE             : %.4f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">true_cate</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;True CATE range      : [%.4f, %.4f]\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">true_cate</span><span class="p">),</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">true_cate</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Naive estimate       : %.4f  (biased)\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nf">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">T_obs</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">T_obs</span><span class="o">==</span><span class="m">0</span><span class="p">])))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>n = 3000  (1567 treated, 52%)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True ATE             : 0.0532
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True CATE range      : [-0.0209, 0.1267]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Naive estimate       : 0.0461  (biased)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="ss1-cate-meta-learners-overview">
+<h2>SS1 – CATE &amp; Meta-Learners Overview<a class="headerlink" href="#ss1-cate-meta-learners-overview" title="Link to this heading">#</a></h2>
+<section id="what-it-is">
+<h3>What it is<a class="headerlink" href="#what-it-is" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>CATE: <span class="math notranslate nohighlight">\(\tau(x) = E[Y(1) - Y(0) \mid X=x]\)</span> – individual-level effect varying with features</p></li>
+<li><p>Meta-learners use any off-the-shelf ML model to estimate CATE</p></li>
+<li><p>Enables personalised policies: target the discount at users who <em>respond</em> to it</p></li>
+</ul>
+</section>
+<section id="assumptions-all-meta-learners">
+<h3>Assumptions (all meta-learners)<a class="headerlink" href="#assumptions-all-meta-learners" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Unconfoundedness</strong>: <span class="math notranslate nohighlight">\((Y(0), Y(1)) \perp T \mid X\)</span></p></li>
+<li><p><strong>Overlap</strong>: <span class="math notranslate nohighlight">\(0 &lt; P(T=1 \mid X) &lt; 1\)</span> for all X</p></li>
+<li><p><strong>SUTVA</strong>: no interference</p></li>
+</ul>
+</section>
+<section id="validation">
+<h3>Validation<a class="headerlink" href="#validation" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Overlap plot – propensity score distributions should overlap between groups</p></li>
+<li><p>AUUC (Area Under Uplift Curve) on held-out data</p></li>
+<li><p>GATES (Sorted Group ATE) – actual effect by predicted CATE decile should increase</p></li>
+</ul>
+</section>
+<section id="learner-comparison">
+<h3>Learner comparison<a class="headerlink" href="#learner-comparison" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Learner</p></th>
+<th class="head"><p>Best when</p></th>
+<th class="head"><p>Key limitation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>S-Learner</p></td>
+<td><p>Simple, small n</p></td>
+<td><p>Shrinks CATE toward 0 if T not given weight</p></td>
+</tr>
+<tr class="row-odd"><td><p>T-Learner</p></td>
+<td><p>Balanced groups</p></td>
+<td><p>Needs enough data in each arm</p></td>
+</tr>
+<tr class="row-even"><td><p>X-Learner</p></td>
+<td><p>Imbalanced arms</p></td>
+<td><p>Requires good base model per arm</p></td>
+</tr>
+<tr class="row-odd"><td><p>R-Learner</p></td>
+<td><p>Default – most robust</p></td>
+<td><p>Requires cross-fitting of nuisance models</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">ranger</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">patchwork</span><span class="p">)</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">X</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">age</span><span class="p">,</span><span class="w"> </span><span class="n">tenure</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">as.matrix</span><span class="p">()</span>
+
+<span class="c1"># S-Learner: single model with T as a feature</span>
+<span class="n">XT</span><span class="w">      </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cbind</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="p">)</span>
+<span class="n">s_model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ranger</span><span class="o">::</span><span class="nf">ranger</span><span class="p">(</span><span class="n">Y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">XT</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">)),</span>
+<span class="w">                           </span><span class="n">num.trees</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">300</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">42</span><span class="p">)</span>
+<span class="n">cate_s</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">s_model</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="o">=</span><span class="m">1</span><span class="p">)))</span><span class="o">$</span><span class="n">predictions</span><span class="w"> </span><span class="o">-</span>
+<span class="w">           </span><span class="nf">predict</span><span class="p">(</span><span class="n">s_model</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="o">=</span><span class="m">0</span><span class="p">)))</span><span class="o">$</span><span class="n">predictions</span>
+
+<span class="c1"># T-Learner: separate models per arm</span>
+<span class="n">m0</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ranger</span><span class="o">::</span><span class="nf">ranger</span><span class="p">(</span><span class="n">Y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="o">=</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">))[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">,],</span>
+<span class="w">                     </span><span class="n">num.trees</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">300</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">42</span><span class="p">)</span>
+<span class="n">m1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ranger</span><span class="o">::</span><span class="nf">ranger</span><span class="p">(</span><span class="n">Y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="o">=</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">))[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">,],</span>
+<span class="w">                     </span><span class="n">num.trees</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">300</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">42</span><span class="p">)</span>
+<span class="n">cate_t</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="n">X</span><span class="p">))</span><span class="o">$</span><span class="n">predictions</span><span class="w"> </span><span class="o">-</span>
+<span class="w">          </span><span class="nf">predict</span><span class="p">(</span><span class="n">m0</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="n">X</span><span class="p">))</span><span class="o">$</span><span class="n">predictions</span>
+
+<span class="n">corr_s</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cor</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">,</span><span class="w"> </span><span class="n">cate_s</span><span class="p">)</span>
+<span class="n">corr_t</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cor</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">,</span><span class="w"> </span><span class="n">cate_t</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;S-Learner corr with true CATE : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">corr_s</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;T-Learner corr with true CATE : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">corr_t</span><span class="p">))</span>
+
+<span class="c1"># Shared axis range for the scatter plots</span>
+<span class="n">lims</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">range</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">,</span><span class="w"> </span><span class="n">cate_s</span><span class="p">,</span><span class="w"> </span><span class="n">cate_t</span><span class="p">))</span>
+
+<span class="c1"># Histogram: CATE distribution</span>
+<span class="n">p_hist</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">true_cate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">),</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true_cate</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_histogram</span><span class="p">(</span><span class="n">bins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">40</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#7F8C8D&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;white&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.85</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span>
+<span class="w">             </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dashed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">annotate</span><span class="p">(</span><span class="s">&quot;text&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.005</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">Inf</span><span class="p">,</span>
+<span class="w">           </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;ATE=%.4f&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">)),</span>
+<span class="w">           </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;True CATE Distribution&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;CATE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Count&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="c1"># S-Learner scatter (no coord_equal -- use shared xlim/ylim instead)</span>
+<span class="n">p_s</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">true</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">,</span><span class="w"> </span><span class="n">est</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cate_s</span><span class="p">),</span>
+<span class="w">              </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">est</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.15</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#3498DB&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_abline</span><span class="p">(</span><span class="n">slope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">intercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dashed&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">xlim</span><span class="p">(</span><span class="n">lims</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">ylim</span><span class="p">(</span><span class="n">lims</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;S-Learner (corr=%.3f)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">corr_s</span><span class="p">),</span>
+<span class="w">       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;True CATE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Estimated CATE&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="c1"># T-Learner scatter</span>
+<span class="n">p_t</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">true</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">,</span><span class="w"> </span><span class="n">est</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cate_t</span><span class="p">),</span>
+<span class="w">              </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">est</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.15</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#2ECC71&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_abline</span><span class="p">(</span><span class="n">slope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">intercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dashed&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">xlim</span><span class="p">(</span><span class="n">lims</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">ylim</span><span class="p">(</span><span class="n">lims</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;T-Learner (corr=%.3f)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">corr_t</span><span class="p">),</span>
+<span class="w">       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;True CATE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Estimated CATE&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="c1"># Layout: histogram on top spanning full width, two scatters below</span>
+<span class="p">(</span><span class="n">p_hist</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">p_s</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p_t</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">plot_annotation</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;S-Learner vs T-Learner&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">theme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">11</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>S-Learner corr with true CATE : 0.719
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T-Learner corr with true CATE : 0.212
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/fbbec2f7b51728fb19c27b0e7747ef9eaf2bbd2c5d5a87df5406631b40090247.png"><img alt="../_images/fbbec2f7b51728fb19c27b0e7747ef9eaf2bbd2c5d5a87df5406631b40090247.png" src="../_images/fbbec2f7b51728fb19c27b0e7747ef9eaf2bbd2c5d5a87df5406631b40090247.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ss2-r-learner-robinson-decomposition">
+<h2>SS2 – R-Learner (Robinson Decomposition)<a class="headerlink" href="#ss2-r-learner-robinson-decomposition" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h3>What it is<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Residualises both outcome and treatment on covariates X</p></li>
+<li><p>Estimates CATE by regressing outcome residuals on treatment residuals</p></li>
+<li><p>Most statistically efficient meta-learner; the recommended default</p></li>
+</ul>
+</section>
+<section id="robinson-decomposition">
+<h3>Robinson decomposition<a class="headerlink" href="#robinson-decomposition" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[Y - m(X) = (T - e(X)) \cdot \tau(X) + \varepsilon\]</div>
+<p>Rearranging: <span class="math notranslate nohighlight">\(\hat\tau(X) = \text{argmin}_\tau \sum_i (T_i-\hat e(X_i))^2 \left(\frac{Y_i-\hat m(X_i)}{T_i-\hat e(X_i)} - \tau(X_i)\right)^2\)</span></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(m(x) = E[Y \mid X]\)</span> and <span class="math notranslate nohighlight">\(e(x) = E[T \mid X]\)</span> are <strong>nuisance</strong> functions estimated first</p></li>
+<li><p>Nuisances are estimated with <strong>cross-fitting</strong> (k-fold, predict on held-out fold) to
+avoid overfitting bias contaminating the CATE estimate</p></li>
+</ul>
+</section>
+<section id="reference">
+<h3>Reference<a class="headerlink" href="#reference" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Nie &amp; Wager (2021) on the R-learner; Chernozhukov et al. (2018) on DML</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">ranger</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">X_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">age</span><span class="p">,</span><span class="w"> </span><span class="n">tenure</span><span class="p">)</span>
+<span class="n">k</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5</span>
+<span class="n">folds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">rep</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">length.out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">df</span><span class="p">)))</span>
+
+<span class="n">m_hat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">numeric</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">df</span><span class="p">))</span><span class="w">   </span><span class="c1"># E[Y|X]</span>
+<span class="n">e_hat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">numeric</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">df</span><span class="p">))</span><span class="w">   </span><span class="c1"># E[T|X]</span>
+
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">fold</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">tr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">folds</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">fold</span><span class="p">;</span><span class="w"> </span><span class="n">va</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">folds</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">fold</span>
+<span class="w">  </span><span class="c1"># Nuisance: outcome model</span>
+<span class="w">  </span><span class="n">rf_y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ranger</span><span class="o">::</span><span class="nf">ranger</span><span class="p">(</span><span class="n">Y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">cbind</span><span class="p">(</span><span class="n">X_df</span><span class="p">[</span><span class="n">tr</span><span class="p">,],</span><span class="w"> </span><span class="n">Y</span><span class="o">=</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">tr</span><span class="p">]),</span>
+<span class="w">                          </span><span class="n">num.trees</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">42</span><span class="p">)</span>
+<span class="w">  </span><span class="n">m_hat</span><span class="p">[</span><span class="n">va</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">rf_y</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_df</span><span class="p">[</span><span class="n">va</span><span class="p">,])</span><span class="o">$</span><span class="n">predictions</span>
+<span class="w">  </span><span class="c1"># Nuisance: propensity model (T is binary -&gt; use classification)</span>
+<span class="w">  </span><span class="n">rf_t</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ranger</span><span class="o">::</span><span class="nf">ranger</span><span class="p">(</span><span class="bp">T</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">cbind</span><span class="p">(</span><span class="n">X_df</span><span class="p">[</span><span class="n">tr</span><span class="p">,],</span><span class="w"> </span><span class="bp">T</span><span class="o">=</span><span class="nf">factor</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="p">[</span><span class="n">tr</span><span class="p">])),</span>
+<span class="w">                          </span><span class="n">num.trees</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="n">probability</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">42</span><span class="p">)</span>
+<span class="w">  </span><span class="n">e_hat</span><span class="p">[</span><span class="n">va</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">rf_t</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_df</span><span class="p">[</span><span class="n">va</span><span class="p">,])</span><span class="o">$</span><span class="n">predictions</span><span class="p">[,</span><span class="s">&quot;1&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># R-learner CATE: pseudo-outcome / treatment residual, weighted regression</span>
+<span class="n">Y_res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">m_hat</span>
+<span class="n">T_res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">e_hat</span>
+<span class="n">pseudo_outcome</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">Y_res</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">T_res</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1e-6</span><span class="p">)</span><span class="w">   </span><span class="c1"># avoid divide-by-zero</span>
+<span class="n">weights</span><span class="w">        </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">T_res</span><span class="o">^</span><span class="m">2</span>
+
+<span class="n">cate_model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ranger</span><span class="o">::</span><span class="nf">ranger</span><span class="p">(</span><span class="n">pseudo</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">cbind</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span><span class="w"> </span><span class="n">pseudo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pseudo_outcome</span><span class="p">),</span>
+<span class="w">  </span><span class="n">num.trees</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">300</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">42</span><span class="p">,</span>
+<span class="w">  </span><span class="n">case.weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weights</span><span class="p">)</span>
+<span class="n">cate_r</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">cate_model</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_df</span><span class="p">)</span><span class="o">$</span><span class="n">predictions</span>
+<span class="n">corr_r</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cor</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">,</span><span class="w"> </span><span class="n">cate_r</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;R-Learner corr with true CATE : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">corr_r</span><span class="p">))</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">true</span><span class="o">=</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">,</span><span class="w"> </span><span class="n">est</span><span class="o">=</span><span class="n">cate_r</span><span class="p">),</span>
+<span class="w">             </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">true</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">est</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="m">0.2</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#9B59B6&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_abline</span><span class="p">(</span><span class="n">slope</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">intercept</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="o">=</span><span class="s">&quot;dashed&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">xlim</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">ylim</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">cate_r</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;R-Learner (corr=%.3f)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">corr_r</span><span class="p">),</span>
+<span class="w">       </span><span class="n">subtitle</span><span class="o">=</span><span class="s">&quot;Robinson decomposition&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;True CATE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">&quot;Estimated CATE&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="n">p2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">r_cate</span><span class="o">=</span><span class="n">cate_r</span><span class="p">),</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">age</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">r_cate</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="m">0.2</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#9B59B6&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_smooth</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s">&quot;lm&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">se</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">formula</span><span class="o">=</span><span class="n">y</span><span class="o">~</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;CATE increases with age&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">subtitle</span><span class="o">=</span><span class="s">&quot;Recovers true heterogeneity&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;Age&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">&quot;Estimated CATE&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">plot_layout</span><span class="p">(</span><span class="n">widths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">plot_annotation</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;R-Learner: Robinson Decomposition&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">theme</span><span class="o">=</span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">11</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>R-Learner corr with true CATE : 0.144
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/d883bca70b1407389d0c848117724c618feb742cefd8472ccf6291140f463512.png"><img alt="../_images/d883bca70b1407389d0c848117724c618feb742cefd8472ccf6291140f463512.png" src="../_images/d883bca70b1407389d0c848117724c618feb742cefd8472ccf6291140f463512.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ss3-double-machine-learning-doubleml">
+<h2>SS3 – Double Machine Learning (DoubleML)<a class="headerlink" href="#ss3-double-machine-learning-doubleml" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h3>What it is<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Framework for ATE/CATE using flexible ML for the nuisance functions</p></li>
+<li><p>Two nuisances: <span class="math notranslate nohighlight">\(m(x) = E[Y \mid X]\)</span> and <span class="math notranslate nohighlight">\(e(x) = E[T \mid X]\)</span></p></li>
+<li><p>Effect estimated from residuals: same Robinson decomposition as R-learner</p></li>
+<li><p>DML = R-learner specialised to a <em>constant</em> treatment effect (ATE)</p></li>
+</ul>
+</section>
+<section id="two-key-ideas">
+<h3>Two key ideas<a class="headerlink" href="#two-key-ideas" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Neyman orthogonality</strong>: the residual-on-residual score is insensitive to small
+errors in nuisance estimates – slow ML rates do not contaminate the effect estimate</p></li>
+<li><p><strong>Cross-fitting</strong>: nuisances fit on out-of-fold data, predict on held-out fold –
+removes overfitting bias from the effect estimate</p></li>
+</ul>
+</section>
+<section id="r-doubleml-package">
+<h3>R: <code class="docutils literal notranslate"><span class="pre">DoubleML</span></code> package<a class="headerlink" href="#r-doubleml-package" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">DoubleML::DoubleMLPLR</span></code> (Partially Linear Regression) is the direct R implementation
+of the Chernozhukov et al. (2018) DML estimator.</p>
+</section>
+<section id="id3">
+<h3>Reference<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Chernozhukov et al. (2018), <em>Double/Debiased Machine Learning for Treatment and Structural Parameters</em></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">DoubleML</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">mlr3</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">mlr3learners</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ranger</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">X_mat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">age</span><span class="p">,</span><span class="w"> </span><span class="n">tenure</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">as.matrix</span><span class="p">()</span>
+
+<span class="c1"># DoubleML requires the mlr3 ecosystem for learner specification</span>
+<span class="c1"># mlr3learners provides lrn() and the ranger integration</span>
+<span class="n">dml_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">DoubleMLData</span><span class="o">$</span><span class="nf">new</span><span class="p">(</span>
+<span class="w">  </span><span class="n">data</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">cbind</span><span class="p">(</span><span class="nf">as.data.frame</span><span class="p">(</span><span class="n">X_mat</span><span class="p">),</span><span class="w"> </span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="p">),</span>
+<span class="w">  </span><span class="n">y_col</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Y&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">d_cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;T&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">x_cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;age&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tenure&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Specify learners using mlr3 lrn()</span>
+<span class="n">lrn_y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lrn</span><span class="p">(</span><span class="s">&quot;regr.ranger&quot;</span><span class="p">,</span><span class="w">    </span><span class="n">num.trees</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">200</span><span class="p">)</span>
+<span class="n">lrn_t</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lrn</span><span class="p">(</span><span class="s">&quot;classif.ranger&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">num.trees</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">200</span><span class="p">)</span>
+
+<span class="c1"># Partially Linear Regression (PLR) -- the standard DML ATE estimator</span>
+<span class="n">dml_plr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">DoubleMLPLR</span><span class="o">$</span><span class="nf">new</span><span class="p">(</span>
+<span class="w">  </span><span class="n">dml_data</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ml_l</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">lrn_y</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ml_m</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">lrn_t</span><span class="p">,</span>
+<span class="w">  </span><span class="n">n_folds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">,</span>
+<span class="w">  </span><span class="n">score</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;partialling out&quot;</span>
+<span class="p">)</span>
+<span class="n">dml_plr</span><span class="o">$</span><span class="nf">fit</span><span class="p">()</span>
+
+<span class="n">dml_ate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dml_plr</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="s">&quot;T&quot;</span><span class="p">]</span>
+<span class="n">dml_ci</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dml_plr</span><span class="o">$</span><span class="nf">confint</span><span class="p">()</span>
+
+<span class="n">naive_ate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">])</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;True ATE            : %.4f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Naive diff-in-means : %.4f  (biased)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">naive_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;DoubleML PLR ATE    : %.4f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dml_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;95%% CI              : [%.4f, %.4f]\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dml_ci</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">dml_ci</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">]))</span>
+
+<span class="c1"># Residual-on-residual plot (uses nuisance estimates from the R-learner cell)</span>
+<span class="n">Y_res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">m_hat</span>
+<span class="n">T_res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">e_hat</span>
+<span class="n">ate_resid</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">T_res</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Y_res</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">T_res</span><span class="o">^</span><span class="m">2</span><span class="p">)</span>
+
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">Tr</span><span class="o">=</span><span class="n">T_res</span><span class="p">,</span><span class="w"> </span><span class="n">Yr</span><span class="o">=</span><span class="n">Y_res</span><span class="p">),</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Tr</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">Yr</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#16A085&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_smooth</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s">&quot;lm&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">formula</span><span class="o">=</span><span class="n">y</span><span class="o">~</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">se</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span>
+<span class="w">              </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">1.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">annotate</span><span class="p">(</span><span class="s">&quot;text&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="m">0.25</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="nf">min</span><span class="p">(</span><span class="n">Y_res</span><span class="p">)</span><span class="m">+0.05</span><span class="p">,</span>
+<span class="w">           </span><span class="n">label</span><span class="o">=</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;slope = ATE = %.4f&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ate_resid</span><span class="p">),</span>
+<span class="w">           </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fontface</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;DML: effect is the residual-on-residual slope&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;Treatment residual  T - e(X)&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">y</span><span class="o">=</span><span class="s">&quot;Outcome residual  Y - m(X)&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO  [21:21:15.899] [mlr3] Applying learner &#39;regr.ranger&#39; on task &#39;nuis_l&#39; (iter 1/5)
+INFO  [21:21:16.198] [mlr3] Applying learner &#39;regr.ranger&#39; on task &#39;nuis_l&#39; (iter 2/5)
+INFO  [21:21:16.468] [mlr3] Applying learner &#39;regr.ranger&#39; on task &#39;nuis_l&#39; (iter 3/5)
+INFO  [21:21:16.742] [mlr3] Applying learner &#39;regr.ranger&#39; on task &#39;nuis_l&#39; (iter 4/5)
+INFO  [21:21:17.013] [mlr3] Applying learner &#39;regr.ranger&#39; on task &#39;nuis_l&#39; (iter 5/5)
+INFO  [21:21:17.886] [mlr3] Applying learner &#39;classif.ranger&#39; on task &#39;nuis_m&#39; (iter 1/5)
+INFO  [21:21:18.238] [mlr3] Applying learner &#39;classif.ranger&#39; on task &#39;nuis_m&#39; (iter 2/5)
+INFO  [21:21:18.588] [mlr3] Applying learner &#39;classif.ranger&#39; on task &#39;nuis_m&#39; (iter 3/5)
+INFO  [21:21:18.937] [mlr3] Applying learner &#39;classif.ranger&#39; on task &#39;nuis_m&#39; (iter 4/5)
+INFO  [21:21:19.296] [mlr3] Applying learner &#39;classif.ranger&#39; on task &#39;nuis_m&#39; (iter 5/5)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True ATE            : 0.0532
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Naive diff-in-means : 0.0461  (biased)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DoubleML PLR ATE    : 0.0330
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>95% CI              : [0.0057, 0.0603]
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/370c641a7ffe97987714a961a93d55647e0e2973360134ce30fe4087c799a223.png"><img alt="../_images/370c641a7ffe97987714a961a93d55647e0e2973360134ce30fe4087c799a223.png" src="../_images/370c641a7ffe97987714a961a93d55647e0e2973360134ce30fe4087c799a223.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ss4-causal-forests-grf">
+<h2>SS4 – Causal Forests (grf)<a class="headerlink" href="#ss4-causal-forests-grf" title="Link to this heading">#</a></h2>
+<section id="id4">
+<h3>What it is<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Extends Random Forest to estimate CATE instead of outcomes</p></li>
+<li><p>Uses <strong>honest splitting</strong>: different samples to split and to estimate leaf effects</p></li>
+<li><p>Provides <strong>asymptotically valid confidence intervals</strong> for individual effects</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">grf::causal_forest()</span></code> is the original implementation (Athey &amp; Wager’s R package)</p></li>
+</ul>
+</section>
+<section id="key-differences-from-standard-random-forest">
+<h3>Key differences from standard Random Forest<a class="headerlink" href="#key-differences-from-standard-random-forest" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>Random Forest</p></th>
+<th class="head"><p>Causal Forest</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Target</p></td>
+<td><p>Outcome Y</p></td>
+<td><p>Treatment effect Y(1)-Y(0)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Splitting criterion</p></td>
+<td><p>Variance of Y</p></td>
+<td><p>Heterogeneity of treatment effect</p></td>
+</tr>
+<tr class="row-even"><td><p>Honest splitting</p></td>
+<td><p>No</p></td>
+<td><p>Yes – split/estimate on different samples</p></td>
+</tr>
+<tr class="row-odd"><td><p>Confidence intervals</p></td>
+<td><p>Bootstrap only</p></td>
+<td><p>Asymptotically valid (infinitesimal jackknife)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="cate-validation-without-ground-truth-blp-gates">
+<h3>CATE validation without ground truth (BLP / GATES)<a class="headerlink" href="#cate-validation-without-ground-truth-blp-gates" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>BLP (Best Linear Predictor)</strong>: regress outcome on estimated CATE – a positive slope
+confirms real heterogeneity is captured</p></li>
+<li><p><strong>GATES (Sorted Group ATE)</strong>: bucket units by predicted CATE decile, estimate actual
+ATE per bucket; buckets should be monotonically increasing</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>Reference<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Wager &amp; Athey (2018); Athey, Tibshirani &amp; Wager (2019) on Generalized Random Forests</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">grf</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">patchwork</span><span class="p">)</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">X_mat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">age</span><span class="p">,</span><span class="w"> </span><span class="n">tenure</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">as.matrix</span><span class="p">()</span>
+
+<span class="c1"># Fit causal forest</span>
+<span class="n">cf</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">grf</span><span class="o">::</span><span class="nf">causal_forest</span><span class="p">(</span>
+<span class="w">  </span><span class="n">X</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">X_mat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">Y</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">,</span>
+<span class="w">  </span><span class="n">W</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="p">,</span>
+<span class="w">  </span><span class="n">num.trees</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">,</span>
+<span class="w">  </span><span class="n">seed</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="m">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Point predictions and confidence intervals</span>
+<span class="n">cate_cf</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">cf</span><span class="p">,</span><span class="w"> </span><span class="n">estimate.variance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">tau_hat</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cate_cf</span><span class="o">$</span><span class="n">predictions</span>
+<span class="n">tau_se</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">(</span><span class="n">cate_cf</span><span class="o">$</span><span class="n">variance.estimates</span><span class="p">)</span>
+<span class="n">ci_lower</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tau_hat</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">tau_se</span>
+<span class="n">ci_upper</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tau_hat</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">tau_se</span>
+<span class="n">coverage</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">((</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">ci_lower</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">ci_upper</span><span class="p">))</span>
+<span class="n">corr_cf</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cor</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">,</span><span class="w"> </span><span class="n">tau_hat</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Causal Forest corr with true CATE : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">corr_cf</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;95%% CI empirical coverage          : %.1f%%  (target ~95%%)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">coverage</span><span class="o">*</span><span class="m">100</span><span class="p">))</span>
+
+<span class="c1"># Variable importance</span>
+<span class="n">vi</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">grf</span><span class="o">::</span><span class="nf">variable_importance</span><span class="p">(</span><span class="n">cf</span><span class="p">)</span>
+<span class="n">vi_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">feature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;age&quot;</span><span class="p">,</span><span class="s">&quot;tenure&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">importance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">vi</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nVariable importance for treatment effect heterogeneity:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">vi_df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">importance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">importance</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">importance</span><span class="p">)))</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">true</span><span class="o">=</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">,</span><span class="w"> </span><span class="n">est</span><span class="o">=</span><span class="n">tau_hat</span><span class="p">),</span>
+<span class="w">             </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">true</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">est</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="m">0.2</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#3498DB&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_abline</span><span class="p">(</span><span class="n">slope</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">intercept</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="o">=</span><span class="s">&quot;dashed&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">xlim</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">ylim</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">tau_hat</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Causal Forest (corr=%.3f)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">corr_cf</span><span class="p">),</span>
+<span class="w">       </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;True CATE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">&quot;Estimated CATE&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="c1"># CI coverage plot (sample of 200 units sorted by estimate)</span>
+<span class="n">ord</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="n">tau_hat</span><span class="p">)[</span><span class="nf">seq</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">df</span><span class="p">),</span><span class="w"> </span><span class="n">length.out</span><span class="o">=</span><span class="m">200</span><span class="p">)]</span>
+<span class="n">ci_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="n">est</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tau_hat</span><span class="p">[</span><span class="n">ord</span><span class="p">],</span><span class="w"> </span><span class="n">lo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ci_lower</span><span class="p">[</span><span class="n">ord</span><span class="p">],</span>
+<span class="w">  </span><span class="n">hi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ci_upper</span><span class="p">[</span><span class="n">ord</span><span class="p">],</span><span class="w"> </span><span class="n">true</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">[</span><span class="n">ord</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">p2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">ci_df</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">idx</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_ribbon</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">ymin</span><span class="o">=</span><span class="n">lo</span><span class="p">,</span><span class="w"> </span><span class="n">ymax</span><span class="o">=</span><span class="n">hi</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="o">=</span><span class="m">0.25</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="s">&quot;#3498DB&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">est</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#3498DB&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">0.8</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">true</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="o">=</span><span class="s">&quot;dashed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">0.8</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;CATE with 95%% CI (coverage=%.1f%%)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">coverage</span><span class="o">*</span><span class="m">100</span><span class="p">),</span>
+<span class="w">       </span><span class="n">subtitle</span><span class="o">=</span><span class="s">&quot;Blue=estimated, Red=true&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;Unit (sorted by estimated CATE)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">&quot;CATE&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">plot_annotation</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Causal Forest: CATE with Confidence Intervals&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">theme</span><span class="o">=</span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">11</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Causal Forest corr with true CATE : 0.687
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>95% CI empirical coverage          : 89.4%  (target ~95%)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Variable importance for treatment effect heterogeneity:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 2 × 2
+  feature importance
+  &lt;chr&gt;        &lt;dbl&gt;
+1 age          0.639
+2 tenure       0.361
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/ff2bc639c040e8795dacb40b30363fa05fd8f9f8f289b432f6120a27ce8cd995.png"><img alt="../_images/ff2bc639c040e8795dacb40b30363fa05fd8f9f8f289b432f6120a27ce8cd995.png" src="../_images/ff2bc639c040e8795dacb40b30363fa05fd8f9f8f289b432f6120a27ce8cd995.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">grf</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">patchwork</span><span class="p">)</span>
+
+<span class="c1"># BLP and GATES validation -- no ground truth needed</span>
+<span class="c1"># BLP: regress on the estimated CATE to check for real heterogeneity</span>
+<span class="n">blp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">best_linear_projection</span><span class="p">(</span><span class="n">cf</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_mat</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Best Linear Projection (BLP):\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">blp</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nA positive, significant coefficient on &#39;age&#39; or &#39;tenure&#39; confirms\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;that causal forest captured real heterogeneity driven by those features.\n\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># GATES: actual uplift by predicted CATE decile</span>
+<span class="n">tau_decile</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ntile</span><span class="p">(</span><span class="n">tau_hat</span><span class="p">,</span><span class="w"> </span><span class="m">10</span><span class="p">)</span>
+<span class="n">gates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sapply</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">mask</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tau_decile</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">d</span>
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">==</span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">==</span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">mask</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">mask</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">])</span>
+<span class="w">  </span><span class="kr">else</span><span class="w"> </span><span class="kc">NA</span>
+<span class="p">})</span>
+
+<span class="n">gates_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">decile</span><span class="o">=</span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">actual_uplift</span><span class="o">=</span><span class="n">gates</span><span class="p">)</span>
+<span class="n">p_gates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">gates_df</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">decile</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">actual_uplift</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="n">actual_uplift</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_col</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="m">0.85</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;white&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_hline</span><span class="p">(</span><span class="n">yintercept</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="o">=</span><span class="s">&quot;dashed&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_fill_gradient2</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mid</span><span class="o">=</span><span class="s">&quot;#F39C12&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">high</span><span class="o">=</span><span class="s">&quot;#2ECC71&quot;</span><span class="p">,</span>
+<span class="w">                       </span><span class="n">midpoint</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">guide</span><span class="o">=</span><span class="s">&quot;none&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_x_continuous</span><span class="p">(</span><span class="n">breaks</span><span class="o">=</span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;GATES: Uplift by CATE Decile&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">subtitle</span><span class="o">=</span><span class="s">&quot;Monotone increase = good ranking&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;Predicted CATE decile (1=lowest, 10=highest)&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">y</span><span class="o">=</span><span class="s">&quot;Actual uplift (E[Y|T=1] - E[Y|T=0])&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="n">p_vi</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">vi_df</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nf">reorder</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span><span class="w"> </span><span class="n">importance</span><span class="p">),</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">importance</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="n">feature</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_col</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="m">0.85</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_text</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="nf">round</span><span class="p">(</span><span class="n">importance</span><span class="p">,</span><span class="m">3</span><span class="p">)),</span><span class="w"> </span><span class="n">hjust</span><span class="o">=</span><span class="m">-0.1</span><span class="p">,</span><span class="w"> </span><span class="n">fontface</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;#3498DB&quot;</span><span class="p">,</span><span class="s">&quot;#2ECC71&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">guide</span><span class="o">=</span><span class="s">&quot;none&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Variable Importance (CATE)&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">subtitle</span><span class="o">=</span><span class="s">&quot;Drives CATE variation?&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="o">=</span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">&quot;Importance&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="n">p_gates</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p_vi</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">plot_annotation</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Causal Forest Validation&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">theme</span><span class="o">=</span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">11</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Best Linear Projection (BLP):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Best linear projection of the conditional average treatment effect.
+Confidence intervals are cluster- and heteroskedasticity-robust (HC3):
+
+               Estimate  Std. Error t value  Pr(&gt;|t|)    
+(Intercept) -0.14784652  0.04791872 -3.0854 0.0020516 ** 
+age          0.00376392  0.00097500  3.8604 0.0001156 ***
+tenure       0.00086775  0.00078967  1.0989 0.2719075    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A positive, significant coefficient on &#39;age&#39; or &#39;tenure&#39; confirms
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>that causal forest captured real heterogeneity driven by those features.
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/6bd5ef6e5b4e497220ccb60502685b470ce139f6ad7ca2e2849f451ffc8a1dfa.png"><img alt="../_images/6bd5ef6e5b4e497220ccb60502685b470ce139f6ad7ca2e2849f451ffc8a1dfa.png" src="../_images/6bd5ef6e5b4e497220ccb60502685b470ce139f6ad7ca2e2849f451ffc8a1dfa.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ss5-uplift-modeling-qini">
+<h2>SS5 – Uplift Modeling &amp; Qini<a class="headerlink" href="#ss5-uplift-modeling-qini" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h3>What it is<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Uplift modeling = CATE estimation for binary outcomes, industry vocabulary</p></li>
+<li><p>Rank users by predicted CATE (uplift score), target the top users for treatment</p></li>
+<li><p>Key insight: target <em>persuadables</em> (positive CATE), avoid <em>do-not-disturb</em> (negative CATE)</p></li>
+</ul>
+</section>
+<section id="the-four-segments">
+<h3>The four segments<a class="headerlink" href="#the-four-segments" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Segment</p></th>
+<th class="head"><p>Without treatment</p></th>
+<th class="head"><p>With treatment</p></th>
+<th class="head"><p>CATE</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Persuadables</p></td>
+<td><p>Won’t convert</p></td>
+<td><p>Will convert</p></td>
+<td><p>&gt; 0</p></td>
+<td><p>TARGET</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sure Things</p></td>
+<td><p>Will convert</p></td>
+<td><p>Will convert</p></td>
+<td><p>~0</p></td>
+<td><p>SKIP</p></td>
+</tr>
+<tr class="row-even"><td><p>Lost Causes</p></td>
+<td><p>Won’t convert</p></td>
+<td><p>Won’t convert</p></td>
+<td><p>~0</p></td>
+<td><p>SKIP</p></td>
+</tr>
+<tr class="row-odd"><td><p>Do Not Disturb</p></td>
+<td><p>Will convert</p></td>
+<td><p>Won’t convert</p></td>
+<td><p>&lt; 0</p></td>
+<td><p>AVOID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="qini-coefficient">
+<h3>Qini coefficient<a class="headerlink" href="#qini-coefficient" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Rank users by predicted uplift, plot cumulative actual uplift vs fraction targeted</p></li>
+<li><p>Qini = area between the model curve and the random diagonal</p></li>
+<li><p>Qini = 0: random model. Qini = 1: perfect model. Qini &lt; 0: worse than random</p></li>
+</ul>
+</section>
+<section id="formula">
+<h3>Formula<a class="headerlink" href="#formula" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\text{Qini}(\varphi) = Y_T(\varphi) - Y_C(\varphi) \cdot \frac{N_T}{N_C}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">patchwork</span><span class="p">)</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+
+<span class="c1"># Use causal forest predictions as uplift scores</span>
+<span class="c1"># Train/test split</span>
+<span class="n">n_test</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1000</span>
+<span class="n">test_idx</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">df</span><span class="p">),</span><span class="w"> </span><span class="n">n_test</span><span class="p">)</span>
+<span class="n">train_idx</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">setdiff</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="nf">nrow</span><span class="p">(</span><span class="n">df</span><span class="p">),</span><span class="w"> </span><span class="n">test_idx</span><span class="p">)</span>
+
+<span class="n">X_mat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">age</span><span class="p">,</span><span class="w"> </span><span class="n">tenure</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">as.matrix</span><span class="p">()</span>
+<span class="n">cf_train</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">grf</span><span class="o">::</span><span class="nf">causal_forest</span><span class="p">(</span>
+<span class="w">  </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_mat</span><span class="p">[</span><span class="n">train_idx</span><span class="p">,],</span><span class="w"> </span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span>
+<span class="w">  </span><span class="n">num.trees</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">500</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">42</span>
+<span class="p">)</span>
+<span class="n">uplift_score</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">cf_train</span><span class="p">,</span><span class="w"> </span><span class="n">newdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_mat</span><span class="p">[</span><span class="n">test_idx</span><span class="p">,])</span><span class="o">$</span><span class="n">predictions</span>
+<span class="n">T_te</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="p">[</span><span class="n">test_idx</span><span class="p">];</span><span class="w"> </span><span class="n">Y_te</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span>
+<span class="n">true_cate_te</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span>
+
+<span class="c1"># Four segments by true CATE</span>
+<span class="n">base_p</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">pmax</span><span class="p">(</span><span class="nf">pmin</span><span class="p">(</span><span class="m">0.10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.001</span><span class="o">*</span><span class="n">df</span><span class="o">$</span><span class="n">tenure</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">0.0005</span><span class="o">*</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">age</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span><span class="m">-40</span><span class="p">),</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="n">trt_p</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">pmin</span><span class="p">(</span><span class="n">base_p</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">true_cate_te</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="n">threshold</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">median</span><span class="p">(</span><span class="n">base_p</span><span class="p">)</span>
+<span class="n">seg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">  </span><span class="n">base_p</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">trt_p</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Persuadable&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">base_p</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">trt_p</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Sure Thing&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">base_p</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">trt_p</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Lost Cause&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Do Not Disturb&quot;</span>
+<span class="p">)</span>
+
+<span class="n">seg_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">segment</span><span class="o">=</span><span class="n">seg</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">pct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="n">segment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Persuadable&quot;</span><span class="p">,</span><span class="s">&quot;Sure Thing&quot;</span><span class="p">,</span><span class="s">&quot;Lost Cause&quot;</span><span class="p">,</span><span class="s">&quot;Do Not Disturb&quot;</span><span class="p">)))</span>
+<span class="n">p1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">seg_df</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">segment</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">pct</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="n">segment</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_col</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="m">0.85</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_text</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">scales</span><span class="o">::</span><span class="nf">percent</span><span class="p">(</span><span class="n">pct</span><span class="p">,</span><span class="m">1</span><span class="p">)),</span><span class="w"> </span><span class="n">vjust</span><span class="o">=</span><span class="m">-0.4</span><span class="p">,</span><span class="w"> </span><span class="n">fontface</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;#2ECC71&quot;</span><span class="p">,</span><span class="s">&quot;#F39C12&quot;</span><span class="p">,</span><span class="s">&quot;#AEB6BF&quot;</span><span class="p">,</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">guide</span><span class="o">=</span><span class="s">&quot;none&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_y_continuous</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">scales</span><span class="o">::</span><span class="n">percent</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Four Uplift Segments&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">&quot;% of users&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="c1"># Qini curve</span>
+<span class="n">qini_curve</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">uplift</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">ord</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="n">uplift</span><span class="p">,</span><span class="w"> </span><span class="n">decreasing</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="n">T_s</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="bp">T</span><span class="p">[</span><span class="n">ord</span><span class="p">];</span><span class="w"> </span><span class="n">Y_s</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">Y</span><span class="p">[</span><span class="n">ord</span><span class="p">];</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="bp">T</span><span class="p">)</span>
+<span class="w">  </span><span class="n">nt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="bp">T</span><span class="p">);</span><span class="w"> </span><span class="n">nc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="m">1</span><span class="o">-</span><span class="bp">T</span><span class="p">)</span>
+<span class="w">  </span><span class="n">cum_ty</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cumsum</span><span class="p">(</span><span class="n">Y_s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">T_s</span><span class="p">);</span><span class="w"> </span><span class="n">cum_cy</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cumsum</span><span class="p">(</span><span class="n">Y_s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="o">-</span><span class="n">T_s</span><span class="p">))</span>
+<span class="w">  </span><span class="n">fracs</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">n</span>
+<span class="w">  </span><span class="n">qini</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cum_ty</span><span class="o">/</span><span class="n">nt</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cum_cy</span><span class="o">/</span><span class="n">nc</span>
+<span class="w">  </span><span class="nf">list</span><span class="p">(</span><span class="n">fracs</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">fracs</span><span class="p">),</span><span class="w"> </span><span class="n">qini</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">qini</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">fracs</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="n">qc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qini_curve</span><span class="p">(</span><span class="n">uplift_score</span><span class="p">,</span><span class="w"> </span><span class="n">T_te</span><span class="p">,</span><span class="w"> </span><span class="n">Y_te</span><span class="p">)</span>
+<span class="n">qc_rand</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qini_curve</span><span class="p">(</span><span class="nf">runif</span><span class="p">(</span><span class="n">n_test</span><span class="p">),</span><span class="w"> </span><span class="n">T_te</span><span class="p">,</span><span class="w"> </span><span class="n">Y_te</span><span class="p">)</span>
+<span class="n">qini_coef</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">pracma</span><span class="o">::</span><span class="nf">trapz</span><span class="p">(</span><span class="n">qc</span><span class="o">$</span><span class="n">fracs</span><span class="p">,</span><span class="w"> </span><span class="n">qc</span><span class="o">$</span><span class="n">qini</span><span class="p">)</span>
+
+<span class="n">p2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">()</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">qc</span><span class="o">$</span><span class="n">fracs</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">qc</span><span class="o">$</span><span class="n">qini</span><span class="p">),</span>
+<span class="w">            </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#3498DB&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">1.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">qc_rand</span><span class="o">$</span><span class="n">fracs</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">qc_rand</span><span class="o">$</span><span class="n">qini</span><span class="p">),</span>
+<span class="w">            </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#AEB6BF&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="o">=</span><span class="s">&quot;dashed&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_x_continuous</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">scales</span><span class="o">::</span><span class="n">percent</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Qini Curve (Qini coef = %.4f)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">qini_coef</span><span class="p">),</span>
+<span class="w">       </span><span class="n">subtitle</span><span class="o">=</span><span class="s">&quot;Above diagonal = better than random&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;Fraction of population targeted&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">&quot;Cumulative uplift&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">plot_annotation</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Uplift Modeling: Segments and Qini Curve&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">theme</span><span class="o">=</span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">11</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/aa44040d15aa362a94586e53ed6d18c48d5cf01294902498fb27bf6732728b64.png"><img alt="../_images/aa44040d15aa362a94586e53ed6d18c48d5cf01294902498fb27bf6732728b64.png" src="../_images/aa44040d15aa362a94586e53ed6d18c48d5cf01294902498fb27bf6732728b64.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ss6-policy-learning">
+<h2>SS6 – Policy Learning<a class="headerlink" href="#ss6-policy-learning" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h3>What it is<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Uplift score tells you <em>who</em> responds – policy learning turns that into a <em>decision rule</em></p></li>
+<li><p>Decision rule: treat unit x iff <span class="math notranslate nohighlight">\(\tau(x) &gt; c/v\)</span> where <span class="math notranslate nohighlight">\(c\)</span> = treatment cost, <span class="math notranslate nohighlight">\(v\)</span> = conversion value</p></li>
+<li><p>Under a budget B, treat the top-scoring units until B is exhausted</p></li>
+</ul>
+</section>
+<section id="policy-value-estimation">
+<h3>Policy value estimation<a class="headerlink" href="#policy-value-estimation" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Estimate the value of a targeting policy on a <strong>holdout</strong> set using IPW or AIPW</p></li>
+<li><p>Never estimate policy value on training data – overfits to noise in CATE estimates</p></li>
+</ul>
+</section>
+<section id="id8">
+<h3>Reference<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Athey &amp; Wager (2021) on policy learning</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+
+<span class="c1"># Policy: treat users where estimated CATE &gt; cost/value threshold</span>
+<span class="n">cost_per_treatment</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5</span><span class="w">     </span><span class="c1"># e.g. $5 discount</span>
+<span class="n">value_per_convert</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">50</span><span class="w">    </span><span class="c1"># e.g. $50 purchase value</span>
+<span class="n">threshold</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cost_per_treatment</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">value_per_convert</span><span class="w">   </span><span class="c1"># 0.10 pp CATE</span>
+
+<span class="c1"># Assign policy: treat if uplift_score &gt; threshold</span>
+<span class="n">policy</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">uplift_score</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">threshold</span><span class="p">)</span>
+
+<span class="c1"># Estimate policy value on holdout using IPW</span>
+<span class="n">ps_te</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="nf">glm</span><span class="p">(</span><span class="bp">T</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">tenure</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">train_idx</span><span class="p">,],</span><span class="w"> </span><span class="n">family</span><span class="o">=</span><span class="n">binomial</span><span class="p">),</span>
+<span class="w">                   </span><span class="n">newdata</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">test_idx</span><span class="p">,],</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s">&quot;response&quot;</span><span class="p">)</span>
+<span class="n">ipw_val</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">policy</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">ps_te</span><span class="w"> </span><span class="o">-</span>
+<span class="w">                           </span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="o">-</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="o">-</span><span class="n">ps_te</span><span class="p">)))</span>
+
+<span class="c1"># Comparison: random policy (treat 50%), always treat, optimal policy</span>
+<span class="n">frac_treated</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Policy threshold : CATE &gt; %.3f (cost/value = %d/%d)\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">threshold</span><span class="p">,</span><span class="w"> </span><span class="n">cost_per_treatment</span><span class="p">,</span><span class="w"> </span><span class="n">value_per_convert</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Fraction treated : %.1f%%\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">frac_treated</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Avg true CATE for treated : %.4f\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">[</span><span class="n">test_idx</span><span class="p">][</span><span class="n">policy</span><span class="o">==</span><span class="m">1</span><span class="p">])))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Avg true CATE for untreated : %.4f\n&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">[</span><span class="n">test_idx</span><span class="p">][</span><span class="n">policy</span><span class="o">==</span><span class="m">0</span><span class="p">])))</span>
+
+<span class="c1"># Budget vs value curve: plot policy value at each CATE threshold</span>
+<span class="n">thresholds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">uplift_score</span><span class="p">,</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.9</span><span class="p">,</span><span class="w"> </span><span class="m">0.05</span><span class="p">))</span>
+<span class="n">policy_df</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">purrr</span><span class="o">::</span><span class="nf">map_dfr</span><span class="p">(</span><span class="n">thresholds</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">thresh</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pol</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">uplift_score</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">thresh</span><span class="p">)</span>
+<span class="w">  </span><span class="n">avg_cate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">if</span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="n">pol</span><span class="p">)</span><span class="o">&gt;</span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">true_cate</span><span class="p">[</span><span class="n">test_idx</span><span class="p">][</span><span class="n">pol</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="kc">NA</span>
+<span class="w">  </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">thresh</span><span class="p">,</span><span class="w"> </span><span class="n">frac_treated</span><span class="o">=</span><span class="nf">mean</span><span class="p">(</span><span class="n">pol</span><span class="p">),</span><span class="w"> </span><span class="n">avg_cate_treated</span><span class="o">=</span><span class="n">avg_cate</span><span class="p">)</span>
+<span class="p">})</span>
+
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">policy_df</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">frac_treated</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">avg_cate_treated</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#9B59B6&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">1.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#9B59B6&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_hline</span><span class="p">(</span><span class="n">yintercept</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="o">=</span><span class="s">&quot;dashed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">annotate</span><span class="p">(</span><span class="s">&quot;text&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">threshold</span><span class="m">+0.003</span><span class="p">,</span>
+<span class="w">           </span><span class="n">label</span><span class="o">=</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Break-even: CATE &gt; %.2f&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">threshold</span><span class="p">),</span>
+<span class="w">           </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fontface</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">3.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_x_continuous</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">scales</span><span class="o">::</span><span class="n">percent</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Policy Learning: CATE vs Budget&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">subtitle</span><span class="o">=</span><span class="s">&quot;Fewer high-CATE users = better ROI&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;Fraction of users treated (budget)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">&quot;Avg CATE of targeted users&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Policy threshold : CATE &gt; 0.100 (cost/value = 5/50)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Fraction treated : 14.8%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Avg true CATE for treated : 0.0915
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Avg true CATE for untreated : 0.0470
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/e0d9bd752f465ac188889d857c2b2ad6eafaf226dfcc62c50fda3d0ca6a2774e.png"><img alt="../_images/e0d9bd752f465ac188889d857c2b2ad6eafaf226dfcc62c50fda3d0ca6a2774e.png" src="../_images/e0d9bd752f465ac188889d857c2b2ad6eafaf226dfcc62c50fda3d0ca6a2774e.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="method-comparison">
+<h2>Method Comparison<a class="headerlink" href="#method-comparison" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Estimates</p></th>
+<th class="head"><p>R package</p></th>
+<th class="head"><p>Key strength</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>S-Learner</p></td>
+<td><p>CATE</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ranger</span></code> / <code class="docutils literal notranslate"><span class="pre">xgboost</span></code></p></td>
+<td><p>Simple, one model</p></td>
+</tr>
+<tr class="row-odd"><td><p>T-Learner</p></td>
+<td><p>CATE</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ranger</span></code> / <code class="docutils literal notranslate"><span class="pre">xgboost</span></code></p></td>
+<td><p>Flexible per-arm models</p></td>
+</tr>
+<tr class="row-even"><td><p>R-Learner</p></td>
+<td><p>CATE</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ranger</span></code> + manual cross-fit</p></td>
+<td><p>Statistically efficient</p></td>
+</tr>
+<tr class="row-odd"><td><p>DoubleML PLR</p></td>
+<td><p>ATE</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DoubleML</span></code></p></td>
+<td><p>Robust ATE with valid CI</p></td>
+</tr>
+<tr class="row-even"><td><p>Causal Forest</p></td>
+<td><p>CATE + CI</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">grf</span></code></p></td>
+<td><p>Valid CIs, variable importance, BLP/GATES</p></td>
+</tr>
+<tr class="row-odd"><td><p>Uplift + Qini</p></td>
+<td><p>Targeting</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">grf</span></code> / manual</p></td>
+<td><p>Production targeting and evaluation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="interview-q-a">
+<h3>Interview Q&amp;A<a class="headerlink" href="#interview-q-a" title="Link to this heading">#</a></h3>
+<p><strong>S-Learner vs T-Learner?</strong>
+T-Learner is better when treatment effect is heterogeneous and groups are balanced.
+S-Learner is better when n is small or the effect is weak (pooling increases n).
+T-Learner fails with very imbalanced treatment groups – use X-Learner then.</p>
+<p><strong>What is honest splitting and why does it matter?</strong>
+Standard trees use the same data to choose splits AND estimate leaf values – this overfits.
+Honest splitting uses one half to find splits, another to estimate leaf effects.
+Without honesty, confidence intervals are too narrow and coverage fails.</p>
+<p><strong>How do you evaluate CATE without ground truth?</strong>
+BLP: regress outcomes on estimated CATE – a positive slope confirms real heterogeneity.
+GATES: sort by predicted CATE, estimate actual uplift per decile – should increase monotonically.
+Both are honest: they use a holdout set and do not require knowing true tau(x).</p>
+<p><strong>How do you set a treatment threshold for policy learning?</strong>
+Treat iff CATE &gt; cost/value. Under a budget B, treat the top-k users by CATE.
+Estimate the policy value on a holdout using IPW/AIPW – never on training data.</p>
+</section>
+<section id="gotchas">
+<h3>Gotchas<a class="headerlink" href="#gotchas" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>CATE estimates can be negative – do-not-disturb users should be excluded from targeting</p></li>
+<li><p>Qini on training data is always optimistic – always evaluate on holdout</p></li>
+<li><p>Causal forest needs enough treated AND control in each leaf – check overlap first</p></li>
+<li><p>DoubleML requires cross-fitting – never fit nuisance models on the full dataset</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./Causal ML"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="cml3_observational.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">How do you estimate causal effects from observational data?</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

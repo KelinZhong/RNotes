@@ -1,0 +1,1397 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Data Manipulation — Basic &#8212; Data Science Study Notes - R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Data Manipulation/DM_Basic';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Manipulation — Intermediate" href="DM_Intermediate.html" />
+    <link rel="prev" title="dplyr – Technical Reference" href="Reference_dplyr.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Data Science Study Notes - R</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Topics
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Causal%20ML/cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Causal%20ML/cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Reference_BaseR.html">Base R — Technical Reference</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="Reference_dplyr.html">dplyr – Technical Reference</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Manipulation — Basic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DM_Intermediate.html">Data Manipulation — Intermediate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DM_Advanced.html">Data Manipulation — Advanced</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics_R.html">Business Metrics — R Reference</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-cleaning-quality-control-r">Data Cleaning &amp; Quality Control (R)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decision-table">Decision Table</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#series-map">Series Map</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#audit-a-new-dataset">§1 — Audit a New Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fix-types">§2 — Fix Types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#handle-missing-values">§3 — Handle Missing Values</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#handle-duplicates">§4 — Handle Duplicates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fix-string-categorical-inconsistencies">§5 — Fix String &amp; Categorical Inconsistencies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#handle-outliers">§6 — Handle Outliers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clean-column-names">§7 — Clean Column Names</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decision-guide">Decision Guide</a></li>
+</ul>
+  </nav></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../intro.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="R_Data_Libs.html" class="nav-link">R Data Libraries</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Data Manipulation — Basic</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="data-manipulation-basic">
+<h1>Data Manipulation — Basic<a class="headerlink" href="#data-manipulation-basic" title="Link to this heading">#</a></h1>
+<section id="data-cleaning-quality-control-r">
+<h2>Data Cleaning &amp; Quality Control (R)<a class="headerlink" href="#data-cleaning-quality-control-r" title="Link to this heading">#</a></h2>
+<p><strong>Philosophy:</strong> This note is pattern-first, not syntax-first. It assumes you know
+the tidyverse API. Each section answers: <em>you have data that looks like X — here
+is the full pipeline to fix it.</em></p>
+</section>
+<hr class="docutils" />
+<section id="decision-table">
+<h2>Decision Table<a class="headerlink" href="#decision-table" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>If your data has…</p></th>
+<th class="head text-left"><p>Go to</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Unknown shape, types, or quality</p></td>
+<td class="text-left"><p>§1 — Audit</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Dates as strings, IDs as doubles, booleans as character</p></td>
+<td class="text-left"><p>§2 — Fix types</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Missing values and unsure what to do</p></td>
+<td class="text-left"><p>§3 — Missing Values</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Suspected duplicate rows</p></td>
+<td class="text-left"><p>§4 — Duplicates</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Inconsistent category labels (<code class="docutils literal notranslate"><span class="pre">&quot;US&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;us&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;</span> <span class="pre">USA</span> <span class="pre">&quot;</span></code>)</p></td>
+<td class="text-left"><p>§5 — String &amp; Categorical</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Extreme values distorting results</p></td>
+<td class="text-left"><p>§6 — Outliers</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Column names with spaces, caps, or special characters</p></td>
+<td class="text-left"><p>§7 — Column Names</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="series-map">
+<h2>Series Map<a class="headerlink" href="#series-map" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Notebook</p></th>
+<th class="head text-left"><p>Use it for</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Basic</span></code> <strong>(this note)</strong></p></td>
+<td class="text-left"><p>Cleaning &amp; QC — audit, types, nulls, dupes, strings, outliers, column names</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Intermediate</span></code></p></td>
+<td class="text-left"><p>Reshaping &amp; combining — wide/long, group-by, multi-table joins, time-series, nested, many files</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Advanced</span></code></p></td>
+<td class="text-left"><p>Feature engineering — encoding, transforms, binning, date, lag/window, interactions, text, leakage</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Reference_Tidyverse</span> <span class="pre">/</span> <span class="pre">Reference_BaseR</span></code></p></td>
+<td class="text-left"><p>Syntax lookups for individual functions</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<div><p><strong>Environment:</strong> R 4.x / tidyverse 2.x. dplyr verbs always return a <strong>new</strong> object
+— there is no <code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>-style trap and no copy-on-write subtlety to manage;
+every <code class="docutils literal notranslate"><span class="pre">df</span> <span class="pre">&lt;-</span> <span class="pre">df</span> <span class="pre">|&gt;</span> <span class="pre">mutate(...)</span></code> is already explicit and safe. A sample frame is
+defined below so the patterns are runnable.</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">tidyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span>
+
+<span class="c1"># Sample messy frame to run the cleaning patterns against.</span>
+<span class="c1"># Replace with your own:  df &lt;- readr::read_csv(&#39;data.csv&#39;)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">),</span>
+<span class="w">  </span><span class="n">event_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;2024-01-05&#39;</span><span class="p">,</span><span class="s">&#39;2024-01-06&#39;</span><span class="p">,</span><span class="s">&#39;2024/01/07&#39;</span><span class="p">,</span><span class="s">&#39;08-01-2024&#39;</span><span class="p">,</span><span class="s">&#39;08-01-2024&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">),</span>
+<span class="w">  </span><span class="n">age</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">34</span><span class="p">,</span><span class="w"> </span><span class="m">28</span><span class="p">,</span><span class="w"> </span><span class="m">-5</span><span class="p">,</span><span class="w"> </span><span class="m">41</span><span class="p">,</span><span class="w"> </span><span class="m">41</span><span class="p">,</span><span class="w"> </span><span class="m">130</span><span class="p">),</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;$1,200&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;950&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;2,000&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;2,000&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;15&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">country</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;US&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39; us &#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;USA&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Canada&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Canada&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;cnaada&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">platform</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;iOS&#39;</span><span class="p">,</span><span class="s">&#39;Android&#39;</span><span class="p">,</span><span class="s">&#39;Web&#39;</span><span class="p">,</span><span class="s">&#39;iOS&#39;</span><span class="p">,</span><span class="s">&#39;iOS&#39;</span><span class="p">,</span><span class="s">&#39;Web&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘lubridate’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    date, intersect, setdiff, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 6 × 6
+  user_id event_date   age revenue  country  platform
+    &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   
+1       1 2024-01-05    34 &quot;$1,200&quot; &quot;US&quot;     iOS     
+2       2 2024-01-06    28 &quot;950&quot;    &quot; us &quot;   Android 
+3       3 2024/01/07    -<span class=" -Color -Color-Red">5</span> &quot;&quot;       &quot;USA&quot;    Web     
+4       4 08-01-2024    41 &quot;2,000&quot;  &quot;Canada&quot; iOS     
+5       4 08-01-2024    41 &quot;2,000&quot;  &quot;Canada&quot; iOS     
+6       5 <span class=" -Color -Color-Red">NA</span>           130 &quot;15&quot;     &quot;cnaada&quot; Web     
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="audit-a-new-dataset">
+<h2>§1 — Audit a New Dataset<a class="headerlink" href="#audit-a-new-dataset" title="Link to this heading">#</a></h2>
+<p>Run this sequence every time you load a new dataset — before touching anything.
+The goal is to build a complete picture of what you have and what needs fixing.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span>
+
+<span class="c1"># Using the sample df defined in SS0 above.</span>
+<span class="c1"># In production: df &lt;- read_csv(&#39;your_file.csv&#39;)</span>
+<span class="c1"># The patterns below work on any data frame.</span>
+
+<span class="c1"># Shape and preview</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;dim(df)  :&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">dim</span><span class="p">(</span><span class="n">df</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dim(df)  : 6 6 
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 3 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>event_date</th><th scope=col>age</th><th scope=col>revenue</th><th scope=col>country</th><th scope=col>platform</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>2024-01-05</td><td>34</td><td>$1,200</td><td>US  </td><td>iOS    </td></tr>
+	<tr><td>2</td><td>2024-01-06</td><td>28</td><td>950   </td><td> us </td><td>Android</td></tr>
+	<tr><td>3</td><td>2024/01/07</td><td>-5</td><td>      </td><td>USA </td><td>Web    </td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p><strong>What each step is looking for:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Step</p></th>
+<th class="head text-left"><p>Red flags to catch</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Shape + preview</p></td>
+<td class="text-left"><p>Extra header rows, merged cells exported from Excel, trailing commas</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">glimpse()</span></code></p></td>
+<td class="text-left"><p>Date columns as <code class="docutils literal notranslate"><span class="pre">character</span></code>, ID columns as <code class="docutils literal notranslate"><span class="pre">double</span></code> (signals nulls present), boolean as <code class="docutils literal notranslate"><span class="pre">chr</span></code>/<code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Null summary</p></td>
+<td class="text-left"><p>Columns with &gt;50% nulls — question if they’re usable</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Duplicates</p></td>
+<td class="text-left"><p>Full duplicates = data pipeline bug; key-level = fan-out from a join</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Cardinality</p></td>
+<td class="text-left"><p>String columns with thousands of unique values — probably IDs, not categories</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Value ranges</p></td>
+<td class="text-left"><p>Impossible values: negative age, rate &gt; 100%, future dates in historical data</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Skipping the audit and jumping straight to analysis — silent errors propagate and are hard to trace back</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">summary()</span></code> alone on the full frame — numeric and character columns summarize very differently; always split by type as shown, or pair with <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code></p></li>
+<li><p>Treating a high null rate as always bad — sometimes nulls are meaningful (e.g. <code class="docutils literal notranslate"><span class="pre">cancellation_date</span></code> is <code class="docutils literal notranslate"><span class="pre">NA</span></code> = not cancelled)</p></li>
+</ul>
+<p><strong>Three more audit checks for §1:</strong> detect columns that secretly mix types
+(rarer in R than pandas, since R columns are type-homogeneous by construction —
+but still possible via <code class="docutils literal notranslate"><span class="pre">list</span></code>-columns), measure true memory use, and turn ad-hoc
+checks into reusable assertions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="n">s</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">id</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">),</span>
+<span class="w">  </span><span class="n">mixed</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;two&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">4.0</span><span class="p">),</span><span class="w">                 </span><span class="c1"># list-column holding mixed types -- R&#39;s closest analog to pandas&#39; object-mixing</span>
+<span class="w">  </span><span class="n">platform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;ios&#39;</span><span class="p">,</span><span class="s">&#39;android&#39;</span><span class="p">,</span><span class="s">&#39;ios&#39;</span><span class="p">,</span><span class="s">&#39;web&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">10.0</span><span class="p">,</span><span class="w"> </span><span class="m">20.0</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">40.0</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># 1) Columns that secretly mix types -- in R this mainly shows up in list-columns,</span>
+<span class="c1">#    since atomic vector columns are coerced to one type automatically on creation</span>
+<span class="c1">#    (R&#39;s biggest structural difference from pandas&#39; object dtype)</span>
+<span class="n">mixed_type_cols</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">()</span>
+<span class="w">  </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">df</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">is.list</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="n">c</span><span class="p">]]))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">kinds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">unique</span><span class="p">(</span><span class="nf">sapply</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="n">c</span><span class="p">]][</span><span class="o">!</span><span class="nf">sapply</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="n">c</span><span class="p">]],</span><span class="w"> </span><span class="n">is.null</span><span class="p">)],</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="nf">class</span><span class="p">(</span><span class="n">v</span><span class="p">)[</span><span class="m">1</span><span class="p">]))</span>
+<span class="w">      </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">kinds</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="n">out</span><span class="p">[[</span><span class="n">c</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">kinds</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">out</span>
+<span class="p">}</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&#39;mixed-type columns:&#39;</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="nf">mixed_type_cols</span><span class="p">(</span><span class="n">s</span><span class="p">)),</span><span class="w"> </span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;\n&#39;</span><span class="p">)</span>
+
+<span class="c1"># 2) True memory footprint -- object.size() already counts actual data, not just pointers</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">sapply</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">object.size</span><span class="p">))</span>
+
+<span class="c1"># 3) Reusable validation: promote ad-hoc checks to assertions you re-run after each step</span>
+<span class="n">validate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;id must be unique&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="nf">any</span><span class="p">(</span><span class="nf">duplicated</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">id</span><span class="p">)),</span>
+<span class="w">    </span><span class="s">&quot;revenue must be non-negative&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">revenue</span><span class="p">[</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">revenue</span><span class="p">)]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="s">&quot;unexpected platform&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">platform</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;ios&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;android&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;web&#39;</span><span class="p">))</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="s">&#39;all checks passed\n&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">validate</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>mixed-type columns: mixed 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      id    mixed platform  revenue 
+      80      360      248       80 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>all checks passed
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="fix-types">
+<h2>§2 — Fix Types<a class="headerlink" href="#fix-types" title="Link to this heading">#</a></h2>
+<p>Wrong types are the silent cause of failed joins, incorrect aggregations, and
+broken date math. Fix them immediately after the audit — everything downstream
+depends on correct types.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span>
+
+<span class="c1"># ── Pattern: Date columns loaded as strings ──────────────────────────────────</span>
+<span class="c1"># The sample df has event_date as character. Parse it:</span>
+<span class="n">df_fixed</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">event_date_parsed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">parse_date_time</span><span class="p">(</span><span class="n">event_date</span><span class="p">,</span><span class="w"> </span><span class="n">orders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;ymd&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dmy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;mdy&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Before:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">class</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">event_date</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;After :&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">class</span><span class="p">(</span><span class="n">df_fixed</span><span class="o">$</span><span class="n">event_date_parsed</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df_fixed</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">event_date</span><span class="p">,</span><span class="w"> </span><span class="n">event_date_parsed</span><span class="p">))</span>
+
+<span class="c1"># ── Pattern: Currency string -&gt; numeric ──────────────────────────────────────</span>
+<span class="n">df_fixed</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_fixed</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">revenue_num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.double</span><span class="p">(</span><span class="n">stringr</span><span class="o">::</span><span class="nf">str_remove_all</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;[$,]&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">                          </span><span class="n">stringr</span><span class="o">::</span><span class="nf">str_trim</span><span class="p">()</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">                          </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">na_if</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nRevenue after cleaning:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">df_fixed</span><span class="o">$</span><span class="n">revenue_num</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Pattern: Low-cardinality string -&gt; factor ─────────────────────────────────</span>
+<span class="n">df_fixed</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_fixed</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">platform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">platform</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Platform class:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">class</span><span class="p">(</span><span class="n">df_fixed</span><span class="o">$</span><span class="n">platform</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Levels:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">levels</span><span class="p">(</span><span class="n">df_fixed</span><span class="o">$</span><span class="n">platform</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Before: character 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>After : POSIXct POSIXt 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 6 × 2
+  event_date event_date_parsed  
+  &lt;chr&gt;      &lt;dttm&gt;             
+1 2024-01-05 2024-01-05 00:00:00
+2 2024-01-06 2024-01-06 00:00:00
+3 2024/01/07 2024-01-07 00:00:00
+4 08-01-2024 2024-01-08 00:00:00
+5 08-01-2024 2024-01-08 00:00:00
+6 <span class=" -Color -Color-Red">NA</span>         <span class=" -Color -Color-Red">NA</span>                 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Revenue after cleaning: 1200 950 NA 2000 2000 15 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Platform class: factor 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Levels: Android iOS Web 
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Type-fix decision tree:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Column shows as &lt;chr&gt; in glimpse()?
++-- Looks like a date                -&gt; lubridate::ymd() / parse_date_time()
++-- Has $, %, commas in values       -&gt; str_remove_all() then as.double()
++-- Has True/False/Yes/No strings    -&gt; case_match() then as.logical()
++-- Few unique values (&lt;50)          -&gt; as.factor()
++-- Should be numeric but has blanks -&gt; na_if(&quot;&quot;) then as.double()
+
+Numeric column shows as double but should be integer?
++-- Fill or drop NAs first, then as.integer()
+</pre></div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">as.integer(col)</span></code> when the column has <code class="docutils literal notranslate"><span class="pre">NA</span></code> — unlike pandas (which raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>), R’s <code class="docutils literal notranslate"><span class="pre">as.integer()</span></code> silently keeps the <code class="docutils literal notranslate"><span class="pre">NA</span></code> and casts everything else; this is <em>safer</em> but means a bad cast can go unnoticed without an explicit check</p></li>
+<li><p>Parsing ambiguous date formats like <code class="docutils literal notranslate"><span class="pre">01/02/03</span></code> without specifying the order explicitly via <code class="docutils literal notranslate"><span class="pre">orders</span> <span class="pre">=</span></code> — <code class="docutils literal notranslate"><span class="pre">parse_date_time()</span></code> guesses among the orders you give it and can guess wrong if the list is too permissive</p></li>
+<li><p>Converting ID columns to <code class="docutils literal notranslate"><span class="pre">integer</span></code>/<code class="docutils literal notranslate"><span class="pre">double</span></code> when they have leading zeros (zip codes, product codes) — use <code class="docutils literal notranslate"><span class="pre">character</span></code> instead, identical trap to pandas</p></li>
+</ul>
+<p><strong>Timezone handling (a §2 type landmine).</strong> A naive timestamp carries no zone;
+mixing tz-aware and tz-naive values in a comparison or join raises an error in R
+too. <code class="docutils literal notranslate"><span class="pre">force_tz()</span></code>/<code class="docutils literal notranslate"><span class="pre">with_tz()</span></code> is lubridate’s pair for <em>attaching</em> vs <em>converting</em>
+a zone — the same conceptual split as pandas’ <code class="docutils literal notranslate"><span class="pre">tz_localize</span></code> vs <code class="docutils literal notranslate"><span class="pre">tz_convert</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span>
+<span class="n">naive</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ymd_hm</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;2024-06-10 14:30&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;2024-06-10 18:30&#39;</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&#39;naive tz attribute:&#39;</span><span class="p">,</span><span class="w"> </span><span class="nf">tz</span><span class="p">(</span><span class="n">naive</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;\n&#39;</span><span class="p">)</span><span class="w">                      </span><span class="c1"># &quot;UTC&quot; -- R always has SOME tz attribute, but treat this as &quot;naive&quot; until deliberately set</span>
+<span class="n">aware</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">force_tz</span><span class="p">(</span><span class="n">naive</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="w">                      </span><span class="c1"># attach a zone (naive -&gt; aware), does NOT shift the clock time</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&#39;tz-aware tz       :&#39;</span><span class="p">,</span><span class="w"> </span><span class="nf">tz</span><span class="p">(</span><span class="n">aware</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;\n&#39;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&#39;converted to UTC  :&#39;</span><span class="p">,</span><span class="w"> </span><span class="nf">format</span><span class="p">(</span><span class="nf">with_tz</span><span class="p">(</span><span class="n">aware</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;UTC&#39;</span><span class="p">)),</span><span class="w"> </span><span class="s">&#39;\n&#39;</span><span class="p">)</span><span class="w">   </span><span class="c1"># with_tz CHANGES an already-aware time, shifting the clock</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>naive tz attribute: UTC 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tz-aware tz       : America/New_York 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converted to UTC  : 2024-06-10 18:30:00 2024-06-10 22:30:00 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="handle-missing-values">
+<h2>§3 — Handle Missing Values<a class="headerlink" href="#handle-missing-values" title="Link to this heading">#</a></h2>
+<p>The syntax for filling/dropping <code class="docutils literal notranslate"><span class="pre">NA</span></code>s is in the Tidyverse reference (§3). This
+section focuses on the decision: <strong>which strategy to use and when.</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">tidyr</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;NA summary:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">colSums</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">df</span><span class="p">)))</span>
+
+<span class="c1"># Strategy 1: Drop rows where key columns are NA</span>
+<span class="n">df_drop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">drop_na</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\nAfter drop_na(user_id): %d rows (was %d)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">df_drop</span><span class="p">),</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">df</span><span class="p">)))</span>
+
+<span class="c1"># Strategy 2: Fill with constant</span>
+<span class="n">df_fill</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">replace_na</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;0&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;revenue after replace_na(&#39;0&#39;):&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">df_fill</span><span class="o">$</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># Strategy 3: Forward fill (sort first)</span>
+<span class="n">df_ffill</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">fill</span><span class="p">(</span><span class="n">event_date</span><span class="p">,</span><span class="w"> </span><span class="n">.direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;down&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nevent_date after forward fill:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df_ffill</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">event_date</span><span class="p">))</span>
+
+<span class="c1"># Strategy 4: Flag then fill</span>
+<span class="n">df_flag</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">event_date_missing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">event_date</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">event_date</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nf">replace_na</span><span class="p">(</span><span class="n">event_date</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;UNKNOWN&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nFlag + fill:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df_flag</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">event_date</span><span class="p">,</span><span class="w"> </span><span class="n">event_date_missing</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NA summary:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   user_id event_date        age    revenue    country   platform 
+         0          1          0          0          0          0 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>After drop_na(user_id): 6 rows (was 6)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>revenue after replace_na(&#39;0&#39;): $1,200 950  2,000 2,000 15 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>event_date after forward fill:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 6 × 2
+  user_id event_date
+    &lt;dbl&gt; &lt;chr&gt;     
+1       1 2024-01-05
+2       2 2024-01-06
+3       3 2024/01/07
+4       4 08-01-2024
+5       4 08-01-2024
+6       5 08-01-2024
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Flag + fill:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 6 × 3
+  user_id event_date event_date_missing
+    &lt;dbl&gt; &lt;chr&gt;                   &lt;int&gt;
+1       1 2024-01-05                  0
+2       2 2024-01-06                  0
+3       3 2024/01/07                  0
+4       4 08-01-2024                  0
+5       4 08-01-2024                  0
+6       5 UNKNOWN                     1
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Strategy selection guide:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Null rate</p></th>
+<th class="head text-left"><p>Null mechanism</p></th>
+<th class="head text-left"><p>Recommended strategy</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>&lt; 5%</p></td>
+<td class="text-left"><p>Random</p></td>
+<td class="text-left"><p>Drop the rows</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Any</p></td>
+<td class="text-left"><p>Business-defined zero</p></td>
+<td class="text-left"><p>Fill with 0 or ‘Unknown’</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Any</p></td>
+<td class="text-left"><p>Time-ordered carry-forward</p></td>
+<td class="text-left"><p>Forward fill (sort first)</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Any</p></td>
+<td class="text-left"><p>Depends on group</p></td>
+<td class="text-left"><p>Group-conditional fill</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Any</p></td>
+<td class="text-left"><p>Missingness is informative</p></td>
+<td class="text-left"><p>Flag + fill</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>&gt; 60%</p></td>
+<td class="text-left"><p>Any</p></td>
+<td class="text-left"><p>Drop the column</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Filling with the global mean/median when group values differ significantly — always check if group-conditional fill (§3 Strategy 4) is more appropriate</p></li>
+<li><p>Forward-filling without <code class="docutils literal notranslate"><span class="pre">arrange()</span></code>-ing by date first — fills in row order, not time order, producing wrong values, the exact same trap as pandas</p></li>
+<li><p>Dropping rows with any <code class="docutils literal notranslate"><span class="pre">NA</span></code> (<code class="docutils literal notranslate"><span class="pre">drop_na()</span></code> with no arguments) when only a few columns matter — pass specific column names to be precise</p></li>
+<li><p>Forgetting <code class="docutils literal notranslate"><span class="pre">na.rm</span> <span class="pre">=</span> <span class="pre">TRUE</span></code> when computing the fill statistic itself (<code class="docutils literal notranslate"><span class="pre">median()</span></code>, <code class="docutils literal notranslate"><span class="pre">mean()</span></code>) — without it, the statistic you’re filling with is itself <code class="docutils literal notranslate"><span class="pre">NA</span></code></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="handle-duplicates">
+<h2>§4 — Handle Duplicates<a class="headerlink" href="#handle-duplicates" title="Link to this heading">#</a></h2>
+<p>Two distinct types of duplicates — full row duplicates (data pipeline bugs) and
+key-level duplicates (fan-out from joins or intentional multi-row data). They
+require different fixes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Detect</span>
+<span class="n">n_full</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">duplicated</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Full duplicates   : %d (%.1f%%)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">n_full</span><span class="p">,</span><span class="w"> </span><span class="n">n_full</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="p">))</span>
+
+<span class="n">key</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;user_id&quot;</span><span class="p">)</span>
+<span class="n">n_key</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">duplicated</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Key-level (user_id): %d\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">n_key</span><span class="p">))</span>
+
+<span class="c1"># Inspect duplicated records</span>
+<span class="n">dup_mask</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">duplicated</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">])</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nf">duplicated</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">],</span><span class="w"> </span><span class="n">fromLast</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nAll copies of duplicated user_ids:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">dup_mask</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="n">user_id</span><span class="p">))</span>
+
+<span class="c1"># Fix: drop full duplicates</span>
+<span class="n">df_dedup</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">distinct</span><span class="p">()</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\nAfter distinct(): %d rows\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">df_dedup</span><span class="p">)))</span>
+
+<span class="c1"># Fix: keep first per user_id</span>
+<span class="n">df_first</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">distinct</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">.keep_all</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;After distinct(user_id): %d rows\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">df_first</span><span class="p">)))</span>
+
+<span class="c1"># Fix: aggregate to resolve (sum revenue per user)</span>
+<span class="n">df_agg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">revenue_num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.double</span><span class="p">(</span><span class="n">stringr</span><span class="o">::</span><span class="nf">str_remove_all</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;[$,]&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">                                  </span><span class="n">stringr</span><span class="o">::</span><span class="nf">str_trim</span><span class="p">()</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">na_if</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">visit_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span><span class="w"> </span><span class="n">revenue_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">revenue_num</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nAggregated per user:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df_agg</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full duplicates   : 1 (16.7%)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Key-level (user_id): 1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>All copies of duplicated user_ids:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 2 × 6
+  user_id event_date   age revenue country platform
+    &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   
+1       4 08-01-2024    41 2,000   Canada  iOS     
+2       4 08-01-2024    41 2,000   Canada  iOS     
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>After distinct(): 5 rows
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>After distinct(user_id): 5 rows
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Aggregated per user:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 3
+  user_id visit_count revenue_total
+    &lt;dbl&gt;       &lt;int&gt;         &lt;dbl&gt;
+1       1           1          1200
+2       2           1           950
+3       3           1             0
+4       4           2          4000
+5       5           1            15
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Duplicate type decision tree:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Are all columns identical?
++-- Yes -&gt; data pipeline bug -&gt; distinct()
++-- No  -&gt; key-level duplicates -&gt; inspect why
+         +-- One should be the &quot;truth&quot; (latest update)  -&gt; arrange + distinct(.keep_all=TRUE)
+         +-- All rows have valid data (transactions)     -&gt; aggregate (sum, count, max via summarise)
+         +-- Caused by a join                            -&gt; fix the join, not the output
+</pre></div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Dropping duplicates before understanding why they exist — if caused by a bad join, the fix is upstream, not a <code class="docutils literal notranslate"><span class="pre">distinct()</span></code> bandage</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">distinct(.keep_all</span> <span class="pre">=</span> <span class="pre">TRUE)</span></code> without <code class="docutils literal notranslate"><span class="pre">arrange()</span></code>-ing first — “first” means first in current row order, which may be arbitrary, same trap as pandas’ unsorted <code class="docutils literal notranslate"><span class="pre">keep='first'</span></code></p></li>
+<li><p>Checking only full duplicates and missing key-level duplicates — the more dangerous type is usually the key-level one</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="fix-string-categorical-inconsistencies">
+<h2>§5 — Fix String &amp; Categorical Inconsistencies<a class="headerlink" href="#fix-string-categorical-inconsistencies" title="Link to this heading">#</a></h2>
+<p>The same real-world entity appearing under different labels is one of the most
+common data quality issues. <code class="docutils literal notranslate"><span class="pre">group_by()</span></code> and <code class="docutils literal notranslate"><span class="pre">*_join()</span></code> operations silently fail
+to match when <code class="docutils literal notranslate"><span class="pre">&quot;US&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;us&quot;</span></code> are treated as different groups.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Raw country values:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">country</span><span class="p">,</span><span class="w"> </span><span class="n">useNA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ifany&quot;</span><span class="p">))</span>
+
+<span class="c1"># Fix 1: normalise case and whitespace</span>
+<span class="n">df_clean</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">str_to_lower</span><span class="p">(</span><span class="nf">str_trim</span><span class="p">(</span><span class="n">country</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nAfter lower + trim:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">df_clean</span><span class="o">$</span><span class="n">country</span><span class="p">,</span><span class="w"> </span><span class="n">useNA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ifany&quot;</span><span class="p">))</span>
+
+<span class="c1"># Fix 2: map synonyms to canonical form</span>
+<span class="n">df_clean</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_clean</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_match</span><span class="p">(</span><span class="n">country</span><span class="p">,</span>
+<span class="w">  </span><span class="s">&quot;us&quot;</span><span class="w">            </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;United States&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s">&quot;usa&quot;</span><span class="w">           </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;United States&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s">&quot;united states&quot;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;United States&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s">&quot;canada&quot;</span><span class="w">        </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Canada&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s">&quot;cnaada&quot;</span><span class="w">        </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Canada&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1"># typo fix</span>
+<span class="w">  </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">country</span>
+<span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nAfter canonical mapping:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">df_clean</span><span class="o">$</span><span class="n">country</span><span class="p">,</span><span class="w"> </span><span class="n">useNA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ifany&quot;</span><span class="p">))</span>
+
+<span class="c1"># Fix 3: bucket rare values</span>
+<span class="n">top_countries</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_clean</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="n">country</span><span class="p">,</span><span class="w"> </span><span class="n">sort</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">slice_head</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">pull</span><span class="p">(</span><span class="n">country</span><span class="p">)</span>
+<span class="n">df_clean</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_clean</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">country_grouped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">country</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">top_countries</span><span class="p">,</span><span class="w"> </span><span class="n">country</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Other&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nAfter bucketing rare values:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">df_clean</span><span class="o">$</span><span class="n">country_grouped</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Raw country values:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   us  Canada cnaada     US    USA 
+     1      2      1      1      1 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>After lower + trim:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>canada cnaada     us    usa 
+     2      1      2      1 
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message:
+“There was 1 warning in `mutate()`.
+<span class=" -Color -Color-Cyan">ℹ</span> In argument: `country = case_match(...)`.
+Caused by warning:
+<span class=" -Color -Color-Yellow">!</span> `case_match()` was deprecated in dplyr 1.2.0.
+<span class=" -Color -Color-Cyan">ℹ</span> Please use `recode_values()` instead.”
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>After canonical mapping:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       Canada United States 
+            3             3 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>After bucketing rare values:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       Canada United States 
+            3             3 
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Cleaning sequence — always in this order:</strong></p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_trim()</span></code> — remove whitespace</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str_to_lower()</span></code> — normalize case</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">case_match(...,</span> <span class="pre">.default</span> <span class="pre">=</span> <span class="pre">col)</span></code> for typos — fix known typos</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">case_match(...,</span> <span class="pre">.default</span> <span class="pre">=</span> <span class="pre">col)</span></code> for synonyms — unify synonyms (same function, different lookup; R doesn’t need two separate verbs)</p></li>
+<li><p>Bucket rare values into <code class="docutils literal notranslate"><span class="pre">'Other'</span></code></p></li>
+<li><p>Validate against controlled vocabulary</p></li>
+</ol>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">case_match()</span></code> <strong>without</strong> <code class="docutils literal notranslate"><span class="pre">.default</span> <span class="pre">=</span> <span class="pre">col</span></code> — unmatched values become <code class="docutils literal notranslate"><span class="pre">NA</span></code>, silently nullifying valid data, the exact same trap as pandas’ <code class="docutils literal notranslate"><span class="pre">.map()</span></code> without <code class="docutils literal notranslate"><span class="pre">.fillna(df['col'])</span></code></p></li>
+<li><p>Normalizing case after mapping — map first on lowercased values, not on mixed-case raw values</p></li>
+<li><p>Forgetting that <code class="docutils literal notranslate"><span class="pre">case_match()</span></code> matches <strong>exact</strong> values only; <code class="docutils literal notranslate"><span class="pre">str_detect()</span></code>/<code class="docutils literal notranslate"><span class="pre">str_replace()</span></code> use substring/regex matching — they are different tools, same split as pandas’ <code class="docutils literal notranslate"><span class="pre">.replace()</span></code> vs <code class="docutils literal notranslate"><span class="pre">.str.replace()</span></code></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="handle-outliers">
+<h2>§6 — Handle Outliers<a class="headerlink" href="#handle-outliers" title="Link to this heading">#</a></h2>
+<p>Outliers are not always errors. The decision is: is this value impossible,
+implausible, or just extreme? Each case requires a different response.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Parse revenue to numeric for outlier detection</span>
+<span class="n">df_num</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">revenue_num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.double</span><span class="p">(</span><span class="n">stringr</span><span class="o">::</span><span class="nf">str_remove_all</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;[$,]&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">                           </span><span class="n">stringr</span><span class="o">::</span><span class="nf">str_trim</span><span class="p">()</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">na_if</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1"># Method A: IQR</span>
+<span class="n">Q1</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">df_num</span><span class="o">$</span><span class="n">revenue_num</span><span class="p">,</span><span class="w"> </span><span class="m">0.25</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">Q3</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">df_num</span><span class="o">$</span><span class="n">revenue_num</span><span class="p">,</span><span class="w"> </span><span class="m">0.75</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">IQR_</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">Q3</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Q1</span>
+<span class="n">lower</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">Q1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">IQR_</span>
+<span class="n">upper</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">Q3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">IQR_</span>
+<span class="n">outliers_iqr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_num</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">revenue_num</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">lower</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">revenue_num</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">upper</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;IQR method: %d outliers  [lower=%.1f, upper=%.1f]\n&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nf">nrow</span><span class="p">(</span><span class="n">outliers_iqr</span><span class="p">),</span><span class="w"> </span><span class="n">lower</span><span class="p">,</span><span class="w"> </span><span class="n">upper</span><span class="p">))</span>
+
+<span class="c1"># Method B: Z-score</span>
+<span class="n">z</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="n">df_num</span><span class="o">$</span><span class="n">revenue_num</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df_num</span><span class="o">$</span><span class="n">revenue_num</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="o">/</span>
+<span class="w">     </span><span class="nf">sd</span><span class="p">(</span><span class="n">df_num</span><span class="o">$</span><span class="n">revenue_num</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Z-score method (|z|&gt;2): %d outliers\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)))</span>
+
+<span class="c1"># Treatment: winsorize</span>
+<span class="n">p01</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">df_num</span><span class="o">$</span><span class="n">revenue_num</span><span class="p">,</span><span class="w"> </span><span class="m">0.01</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">p99</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">df_num</span><span class="o">$</span><span class="n">revenue_num</span><span class="p">,</span><span class="w"> </span><span class="m">0.99</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">df_num</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_num</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">revenue_capped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">pmin</span><span class="p">(</span><span class="nf">pmax</span><span class="p">(</span><span class="n">revenue_num</span><span class="p">,</span><span class="w"> </span><span class="n">p01</span><span class="p">),</span><span class="w"> </span><span class="n">p99</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Winsorized range: [%.1f, %.1f]\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">df_num</span><span class="o">$</span><span class="n">revenue_capped</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="n">df_num</span><span class="o">$</span><span class="n">revenue_capped</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)))</span>
+
+<span class="c1"># Treatment: log transform</span>
+<span class="n">df_num</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_num</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">log_revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">log1p</span><span class="p">(</span><span class="n">revenue_num</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;log1p(revenue) range:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">df_num</span><span class="o">$</span><span class="n">log_revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">),</span><span class="w"> </span><span class="m">3</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>IQR method: 0 outliers  [lower=-625.0, upper=3575.0]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Z-score method (|z|&gt;2): 0 outliers
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Winsorized range: [52.4, 2000.0]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>log1p(revenue) range: 2.773 7.601 
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Treatment decision guide:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Outlier type</p></th>
+<th class="head text-left"><p>Treatment</p></th>
+<th class="head text-left"><p>Reason</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Impossible value (age = -5)</p></td>
+<td class="text-left"><p>Remove</p></td>
+<td class="text-left"><p>Data entry error — the row is invalid</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Plausible but extreme (spend = $1M)</p></td>
+<td class="text-left"><p>Winsorize or flag</p></td>
+<td class="text-left"><p>Real event — removing distorts the picture</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Right-skewed distribution</p></td>
+<td class="text-left"><p>Log transform</p></td>
+<td class="text-left"><p>Compresses scale without losing data</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Extreme but informative (whale user)</p></td>
+<td class="text-left"><p>Flag + keep</p></td>
+<td class="text-left"><p>May be the most important segment</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Removing outliers reflexively — always ask “is this impossible or just unexpected?”</p></li>
+<li><p>Using Z-score on heavily skewed data — Z-score assumes normality; IQR is more robust for skewed distributions</p></li>
+<li><p>Winsorizing before splitting train/test — compute the percentile bounds on train set only, then apply to test to avoid leakage</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">log()</span></code> on columns with zeros — produces <code class="docutils literal notranslate"><span class="pre">-Inf</span></code> with a warning; always use <code class="docutils literal notranslate"><span class="pre">log1p()</span></code>, base R’s name for the same function as NumPy’s <code class="docutils literal notranslate"><span class="pre">np.log1p()</span></code></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="clean-column-names">
+<h2>§7 — Clean Column Names<a class="headerlink" href="#clean-column-names" title="Link to this heading">#</a></h2>
+<p>Messy column names break <code class="docutils literal notranslate"><span class="pre">filter()</span></code>/<code class="docutils literal notranslate"><span class="pre">mutate()</span></code> with non-syntactic names (requiring
+backtick-quoting everywhere) and SQL integrations. Fix them once, right after
+loading. The <code class="docutils literal notranslate"><span class="pre">janitor</span></code> package has a one-call solution; the manual pipeline below
+shows what it does internally.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Demo with a frame that has messy column names</span>
+<span class="n">messy</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">`Total Revenue ($)`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">),</span>
+<span class="w">  </span><span class="n">`User ID`</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">),</span>
+<span class="w">  </span><span class="n">`Q1 2024 Sales`</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">50</span><span class="p">,</span><span class="w"> </span><span class="m">80</span><span class="p">),</span>
+<span class="w">  </span><span class="n">`__internal__`</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">clean_column_names</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">new_names</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">str_trim</span><span class="p">()</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">str_to_lower</span><span class="p">()</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">str_remove_all</span><span class="p">(</span><span class="s">&quot;[^a-z0-9\\s_]&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w">   </span><span class="c1"># keep only letters, digits, spaces, underscores</span>
+<span class="w">    </span><span class="nf">str_replace_all</span><span class="p">(</span><span class="s">&quot;\\s+&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w">       </span><span class="c1"># spaces -&gt; underscores</span>
+<span class="w">    </span><span class="nf">str_replace_all</span><span class="p">(</span><span class="s">&quot;_+&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w">          </span><span class="c1"># collapse multiple underscores</span>
+<span class="w">    </span><span class="nf">str_remove</span><span class="p">(</span><span class="s">&quot;^_+&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w">                   </span><span class="c1"># remove leading underscores</span>
+<span class="w">    </span><span class="nf">str_remove</span><span class="p">(</span><span class="s">&quot;_+$&quot;</span><span class="p">)</span><span class="w">                      </span><span class="c1"># remove trailing underscores</span>
+<span class="w">  </span><span class="nf">names</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">new_names</span>
+<span class="w">  </span><span class="n">df</span>
+<span class="p">}</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Before:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">messy</span><span class="p">))</span>
+<span class="n">cleaned</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">clean_column_names</span><span class="p">(</span><span class="n">messy</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;After clean_column_names():\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">cleaned</span><span class="p">))</span>
+<span class="c1"># Expected: &quot;total_revenue&quot;  &quot;user_id&quot;  &quot;q1_2024_sales&quot;  &quot;internal&quot;</span>
+
+<span class="c1"># Rename using the actual cleaned names</span>
+<span class="n">renamed</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cleaned</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">rename</span><span class="p">(</span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total_revenue</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;After rename():\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">renamed</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Before:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;Total Revenue ($)&quot; &quot;User ID&quot;           &quot;Q1 2024 Sales&quot;    
+[4] &quot;__internal__&quot;     
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>After clean_column_names():
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;total_revenue&quot; &quot;user_id&quot;       &quot;q1_2024_sales&quot; &quot;internal&quot;     
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>After rename():
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;revenue&quot;       &quot;user&quot;          &quot;q1_2024_sales&quot; &quot;internal&quot;     
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Cleaning column names in the middle of a pipeline — do it immediately after loading, before any selection or filtering</p></li>
+<li><p>Forgetting to handle duplicate column names after cleaning — two different columns silently collapse to the same name (R will actually append <code class="docutils literal notranslate"><span class="pre">...1</span></code>/<code class="docutils literal notranslate"><span class="pre">...2</span></code> automatically on <code class="docutils literal notranslate"><span class="pre">tibble</span></code> creation in some cases, but not after a manual <code class="docutils literal notranslate"><span class="pre">names&lt;-</span></code> assignment like above — always check explicitly)</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">str_replace_all(&quot;</span> <span class="pre">&quot;,</span> <span class="pre">&quot;_&quot;)</span></code> without collapsing multiple spaces first — <code class="docutils literal notranslate"><span class="pre">'Total</span>&#160; <span class="pre">Revenue'</span></code> becomes <code class="docutils literal notranslate"><span class="pre">'Total__Revenue'</span></code>, identical trap to pandas</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="decision-guide">
+<h2>Decision Guide<a class="headerlink" href="#decision-guide" title="Link to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Just loaded a new dataset?
+\-- Always run: dim -&gt; glimpse() -&gt; null summary -&gt; duplicates -&gt; summary() -&gt; value ranges  (§1)
+
+Column type is wrong?
++-- Date stored as string             -&gt; lubridate::ymd() / parse_date_time()           (§2)
++-- ID stored as double               -&gt; fill NAs -&gt; as.integer() or as.character()     (§2)
++-- Number has $, commas              -&gt; str_remove_all() -&gt; as.double()                (§2)
+\-- String with &lt;50 unique values     -&gt; as.factor()                                    (§2)
+
+Column has missing values?
++-- Null rate &lt; 5%, random            -&gt; drop_na(col1, col2, ...)                       (§3)
++-- Null means zero by logic          -&gt; replace_na(x, 0)                               (§3)
++-- Null should carry forward         -&gt; arrange first -&gt; group_by() |&gt; fill()          (§3)
++-- Null depends on group             -&gt; group_by() |&gt; mutate(replace_na(...))          (§3)
++-- Null is informative               -&gt; flag column + fill                             (§3)
+\-- Null rate &gt; 60%                   -&gt; drop the column                                (§3)
+
+Duplicate rows detected?
++-- All columns identical             -&gt; distinct()                                     (§4)
++-- Same key, need latest record      -&gt; arrange by date -&gt; distinct(.keep_all=TRUE)    (§4)
++-- Same key, all rows are valid      -&gt; group_by() |&gt; summarise()                      (§4)
+\-- Caused by a join                  -&gt; fix the join upstream                          (§4)
+
+Category labels are inconsistent?
+\-- trim -&gt; lower -&gt; replace typos -&gt; map synonyms -&gt; bucket rare values               (§5)
+
+Outliers detected?
++-- Impossible value                  -&gt; remove the row                                 (§6)
++-- Plausible but extreme             -&gt; pmin/pmax() to winsorize                       (§6)
++-- Right-skewed distribution         -&gt; log1p() transform                              (§6)
+\-- Extreme but meaningful            -&gt; flag column and keep                           (§6)
+
+Column names are messy?
+\-- trim -&gt; lower -&gt; special chars -&gt; spaces-&gt;underscore -&gt; deduplicate                (§7)
+</pre></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./Data Manipulation"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Reference_dplyr.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">dplyr – Technical Reference</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="DM_Intermediate.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Data Manipulation — Intermediate</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

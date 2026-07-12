@@ -1,0 +1,1597 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Data Manipulation — Advanced &#8212; Data Science Study Notes - R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Data Manipulation/DM_Advanced';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Business Metrics — R Reference" href="metrics_R.html" />
+    <link rel="prev" title="Data Manipulation — Intermediate" href="DM_Intermediate.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Data Science Study Notes - R</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Topics
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Causal%20ML/cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Causal%20ML/cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Reference_BaseR.html">Base R — Technical Reference</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="Reference_dplyr.html">dplyr – Technical Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DM_Basic.html">Data Manipulation — Basic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DM_Intermediate.html">Data Manipulation — Intermediate</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Manipulation — Advanced</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics_R.html">Business Metrics — R Reference</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-engineering-r-tidymodels">Feature Engineering (R / tidymodels)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decision-table">Decision Table</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#series-map">Series Map</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#encoding-categorical-variables">§1 — Encoding Categorical Variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-transformations">§2 — Numerical Transformations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#binning-discretization">§3 — Binning &amp; Discretization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#date-time-features">§4 — Date &amp; Time Features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lag-window-features">§5 — Lag &amp; Window Features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interaction-ratio-features">§6 — Interaction &amp; Ratio Features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#text-as-features">§7 — Text as Features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#leakage-validation">§8 — Leakage &amp; Validation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decision-guide">Decision Guide</a></li>
+</ul>
+  </nav></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../intro.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="R_Data_Libs.html" class="nav-link">R Data Libraries</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Data Manipulation — Advanced</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="data-manipulation-advanced">
+<h1>Data Manipulation — Advanced<a class="headerlink" href="#data-manipulation-advanced" title="Link to this heading">#</a></h1>
+<section id="feature-engineering-r-tidymodels">
+<h2>Feature Engineering (R / tidymodels)<a class="headerlink" href="#feature-engineering-r-tidymodels" title="Link to this heading">#</a></h2>
+<p><strong>Philosophy:</strong> This note starts where cleaning and reshaping end — data is
+clean and in the right shape. Each section covers how to create new features
+for ML/modeling, with explicit attention to <em>when to use each technique</em> and
+<em>what can go wrong (especially leakage)</em>.</p>
+<p><strong>A structural note on this port:</strong> the Python source leans heavily on
+scikit-learn’s <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code> and <code class="docutils literal notranslate"><span class="pre">ColumnTransformer</span></code> — objects that bundle a
+sequence of column-wise transforms into one fit-on-train-only unit. R’s
+<strong>tidymodels</strong> ecosystem solves the identical problem with a different
+object model: a single <code class="docutils literal notranslate"><span class="pre">recipes::recipe()</span></code> accumulates <code class="docutils literal notranslate"><span class="pre">step_*()</span></code> calls (one
+per transformation), and <code class="docutils literal notranslate"><span class="pre">prep()</span></code>/<code class="docutils literal notranslate"><span class="pre">bake()</span></code> (or <code class="docutils literal notranslate"><span class="pre">juice()</span></code>) replace
+<code class="docutils literal notranslate"><span class="pre">fit()</span></code>/<code class="docutils literal notranslate"><span class="pre">transform()</span></code>. There is no direct <code class="docutils literal notranslate"><span class="pre">ColumnTransformer</span></code> equivalent to
+transliterate line-by-line — instead, <strong>each <code class="docutils literal notranslate"><span class="pre">step_*()</span></code> call already targets
+specific columns via <code class="docutils literal notranslate"><span class="pre">tidyselect</span></code> semantics</strong> (<code class="docutils literal notranslate"><span class="pre">all_numeric()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">all_nominal()</span></code>, explicit names), which is what <code class="docutils literal notranslate"><span class="pre">ColumnTransformer</span></code> exists to
+bolt onto sklearn’s column-blind transformers. This section is therefore a
+genuine redesign, not a mechanical translation — see §8 for the full
+<code class="docutils literal notranslate"><span class="pre">recipe()</span></code> capstone, the direct structural analog to this note’s closing
+<code class="docutils literal notranslate"><span class="pre">ColumnTransformer</span></code> example.</p>
+</section>
+<hr class="docutils" />
+<section id="decision-table">
+<h2>Decision Table<a class="headerlink" href="#decision-table" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>If your column is…</p></th>
+<th class="head text-left"><p>Go to</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Categorical / string that needs to be numeric</p></td>
+<td class="text-left"><p>§1 — Encoding Categoricals</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Numeric but skewed, on different scales, or needs normalization</p></td>
+<td class="text-left"><p>§2 — Numerical Transformations</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Continuous numeric that should be grouped into ranges</p></td>
+<td class="text-left"><p>§3 — Binning &amp; Discretization</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>A datetime that should produce predictive features</p></td>
+<td class="text-left"><p>§4 — Date &amp; Time Features</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>A time-ordered numeric where past values predict future</p></td>
+<td class="text-left"><p>§5 — Lag &amp; Window Features</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Two or more columns whose combination may be informative</p></td>
+<td class="text-left"><p>§6 — Interaction &amp; Ratio Features</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Free text in a tabular dataset</p></td>
+<td class="text-left"><p>§7 — Text as Features</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Suspiciously good model performance or target in features</p></td>
+<td class="text-left"><p>§8 — Leakage &amp; Validation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="series-map">
+<h2>Series Map<a class="headerlink" href="#series-map" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Notebook</p></th>
+<th class="head text-left"><p>Use it for</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Basic</span></code></p></td>
+<td class="text-left"><p>Cleaning &amp; QC — audit, types, nulls, dupes, strings, outliers, column names</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Intermediate</span></code></p></td>
+<td class="text-left"><p>Reshaping &amp; combining — wide/long, group-by, multi-table joins, time-series, nested, many files</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DM_Advanced</span></code> <strong>(this note)</strong></p></td>
+<td class="text-left"><p>Feature engineering — encoding, transforms, binning, date, lag/window, interactions, text, leakage</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Reference_Tidyverse</span> <span class="pre">/</span> <span class="pre">Reference_BaseR</span></code></p></td>
+<td class="text-left"><p>Syntax lookups for individual functions</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<div><p><strong>Environment:</strong> R 4.x / tidyverse 2.x / tidymodels 1.x. <strong>Convention:</strong>
+<code class="docutils literal notranslate"><span class="pre">X_train</span></code>/<code class="docutils literal notranslate"><span class="pre">X_test</span></code> are feature frames and <code class="docutils literal notranslate"><span class="pre">y_train</span></code> the target; in
+tidymodels idiom this is more often a single <code class="docutils literal notranslate"><span class="pre">train</span></code>/<code class="docutils literal notranslate"><span class="pre">test</span></code> split from
+<code class="docutils literal notranslate"><span class="pre">rsample</span></code>, with the target column kept alongside the features inside the
+<code class="docutils literal notranslate"><span class="pre">recipe()</span></code> — fit (<code class="docutils literal notranslate"><span class="pre">prep()</span></code>) every recipe on train only, then <code class="docutils literal notranslate"><span class="pre">bake()</span></code> test.
+This notebook’s cells are reference-style (they assume your modelling
+data); the added cells below are self-contained and runnable.</p>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="encoding-categorical-variables">
+<h2>§1 — Encoding Categorical Variables<a class="headerlink" href="#encoding-categorical-variables" title="Link to this heading">#</a></h2>
+<p>Most models require numeric input. The right encoding depends on cardinality,
+whether order exists, and whether you’re using a tree-based or linear model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">recipes</span><span class="p">)</span>
+
+<span class="c1"># Sample data for encoding examples</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">platform</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;iOS&quot;</span><span class="p">,</span><span class="s">&quot;Android&quot;</span><span class="p">,</span><span class="s">&quot;Web&quot;</span><span class="p">),</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">risk_level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Low&quot;</span><span class="p">,</span><span class="s">&quot;Medium&quot;</span><span class="p">,</span><span class="s">&quot;High&quot;</span><span class="p">,</span><span class="s">&quot;Very High&quot;</span><span class="p">),</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">city</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;City&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">20</span><span class="p">),</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">spend</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">runif</span><span class="p">(</span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="m">500</span><span class="p">),</span><span class="w"> </span><span class="m">2</span><span class="p">),</span>
+<span class="w">  </span><span class="n">churn</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nf">rbinom</span><span class="p">(</span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">0.3</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">df_train</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">150</span><span class="p">,</span><span class="w"> </span><span class="p">];</span><span class="w"> </span><span class="n">df_test</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="p">[</span><span class="m">151</span><span class="o">:</span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+
+<span class="c1"># ── Encoding 1: One-Hot Encoding via recipes ──────────────────────────────────</span>
+<span class="n">rec_ohe</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">recipe</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">platform</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_train</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_dummy</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span><span class="w"> </span><span class="n">one_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">prep</span><span class="p">(</span><span class="n">training</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_train</span><span class="p">)</span>
+
+<span class="n">train_ohe</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec_ohe</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span>
+<span class="n">test_ohe</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec_ohe</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_test</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;One-hot encoded columns:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">train_ohe</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Train rows:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">train_ohe</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;  Test rows:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">test_ohe</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Encoding 2: Ordinal encoding ──────────────────────────────────────────────</span>
+<span class="n">order_map</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">Low</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">Medium</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">High</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Very High&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
+<span class="n">df_train</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_train</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">risk_enc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">order_map</span><span class="p">[</span><span class="n">risk_level</span><span class="p">])</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nOrdinal encoding sample:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df_train</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">risk_level</span><span class="p">,</span><span class="w"> </span><span class="n">risk_enc</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">distinct</span><span class="p">()</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="n">risk_enc</span><span class="p">))</span>
+
+<span class="c1"># ── Encoding 3: Frequency encoding ───────────────────────────────────────────</span>
+<span class="n">freq_map</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_train</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="n">city</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">city_freq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">n</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">city</span><span class="p">,</span><span class="w"> </span><span class="n">city_freq</span><span class="p">)</span>
+<span class="n">df_train</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_train</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">left_join</span><span class="p">(</span><span class="n">freq_map</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;city&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nFrequency encoding (top 5 cities):\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df_train</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">city</span><span class="p">,</span><span class="w"> </span><span class="n">city_freq</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">distinct</span><span class="p">()</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">city_freq</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘recipes’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following object is masked from ‘package:stats’:
+
+    step
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>One-hot encoded columns: platform_Android platform_iOS platform_Web 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train rows: 150   Test rows: 50 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ordinal encoding sample:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 4 × 2
+  risk_level risk_enc
+  &lt;chr&gt;         &lt;dbl&gt;
+1 Low               0
+2 Medium            1
+3 High              2
+4 Very High         3
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Frequency encoding (top 5 cities):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 2
+  city   city_freq
+  &lt;chr&gt;      &lt;dbl&gt;
+1 City10    0.113 
+2 City13    0.0867
+3 City6     0.08  
+4 City19    0.0733
+5 City14    0.0667
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Encoding selection guide:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Situation</p></th>
+<th class="head text-left"><p>Encoding</p></th>
+<th class="head text-left"><p>Why</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Nominal, low cardinality (&lt;15), linear model</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">step_dummy()</span></code></p></td>
+<td class="text-left"><p>No implied order</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Ordinal (Low/Med/High)</p></td>
+<td class="text-left"><p>Ordered factor / integer map</p></td>
+<td class="text-left"><p>Order is meaningful</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>High cardinality (&gt;50), tree model</p></td>
+<td class="text-left"><p>Frequency</p></td>
+<td class="text-left"><p>Avoids sparse columns</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>High cardinality, strong target signal</p></td>
+<td class="text-left"><p>Target (with CV)</p></td>
+<td class="text-left"><p>Most predictive — but leakage risk</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Label-encoding a nominal column (e.g. <code class="docutils literal notranslate"><span class="pre">city</span></code>) for a linear model — implies <code class="docutils literal notranslate"><span class="pre">Paris</span> <span class="pre">&gt;</span> <span class="pre">London</span> <span class="pre">&gt;</span> <span class="pre">Tokyo</span></code> which is meaningless and distorts coefficients</p></li>
+<li><p>Forgetting that <code class="docutils literal notranslate"><span class="pre">step_dummy()</span></code> drops one level by default — this IS the <code class="docutils literal notranslate"><span class="pre">drop_first=True</span></code> behavior, so unlike pandas (where forgetting the argument is the bug), R’s default is already correct for linear models; the trap runs the <em>other</em> direction here — remembering to pass <code class="docutils literal notranslate"><span class="pre">one_hot</span> <span class="pre">=</span> <span class="pre">TRUE</span></code> for tree models when you specifically don’t want a level dropped</p></li>
+<li><p>Computing target encoding on the full training set without CV — your model sees the target in its features, causing massive overfitting</p></li>
+</ul>
+<p><strong>A practical §1 footgun: train/test factor levels can mismatch.</strong> Encoding
+the two sets separately yields <em>different columns</em> whenever a category is
+absent from one — the model then breaks at inference. recipes solves this
+structurally: <code class="docutils literal notranslate"><span class="pre">step_dummy()</span></code> is <strong>prepped on train and baked on test</strong>, so the
+column set it produces for test is locked to what it saw during <code class="docutils literal notranslate"><span class="pre">prep()</span></code> — a
+category unseen in test simply gets a row of all zeros, no realignment step
+needed. (Frequency encoding still has the sibling issue: categories unseen in
+train map to <code class="docutils literal notranslate"><span class="pre">NA</span></code> via the <code class="docutils literal notranslate"><span class="pre">left_join</span></code> above — add <code class="docutils literal notranslate"><span class="pre">replace_na()</span></code>.)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">recipes</span><span class="p">)</span>
+
+<span class="c1"># Demonstrate the train/test vocabulary alignment problem</span>
+
+<span class="n">train</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">platform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;ios&quot;</span><span class="p">,</span><span class="s">&quot;android&quot;</span><span class="p">,</span><span class="s">&quot;web&quot;</span><span class="p">))</span>
+<span class="n">test</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">platform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;ios&quot;</span><span class="p">,</span><span class="s">&quot;android&quot;</span><span class="p">))</span><span class="w">   </span><span class="c1"># &#39;web&#39; absent from test</span>
+
+<span class="c1"># Wrong way: encode each set separately</span>
+<span class="n">train_manual</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">model.matrix</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">platform</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">train</span><span class="p">)</span>
+<span class="n">test_manual</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">model.matrix</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">platform</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Manual encoding -- train columns:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">colnames</span><span class="p">(</span><span class="n">train_manual</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Manual encoding -- test  columns:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">colnames</span><span class="p">(</span><span class="n">test_manual</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;MISMATCH: test is missing &#39;platformweb&#39; -- model will fail at inference\n\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># Correct way: prep() on train, bake() on test</span>
+<span class="n">rec</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">recipe</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">platform</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">train</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_dummy</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span><span class="w"> </span><span class="n">one_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">prep</span><span class="p">(</span><span class="n">training</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">train</span><span class="p">)</span>
+
+<span class="n">tr_baked</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span>
+<span class="n">te_baked</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;recipes prep/bake -- train columns:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">tr_baked</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;recipes prep/bake -- test  columns:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">te_baked</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;&#39;platform_web&#39; exists in test (= 0):&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;platform_web&quot;</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">te_baked</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">te_baked</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Manual encoding -- train columns: platformandroid platformios platformweb 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Manual encoding -- test  columns: platformandroid platformios 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MISMATCH: test is missing &#39;platformweb&#39; -- model will fail at inference
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>recipes prep/bake -- train columns: platform_android platform_ios platform_web 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>recipes prep/bake -- test  columns: platform_android platform_ios platform_web 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;platform_web&#39; exists in test (= 0): TRUE 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 2 × 3
+  platform_android platform_ios platform_web
+             &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+1                0            1            0
+2                1            0            0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="numerical-transformations">
+<h2>§2 — Numerical Transformations<a class="headerlink" href="#numerical-transformations" title="Link to this heading">#</a></h2>
+<p>Scaling and transforming numeric features matters for distance-based models
+(logistic regression, SVM, KNN, neural nets) but not for tree-based models
+(XGBoost, Random Forest). Always <code class="docutils literal notranslate"><span class="pre">prep()</span></code> transforms on train, <code class="docutils literal notranslate"><span class="pre">bake()</span></code> test.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">recipes</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">patchwork</span><span class="p">)</span>
+
+<span class="c1"># Use the df_train defined in cell 3</span>
+<span class="c1"># (all transforms fit on train, applied to test)</span>
+<span class="n">rec_num</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">recipe</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">spend</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_train</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_normalize</span><span class="p">(</span><span class="n">spend</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w">       </span><span class="c1"># Z-score: mean=0, sd=1</span>
+<span class="w">  </span><span class="nf">prep</span><span class="p">(</span><span class="n">training</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_train</span><span class="p">)</span>
+
+<span class="n">train_scaled</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec_num</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span>
+<span class="n">test_scaled</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec_num</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_test</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Original spend: mean=&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">mean</span><span class="p">(</span><span class="n">df_train</span><span class="o">$</span><span class="n">spend</span><span class="p">),</span><span class="m">2</span><span class="p">),</span>
+<span class="w">    </span><span class="s">&quot; sd=&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">sd</span><span class="p">(</span><span class="n">df_train</span><span class="o">$</span><span class="n">spend</span><span class="p">),</span><span class="m">2</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Scaled   spend: mean=&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">mean</span><span class="p">(</span><span class="n">train_scaled</span><span class="o">$</span><span class="n">spend</span><span class="p">),</span><span class="m">4</span><span class="p">),</span>
+<span class="w">    </span><span class="s">&quot; sd=&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">sd</span><span class="p">(</span><span class="n">train_scaled</span><span class="o">$</span><span class="n">spend</span><span class="p">),</span><span class="m">4</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># Yeo-Johnson for skewed data</span>
+<span class="n">rec_yj</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">recipe</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">spend</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_train</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_YeoJohnson</span><span class="p">(</span><span class="n">spend</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">prep</span><span class="p">(</span><span class="n">training</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_train</span><span class="p">)</span>
+<span class="n">yj_train</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec_yj</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">df_train</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">spend</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_histogram</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="s">&quot;#3498DB&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;white&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="o">=</span><span class="m">0.85</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Raw spend&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;spend&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span>
+
+<span class="n">p2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">train_scaled</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">spend</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_histogram</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="s">&quot;#2ECC71&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;white&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="o">=</span><span class="m">0.85</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;After step_normalize()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;spend (z-score)&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span>
+
+<span class="n">p3</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">yj_train</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">spend</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_histogram</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;white&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="o">=</span><span class="m">0.85</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;After step_YeoJohnson()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="s">&quot;spend (transformed)&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">10</span><span class="p">)</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p3</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">plot_annotation</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Numerical Transformations&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">theme</span><span class="o">=</span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="o">=</span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Original spend: mean= 243.06  sd= 146.15 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Scaled   spend: mean= 0  sd= 1 
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/677062a8aa82500e8b060c2514564387d70231d9d2f1e4a32ce8f867a9a06300.png"><img alt="../_images/677062a8aa82500e8b060c2514564387d70231d9d2f1e4a32ce8f867a9a06300.png" src="../_images/677062a8aa82500e8b060c2514564387d70231d9d2f1e4a32ce8f867a9a06300.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+<p><strong>Transformation selection guide:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Situation</p></th>
+<th class="head text-left"><p>Transformation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Right-skewed (revenue, counts)</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">log1p()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Linear/logistic regression, SVM, KNN</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">step_normalize()</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Neural network inputs</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">step_range()</span></code> or <code class="docutils literal notranslate"><span class="pre">step_normalize()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Data has significant outliers</p></td>
+<td class="text-left"><p>manual median/IQR scaling (no single built-in step)</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Want to auto-normalize any distribution</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">step_YeoJohnson()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Tree-based model (XGBoost, RF)</p></td>
+<td class="text-left"><p>None required</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Fitting the recipe on the full dataset before splitting — leaks test set distribution into the scaler; always <code class="docutils literal notranslate"><span class="pre">prep(training</span> <span class="pre">=</span> <span class="pre">X_train)</span></code>, never on the combined data</p></li>
+<li><p>Scaling the target variable when it isn’t needed — scaling <code class="docutils literal notranslate"><span class="pre">y</span></code> for regression is usually unnecessary and complicates interpretation</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">log()</span></code> on columns with zeros — produces <code class="docutils literal notranslate"><span class="pre">-Inf</span></code>; always use <code class="docutils literal notranslate"><span class="pre">log1p()</span></code> for safety, same trap as NumPy’s <code class="docutils literal notranslate"><span class="pre">np.log()</span></code></p></li>
+<li><p>Calling <code class="docutils literal notranslate"><span class="pre">bake()</span></code> before <code class="docutils literal notranslate"><span class="pre">prep()</span></code>, or re-<code class="docutils literal notranslate"><span class="pre">prep()</span></code>-ing on test data by mistake — <code class="docutils literal notranslate"><span class="pre">prep()</span></code> is the ONLY place fitting happens; every subsequent <code class="docutils literal notranslate"><span class="pre">bake()</span></code> call, on train or test, reuses those fitted parameters</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="binning-discretization">
+<h2>§3 — Binning &amp; Discretization<a class="headerlink" href="#binning-discretization" title="Link to this heading">#</a></h2>
+<p>Convert a continuous variable into labeled groups. Useful when the
+relationship with the target is non-linear and step-like, or when business
+rules define meaningful ranges.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Use df_train from the SS0 encoding cell</span>
+<span class="n">df_binned</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_train</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">spend_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span>
+<span class="w">    </span><span class="n">spend</span><span class="p">,</span>
+<span class="w">    </span><span class="n">breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">250</span><span class="p">,</span><span class="w"> </span><span class="m">500</span><span class="p">),</span>
+<span class="w">    </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Low&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Medium&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;High&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">include.lowest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Spend bins:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">df_binned</span><span class="o">$</span><span class="n">spend_group</span><span class="p">))</span>
+
+<span class="c1"># Equal-frequency bins (compute on train only)</span>
+<span class="n">train_breaks</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">df_train</span><span class="o">$</span><span class="n">spend</span><span class="p">,</span><span class="w"> </span><span class="n">probs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">0.25</span><span class="p">),</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">df_binned</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_binned</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">spend_quartile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span><span class="n">spend</span><span class="p">,</span><span class="w"> </span><span class="n">breaks</span><span class="o">=</span><span class="n">train_breaks</span><span class="p">,</span>
+<span class="w">                       </span><span class="n">labels</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Q1&quot;</span><span class="p">,</span><span class="s">&quot;Q2&quot;</span><span class="p">,</span><span class="s">&quot;Q3&quot;</span><span class="p">,</span><span class="s">&quot;Q4&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">include.lowest</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nQuartile bins:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">df_binned</span><span class="o">$</span><span class="n">spend_quartile</span><span class="p">))</span>
+
+<span class="c1"># Multi-condition segmentation with case_when</span>
+<span class="n">df_binned</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_binned</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_segment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">    </span><span class="n">spend</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">250</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">churn</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;VIP&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">spend</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">100</span><span class="w">              </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Regular&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">.default</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Low Value&quot;</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nUser segments:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">df_binned</span><span class="o">$</span><span class="n">user_segment</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Spend bins:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   Low Medium   High 
+    33     45     72 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Quartile bins:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Q1 Q2 Q3 Q4 
+38 37 37 38 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>User segments:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Low Value   Regular       VIP 
+       33        66        51 
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong><code class="docutils literal notranslate"><span class="pre">cut()</span></code> with fixed breaks vs quantile breaks:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p></p></th>
+<th class="head text-left"><p>Fixed <code class="docutils literal notranslate"><span class="pre">breaks=</span></code></p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">quantile()</span></code>-derived <code class="docutils literal notranslate"><span class="pre">breaks=</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Bin width</p></td>
+<td class="text-left"><p>Equal width</p></td>
+<td class="text-left"><p>Equal frequency</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Group sizes</p></td>
+<td class="text-left"><p>Unequal (depends on distribution)</p></td>
+<td class="text-left"><p>Roughly equal</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Edges from</p></td>
+<td class="text-left"><p>You specify</p></td>
+<td class="text-left"><p>Computed from data</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Use when</p></td>
+<td class="text-left"><p>Domain-defined thresholds</p></td>
+<td class="text-left"><p>Want balanced groups</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Leakage risk</p></td>
+<td class="text-left"><p>Low</p></td>
+<td class="text-left"><p>High — compute on train only</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Computing quantile breakpoints on the full dataset — bin edges depend on the distribution, which leaks test set info into the model, identical trap to pandas’ <code class="docutils literal notranslate"><span class="pre">qcut</span></code></p></li>
+<li><p>Forgetting <code class="docutils literal notranslate"><span class="pre">include.lowest</span> <span class="pre">=</span> <span class="pre">TRUE</span></code> — the lowest value falls outside all bins and becomes <code class="docutils literal notranslate"><span class="pre">NA</span></code></p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">cut()</span></code> labels as a plain factor directly in a linear model without an explicit encoding step — <code class="docutils literal notranslate"><span class="pre">lm()</span></code>/<code class="docutils literal notranslate"><span class="pre">glm()</span></code> actually handle unordered factors correctly via internal dummy coding, but for <code class="docutils literal notranslate"><span class="pre">recipes</span></code>-based workflows, run <code class="docutils literal notranslate"><span class="pre">step_dummy()</span></code> on the binned column afterward to be explicit about the encoding</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="date-time-features">
+<h2>§4 — Date &amp; Time Features<a class="headerlink" href="#date-time-features" title="Link to this heading">#</a></h2>
+<p>Raw timestamps are not useful to most models. Extract meaningful components —
+and encode cyclical features correctly so models understand that hour 23 is
+close to hour 0.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Self-contained datetime sample</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">df_dt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">200</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ts</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">ymd_hms</span><span class="p">(</span><span class="s">&quot;2024-01-01 00:00:00&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">             </span><span class="nf">seconds</span><span class="p">(</span><span class="nf">sample</span><span class="p">(</span><span class="m">0</span><span class="o">:</span><span class="p">(</span><span class="m">365</span><span class="o">*</span><span class="m">24</span><span class="o">*</span><span class="m">3600</span><span class="p">),</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">signup</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">ymd</span><span class="p">(</span><span class="s">&quot;2023-01-01&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">days</span><span class="p">(</span><span class="nf">sample</span><span class="p">(</span><span class="m">0</span><span class="o">:</span><span class="m">365</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="n">df_dt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_dt</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">year</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nf">year</span><span class="p">(</span><span class="n">ts</span><span class="p">),</span>
+<span class="w">  </span><span class="n">month</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">month</span><span class="p">(</span><span class="n">ts</span><span class="p">),</span>
+<span class="w">  </span><span class="n">day_of_week</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">wday</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="w"> </span><span class="n">week_start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w">   </span><span class="c1"># 0=Mon, 6=Sun</span>
+<span class="w">  </span><span class="n">hour</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nf">hour</span><span class="p">(</span><span class="n">ts</span><span class="p">),</span>
+<span class="w">  </span><span class="n">is_weekend</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">day_of_week</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">5</span><span class="p">),</span>
+<span class="w">  </span><span class="n">days_since_signup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="nf">as_date</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">signup</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;days&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="c1"># Cyclical encoding for hour</span>
+<span class="w">  </span><span class="n">hour_sin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sin</span><span class="p">(</span><span class="m">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kc">pi</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">24</span><span class="p">),</span>
+<span class="w">  </span><span class="n">hour_cos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">cos</span><span class="p">(</span><span class="m">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kc">pi</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">24</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Date feature sample:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df_dt</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">month</span><span class="p">,</span><span class="w"> </span><span class="n">day_of_week</span><span class="p">,</span><span class="w"> </span><span class="n">hour</span><span class="p">,</span><span class="w"> </span><span class="n">is_weekend</span><span class="p">,</span>
+<span class="w">                       </span><span class="n">days_since_signup</span><span class="p">,</span><span class="w"> </span><span class="n">hour_sin</span><span class="p">,</span><span class="w"> </span><span class="n">hour_cos</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nWeekend distribution:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">df_dt</span><span class="o">$</span><span class="n">is_weekend</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘lubridate’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    date, intersect, setdiff, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Date feature sample:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 9
+  ts                   year month day_of_week  hour is_weekend days_since_signup
+  &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt; &lt;int&gt;      &lt;int&gt;             &lt;dbl&gt;
+1 2024-02-07 02:52:20  2024     2           2     2          0               150
+2 2024-08-31 08:32:24  2024     8           5     8          1               474
+3 2024-02-25 18:22:27  2024     2           6    18          1                57
+4 2024-04-20 02:05:45  2024     4           5     2          1               215
+5 2024-02-06 22:38:55  2024     2           1    22          0               243
+# ℹ 2 more variables: hour_sin &lt;dbl&gt;, hour_cos &lt;dbl&gt;
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Weekend distribution:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0   1 
+144  56 
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>When to use cyclical encoding:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Feature</p></th>
+<th class="head text-left"><p>Range</p></th>
+<th class="head text-left"><p>Use cyclical?</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Hour of day</p></td>
+<td class="text-left"><p>0-23</p></td>
+<td class="text-left"><p>Yes — 23 is close to 0</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Day of week</p></td>
+<td class="text-left"><p>0-6</p></td>
+<td class="text-left"><p>Yes — Sunday is close to Monday</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Month</p></td>
+<td class="text-left"><p>1-12</p></td>
+<td class="text-left"><p>Yes — December is close to January</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Year</p></td>
+<td class="text-left"><p>2020-2024</p></td>
+<td class="text-left"><p>No — not cyclical</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Days since event</p></td>
+<td class="text-left"><p>0-infinity</p></td>
+<td class="text-left"><p>No — not cyclical</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Using raw hour as a numeric feature — model sees hour 1 and hour 23 as far apart; use sin/cos encoding instead</p></li>
+<li><p>Computing <code class="docutils literal notranslate"><span class="pre">days_since_signup</span></code>-style lag features without <code class="docutils literal notranslate"><span class="pre">arrange()</span></code>-ing by user and date first — <code class="docutils literal notranslate"><span class="pre">lag()</span></code> operates on row order, not time order</p></li>
+<li><p>Extracting too many date features — correlated features (month + quarter + season) add noise; pick the most granular</p></li>
+<li><p>Reaching for a US-Python-package-specific holiday calendar name out of habit — <code class="docutils literal notranslate"><span class="pre">timeDate::holidayNYSE()</span></code> (or the broader <code class="docutils literal notranslate"><span class="pre">holidayNERC()</span></code>/custom calendars) is R’s standard source for US business-day calendars; there is no exact 1:1 package name match, so verify the specific holiday set matches your business need</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="lag-window-features">
+<h2>§5 — Lag &amp; Window Features<a class="headerlink" href="#lag-window-features" title="Link to this heading">#</a></h2>
+<p>Use past values to predict future values. The most powerful feature type for
+time-series and sequential data — and the easiest place to introduce
+lookahead leakage.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">slider</span><span class="p">)</span>
+
+<span class="c1"># Self-contained time-series sample</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">df_ts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="n">each</span><span class="o">=</span><span class="m">12</span><span class="p">),</span>
+<span class="w">  </span><span class="n">date</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="nf">seq</span><span class="p">(</span><span class="nf">as.Date</span><span class="p">(</span><span class="s">&quot;2024-01-01&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="s">&quot;month&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">length.out</span><span class="o">=</span><span class="m">12</span><span class="p">),</span><span class="w"> </span><span class="m">5</span><span class="p">),</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">runif</span><span class="p">(</span><span class="m">60</span><span class="p">,</span><span class="w"> </span><span class="m">50</span><span class="p">,</span><span class="w"> </span><span class="m">300</span><span class="p">),</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Lag features (always sort first)</span>
+<span class="n">df_ts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_ts</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">date</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">rev_lag1</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">lag</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">rev_lag3</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">lag</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">),</span>
+<span class="w">  </span><span class="n">rev_delta</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">revenue</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">rev_lag1</span><span class="p">,</span>
+<span class="w">  </span><span class="n">rev_pct_chg</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">rev_delta</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">na_if</span><span class="p">(</span><span class="n">rev_lag1</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="c1"># Rolling mean of PREVIOUS 3 months (lag first to avoid leakage)</span>
+<span class="w">  </span><span class="n">rev_roll3</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">slide_dbl</span><span class="p">(</span><span class="nf">lag</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">mean</span><span class="p">,</span><span class="w"> </span><span class="n">.before</span><span class="o">=</span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">.complete</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Lag and rolling features (user 1):\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df_ts</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">user_id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">        </span><span class="nf">select</span><span class="p">(</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">rev_lag1</span><span class="p">,</span><span class="w"> </span><span class="n">rev_delta</span><span class="p">,</span><span class="w"> </span><span class="n">rev_roll3</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">        </span><span class="nf">mutate</span><span class="p">(</span><span class="nf">across</span><span class="p">(</span><span class="nf">where</span><span class="p">(</span><span class="n">is.numeric</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="nf">round</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">))))</span>
+
+<span class="c1"># Train/test split for time series (never random)</span>
+<span class="n">cutoff</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.Date</span><span class="p">(</span><span class="s">&quot;2024-09-01&quot;</span><span class="p">)</span>
+<span class="n">train</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_ts</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">&lt;</span><span class="w">  </span><span class="n">cutoff</span><span class="p">)</span>
+<span class="n">test</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_ts</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">cutoff</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\nTime split at %s: train=%d rows, test=%d rows\n&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cutoff</span><span class="p">,</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">train</span><span class="p">),</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">test</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Lag and rolling features (user 1):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 12 × 5
+   date       revenue rev_lag1 rev_delta rev_roll3
+   &lt;date&gt;       &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 2024-01-01   279.      <span class=" -Color -Color-Red">NA</span>       <span class=" -Color -Color-Red">NA</span>         <span class=" -Color -Color-Red">NaN</span> 
+ 2 2024-02-01   284.     279.       5.57      279.
+ 3 2024-03-01   122.     284.    -<span class=" -Color -Color-Red">163.</span>        281.
+ 4 2024-04-01   258.     122.     136.        228.
+ 5 2024-05-01   210.     258.     -<span class=" -Color -Color-Red">47.2</span>       221.
+ 6 2024-06-01   180.     210.     -<span class=" -Color -Color-Red">30.7</span>       197.
+ 7 2024-07-01   234.     180.      54.4       216.
+ 8 2024-08-01    83.7    234.    -<span class=" -Color -Color-Red">150.</span>        208.
+ 9 2024-09-01   214.      83.7    131.        166.
+10 2024-10-01   226.     214.      12.0       177.
+11 2024-11-01   164.     226.     -<span class=" -Color -Color-Red">61.8</span>       175.
+12 2024-12-01   230.     164.      65.3       202.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time split at 2024-09-01: train=40 rows, test=20 rows
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Leakage anatomy for lag features:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Timeline</span><span class="p">:</span> <span class="o">...</span> <span class="o">|</span> <span class="n">day</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">day</span> <span class="mi">6</span> <span class="o">|</span> <span class="n">day</span> <span class="mi">7</span> <span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="o">|</span>
+
+<span class="n">lag1</span> <span class="o">=</span> <span class="n">day</span> <span class="mi">6</span> <span class="n">revenue</span>                            <span class="o">&lt;-</span> <span class="n">OK</span><span class="p">:</span> <span class="n">past</span> <span class="n">data</span>
+<span class="n">lag7</span> <span class="o">=</span> <span class="n">day</span> <span class="mi">0</span> <span class="n">revenue</span>                             <span class="o">&lt;-</span> <span class="n">OK</span><span class="p">:</span> <span class="n">past</span> <span class="n">data</span>
+<span class="n">rolling_mean</span> <span class="n">WITHOUT</span> <span class="n">lag</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">wrap</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">day</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>  <span class="o">&lt;-</span> <span class="n">LEAKAGE</span><span class="p">:</span> <span class="n">includes</span> <span class="n">target</span> <span class="n">day</span>
+<span class="n">rolling_mean</span> <span class="n">WITH</span> <span class="n">lag</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">wrap</span>    <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">day</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>  <span class="o">&lt;-</span> <span class="n">OK</span><span class="p">:</span> <span class="n">excludes</span> <span class="n">target</span> <span class="n">day</span>
+</pre></div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Not wrapping the series in <code class="docutils literal notranslate"><span class="pre">lag(x,</span> <span class="pre">1)</span></code> before <code class="docutils literal notranslate"><span class="pre">slide_dbl()</span></code> — the rolling window includes the current row, which is the target, the exact R analog to forgetting <code class="docutils literal notranslate"><span class="pre">.shift(1)</span></code> before <code class="docutils literal notranslate"><span class="pre">.rolling()</span></code></p></li>
+<li><p>Using a random <code class="docutils literal notranslate"><span class="pre">initial_split()</span></code> for time series — future rows leak into training via lag features; use <code class="docutils literal notranslate"><span class="pre">initial_time_split()</span></code> or a manual date cutoff instead</p></li>
+<li><p>Not <code class="docutils literal notranslate"><span class="pre">arrange()</span></code>-ing by date within each group before <code class="docutils literal notranslate"><span class="pre">lag()</span></code> — shift operates on row position, not time order</p></li>
+<li><p>Forgetting <code class="docutils literal notranslate"><span class="pre">.complete</span> <span class="pre">=</span> <span class="pre">FALSE</span></code> in <code class="docutils literal notranslate"><span class="pre">slide_dbl()</span></code> — without it, the first N-1 rows of each group become <code class="docutils literal notranslate"><span class="pre">NA</span></code> <em>and stay that way regardless of available data</em>; <code class="docutils literal notranslate"><span class="pre">.complete</span> <span class="pre">=</span> <span class="pre">FALSE</span></code> is <code class="docutils literal notranslate"><span class="pre">slider</span></code>’s analog to pandas’ <code class="docutils literal notranslate"><span class="pre">min_periods=1</span></code>, computing a shorter window rather than discarding the row</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="interaction-ratio-features">
+<h2>§6 — Interaction &amp; Ratio Features<a class="headerlink" href="#interaction-ratio-features" title="Link to this heading">#</a></h2>
+<p>Combining two or more columns can capture relationships that neither column
+captures alone. Most valuable when domain knowledge suggests the combination
+is meaningful.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">recipes</span><span class="p">)</span>
+
+<span class="c1"># Use df_train from cell 3 (has spend and churn)</span>
+<span class="n">df_feat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_train</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="c1"># Ratio features</span>
+<span class="w">  </span><span class="n">spend_per_visit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spend</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">pmax</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">spend</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">50</span><span class="p">)),</span><span class="w">   </span><span class="c1"># illustrative</span>
+<span class="w">  </span><span class="c1"># Group-relative features</span>
+<span class="w">  </span><span class="n">group_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">spend</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">spend_vs_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spend</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">group_mean</span><span class="p">,</span>
+<span class="w">  </span><span class="c1"># Interaction via recipes</span>
+<span class="w">  </span><span class="n">spend_x_churn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spend</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">churn</span>
+<span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Ratio and interaction features:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df_feat</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">spend</span><span class="p">,</span><span class="w"> </span><span class="n">spend_per_visit</span><span class="p">,</span><span class="w"> </span><span class="n">spend_vs_mean</span><span class="p">,</span><span class="w"> </span><span class="n">spend_x_churn</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="m">6</span><span class="p">))</span>
+
+<span class="c1"># step_poly + step_interact via recipes</span>
+<span class="n">rec_int</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">recipe</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">spend</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">risk_enc</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_train</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_poly</span><span class="p">(</span><span class="n">spend</span><span class="p">,</span><span class="w"> </span><span class="n">degree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_interact</span><span class="p">(</span><span class="n">terms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">spend_poly_1</span><span class="o">:</span><span class="n">risk_enc</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">prep</span><span class="p">(</span><span class="n">training</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_train</span><span class="p">)</span>
+<span class="n">int_out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec_int</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nPolynomial + interaction features:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">int_out</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ratio and interaction features:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 6 × 4
+  spend spend_per_visit spend_vs_mean spend_x_churn
+  &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
+1 210.             52.5         -<span class=" -Color -Color-Red">32.9</span>             0
+2 217              54.2         -<span class=" -Color -Color-Red">26.1</span>           217
+3 273.             54.7          30.2             0
+4 213.             53.2         -<span class=" -Color -Color-Red">30.4</span>             0
+5  57.8            57.8        -<span class=" -Color -Color-Red">185.</span>              0
+6 196.             49.1         -<span class=" -Color -Color-Red">46.7</span>             0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Polynomial + interaction features:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;risk_enc&quot;                &quot;spend_poly_1&quot;           
+[3] &quot;spend_poly_2&quot;            &quot;spend_poly_1_x_risk_enc&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Dividing without handling zeros — <code class="docutils literal notranslate"><span class="pre">clicks</span> <span class="pre">/</span> <span class="pre">impressions</span></code> when <code class="docutils literal notranslate"><span class="pre">impressions</span> <span class="pre">=</span> <span class="pre">0</span></code> produces <code class="docutils literal notranslate"><span class="pre">Inf</span></code> or <code class="docutils literal notranslate"><span class="pre">NaN</span></code>; always <code class="docutils literal notranslate"><span class="pre">na_if(denominator,</span> <span class="pre">0)</span></code> first, R’s direct analog to pandas’ <code class="docutils literal notranslate"><span class="pre">.replace(0,</span> <span class="pre">np.nan)</span></code></p></li>
+<li><p>Creating all possible interactions automatically without domain guidance — most interactions are noise; domain-motivated features outperform automated <code class="docutils literal notranslate"><span class="pre">step_poly()</span></code>/<code class="docutils literal notranslate"><span class="pre">step_interact()</span></code> features</p></li>
+<li><p>Not checking for multicollinearity after adding ratio features — <code class="docutils literal notranslate"><span class="pre">rev_per_user</span></code>, <code class="docutils literal notranslate"><span class="pre">total_rev</span></code>, and <code class="docutils literal notranslate"><span class="pre">user_count</span></code> are linearly dependent; use <code class="docutils literal notranslate"><span class="pre">car::vif()</span></code> or a correlation matrix (<code class="docutils literal notranslate"><span class="pre">cor()</span></code>) to diagnose</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="text-as-features">
+<h2>§7 — Text as Features<a class="headerlink" href="#text-as-features" title="Link to this heading">#</a></h2>
+<p>For tabular ML problems with one or two text columns — not full NLP, just
+enough to extract signal from free text. <code class="docutils literal notranslate"><span class="pre">textrecipes</span></code> extends the
+<code class="docutils literal notranslate"><span class="pre">recipes</span></code> framework with text-specific <code class="docutils literal notranslate"><span class="pre">step_*()</span></code> functions, the direct
+tidymodels analog to scikit-learn’s <code class="docutils literal notranslate"><span class="pre">feature_extraction.text</span></code> module.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">textrecipes</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">recipes</span><span class="p">)</span>
+
+<span class="c1"># Self-contained text sample</span>
+<span class="n">df_text</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">id</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">100</span><span class="p">,</span>
+<span class="w">  </span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;fast shipping great product love it&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;poor quality bad packaging disappointed&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;excellent value amazing quality highly recommend&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;slow delivery item damaged on arrival&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;good product fair price would buy again&quot;</span>
+<span class="w">  </span><span class="p">),</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rbinom</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">train_text</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_text</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">70</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+<span class="n">test_text</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_text</span><span class="p">[</span><span class="m">71</span><span class="o">:</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+
+<span class="c1"># Simple text features (no vectorization needed)</span>
+<span class="n">train_text</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">train_text</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">word_count</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">str_count</span><span class="p">(</span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\\S+&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">has_positive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="nf">str_detect</span><span class="p">(</span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;great|excellent|amazing|good&quot;</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">has_negative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="nf">str_detect</span><span class="p">(</span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;poor|bad|disappointed|damaged&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Simple text features:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">train_text</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">word_count</span><span class="p">,</span><span class="w"> </span><span class="n">has_positive</span><span class="p">,</span><span class="w"> </span><span class="n">has_negative</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="m">4</span><span class="p">))</span>
+
+<span class="c1"># Manual stop-word list -- avoids the &#39;stopwords&#39; package dependency</span>
+<span class="c1"># step_stopwords() needs the external &#39;stopwords&#39; package; supplying a custom</span>
+<span class="c1"># list via custom_stopword_source bypasses that dependency entirely.</span>
+<span class="n">manual_stopwords</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="s">&quot;an&quot;</span><span class="p">,</span><span class="s">&quot;the&quot;</span><span class="p">,</span><span class="s">&quot;and&quot;</span><span class="p">,</span><span class="s">&quot;or&quot;</span><span class="p">,</span><span class="s">&quot;in&quot;</span><span class="p">,</span><span class="s">&quot;on&quot;</span><span class="p">,</span><span class="s">&quot;at&quot;</span><span class="p">,</span><span class="s">&quot;to&quot;</span><span class="p">,</span><span class="s">&quot;of&quot;</span><span class="p">,</span>
+<span class="w">                       </span><span class="s">&quot;it&quot;</span><span class="p">,</span><span class="s">&quot;is&quot;</span><span class="p">,</span><span class="s">&quot;was&quot;</span><span class="p">,</span><span class="s">&quot;be&quot;</span><span class="p">,</span><span class="s">&quot;as&quot;</span><span class="p">,</span><span class="s">&quot;for&quot;</span><span class="p">,</span><span class="s">&quot;with&quot;</span><span class="p">,</span><span class="s">&quot;this&quot;</span><span class="p">,</span><span class="s">&quot;that&quot;</span><span class="p">)</span>
+
+<span class="c1"># TF-IDF via textrecipes (no external package dependencies)</span>
+<span class="n">rec_tfidf</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">recipe</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">train_text</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_tokenize</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_stopwords</span><span class="p">(</span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">custom_stopword_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">manual_stopwords</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_tokenfilter</span><span class="p">(</span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">max_tokens</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_tfidf</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">prep</span><span class="p">(</span><span class="n">training</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">train_text</span><span class="p">)</span>
+
+<span class="n">tfidf_train</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec_tfidf</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span>
+<span class="n">tfidf_test</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec_tfidf</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_text</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\nTF-IDF features: %d columns\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">ncol</span><span class="p">(</span><span class="n">tfidf_train</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Feature names:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">tfidf_train</span><span class="p">)[</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">],</span><span class="w"> </span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;...\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># Bag of Words (raw counts instead of TF-IDF weights)</span>
+<span class="n">rec_bow</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">recipe</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">train_text</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_tokenize</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_stopwords</span><span class="p">(</span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">custom_stopword_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">manual_stopwords</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_tokenfilter</span><span class="p">(</span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">max_tokens</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_tf</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">prep</span><span class="p">(</span><span class="n">training</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">train_text</span><span class="p">)</span>
+
+<span class="n">bow_train</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec_bow</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;BoW features   : %d columns\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">ncol</span><span class="p">(</span><span class="n">bow_train</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;(step_tf = raw counts, step_tfidf = TF-IDF weighted counts)\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘stringr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following object is masked from ‘package:recipes’:
+
+    fixed
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simple text features:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 4 × 4
+  description                             word_count has_positive has_negative
+  &lt;chr&gt;                                        &lt;int&gt;        &lt;int&gt;        &lt;int&gt;
+1 poor quality bad packaging disappointed          5            0            1
+2 poor quality bad packaging disappointed          5            0            1
+3 poor quality bad packaging disappointed          5            0            1
+4 good product fair price would buy again          7            1            0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TF-IDF features: 20 columns
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Feature names: tfidf_description_again, tfidf_description_arrival, tfidf_description_bad, tfidf_description_buy, tfidf_description_damaged ...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BoW features   : 20 columns
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(step_tf = raw counts, step_tfidf = TF-IDF weighted counts)
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">prep()</span></code>-ing the text recipe on the full dataset — vocabulary and IDF weights leak test distribution; always <code class="docutils literal notranslate"><span class="pre">prep(training</span> <span class="pre">=</span> <span class="pre">X_train)</span></code></p></li>
+<li><p>Not filling <code class="docutils literal notranslate"><span class="pre">NA</span></code> before tokenizing — <code class="docutils literal notranslate"><span class="pre">step_tokenize()</span></code> errors on <code class="docutils literal notranslate"><span class="pre">NA</span></code> values; use <code class="docutils literal notranslate"><span class="pre">mutate(description</span> <span class="pre">=</span> <span class="pre">replace_na(description,</span> <span class="pre">&quot;&quot;))</span></code> first, identical trap to pandas’ <code class="docutils literal notranslate"><span class="pre">TfidfVectorizer</span></code> on un-filled NaN</p></li>
+<li><p>Using too many <code class="docutils literal notranslate"><span class="pre">max_tokens</span></code> — 100-500 is usually enough; more features add noise and memory pressure</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="leakage-validation">
+<h2>§8 — Leakage &amp; Validation<a class="headerlink" href="#leakage-validation" title="Link to this heading">#</a></h2>
+<p>Feature leakage is when information from the future (or from the target
+itself) is encoded into features used to train the model. It produces
+unrealistically high training performance and catastrophic failure in
+production.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">rsample</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">recipes</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span>
+
+<span class="c1"># Sample data for leakage examples</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">500</span>
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">50</span><span class="p">,</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">),</span>
+<span class="w">  </span><span class="n">date</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="nf">seq</span><span class="p">(</span><span class="nf">as.Date</span><span class="p">(</span><span class="s">&quot;2024-01-01&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;month&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">length.out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">),</span><span class="w"> </span><span class="m">50</span><span class="p">),</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">30</span><span class="p">),</span>
+<span class="w">  </span><span class="n">feature1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n</span><span class="p">),</span>
+<span class="w">  </span><span class="n">feature2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">y_target</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rbinom</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">0.3</span><span class="p">)</span>
+<span class="n">X_train</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">feature1</span><span class="p">,</span><span class="w"> </span><span class="n">feature2</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">slice</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">350</span><span class="p">)</span>
+<span class="n">X_test</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">feature1</span><span class="p">,</span><span class="w"> </span><span class="n">feature2</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">slice</span><span class="p">(</span><span class="m">351</span><span class="o">:</span><span class="n">n</span><span class="p">)</span>
+<span class="n">y_train</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">y_target</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">350</span><span class="p">]</span>
+
+<span class="c1"># ── Type 1: Target leakage -- feature is computed using the target ─────────────</span>
+<span class="c1"># Example: predicting loan default, and a feature is &#39;days_past_due&#39;</span>
+<span class="c1"># days_past_due is 0 for non-defaulters and &gt;0 for defaulters -- it IS the target</span>
+
+<span class="c1"># Detection: check correlation of each feature with the target</span>
+<span class="n">correlations</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sapply</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">is.numeric</span><span class="p">(</span><span class="n">col</span><span class="p">))</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="nf">cor</span><span class="p">(</span><span class="n">col</span><span class="p">,</span><span class="w"> </span><span class="n">y_train</span><span class="p">,</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;complete.obs&quot;</span><span class="p">))</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="kc">NA</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Feature correlations with target:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">sort</span><span class="p">(</span><span class="n">correlations</span><span class="p">,</span><span class="w"> </span><span class="n">decreasing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">na.last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Suspicious: correlation &gt; 0.8 -&gt; investigate that feature\n\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Type 2: Temporal leakage -- using future data for a past prediction ────────</span>
+<span class="n">df_sorted</span><span class="w">     </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+<span class="n">split_correct</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">initial_time_split</span><span class="p">(</span><span class="n">df_sorted</span><span class="p">,</span><span class="w"> </span><span class="n">prop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">)</span>
+<span class="n">train</span><span class="w">         </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">training</span><span class="p">(</span><span class="n">split_correct</span><span class="p">)</span>
+<span class="n">test</span><span class="w">          </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">testing</span><span class="p">(</span><span class="n">split_correct</span><span class="p">)</span>
+<span class="c1"># quantile() does not work on Date objects directly -- convert to numeric first</span>
+<span class="n">cutoff</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.Date</span><span class="p">(</span><span class="nf">quantile</span><span class="p">(</span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">date</span><span class="p">),</span><span class="w"> </span><span class="m">0.8</span><span class="p">),</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;1970-01-01&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Time-based split cutoff: %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">as.character</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Train: %d rows, Test: %d rows\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">train</span><span class="p">),</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">test</span><span class="p">)))</span>
+
+<span class="c1"># ── Type 3: Group leakage -- same entity in train and test ─────────────────────</span>
+<span class="n">split_group</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">group_initial_split</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">prop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">)</span>
+<span class="n">X_train_grp</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">training</span><span class="p">(</span><span class="n">split_group</span><span class="p">)</span>
+<span class="n">X_test_grp</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">testing</span><span class="p">(</span><span class="n">split_group</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Group split -- users in train: %d, in test: %d, overlap: %d\n&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">X_train_grp</span><span class="o">$</span><span class="n">user_id</span><span class="p">),</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">X_test_grp</span><span class="o">$</span><span class="n">user_id</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">length</span><span class="p">(</span><span class="nf">intersect</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">X_train_grp</span><span class="o">$</span><span class="n">user_id</span><span class="p">),</span><span class="w"> </span><span class="nf">unique</span><span class="p">(</span><span class="n">X_test_grp</span><span class="o">$</span><span class="n">user_id</span><span class="p">)))))</span>
+
+<span class="c1"># ── Safe preprocessing pipeline -- prep on train, bake both ───────────────────</span>
+<span class="n">rec</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">recipe</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">feature1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">feature2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_train</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_impute_median</span><span class="p">(</span><span class="nf">all_numeric_predictors</span><span class="p">())</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_normalize</span><span class="p">(</span><span class="nf">all_numeric_predictors</span><span class="p">())</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">prep</span><span class="p">(</span><span class="n">training</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_train</span><span class="p">)</span>
+
+<span class="n">X_train_processed</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span>
+<span class="n">X_test_processed</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_test</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\nProcessed train shape: %d x %d\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">X_train_processed</span><span class="p">),</span><span class="w"> </span><span class="nf">ncol</span><span class="p">(</span><span class="n">X_train_processed</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;prep() on train only -- bake() applies the same transform to test (no re-fitting)\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Feature correlations with target:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   revenue   feature2   feature1 
+0.03368084 0.03297908 0.01372824 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Suspicious: correlation &gt; 0.8 -&gt; investigate that feature
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time-based split cutoff: 2024-08-07
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train: 400 rows, Test: 100 rows
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Group split -- users in train: 40, in test: 10, overlap: 0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Processed train shape: 350 x 3
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>prep() on train only -- bake() applies the same transform to test (no re-fitting)
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Leakage types and fixes:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Type</p></th>
+<th class="head text-left"><p>Signal</p></th>
+<th class="head text-left"><p>Fix</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Target leakage</p></td>
+<td class="text-left"><p>Feature correlates &gt;0.8 with target; comes from post-event data</p></td>
+<td class="text-left"><p>Remove the feature; ask “would I know this at prediction time?”</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Temporal leakage</p></td>
+<td class="text-left"><p>Random split on time-series; rolling features without <code class="docutils literal notranslate"><span class="pre">lag(1)</span></code></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">initial_time_split()</span></code> / cutoff filter; always wrap in <code class="docutils literal notranslate"><span class="pre">lag(1)</span></code> before <code class="docutils literal notranslate"><span class="pre">slide_dbl()</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Group leakage</p></td>
+<td class="text-left"><p>Same entity ID in train and test</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">group_initial_split()</span></code> or entity-level split</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Preprocessing leakage</p></td>
+<td class="text-left"><p>Recipe <code class="docutils literal notranslate"><span class="pre">prep()</span></code>-ed on full data before split</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">prep(training</span> <span class="pre">=</span> <span class="pre">X_train)</span></code> only, never on combined data</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Target encoding leakage</p></td>
+<td class="text-left"><p>Category means computed without CV</p></td>
+<td class="text-left"><p>Use out-of-fold CV target encoding (see §1)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Treating suspiciously high accuracy as a win — if a churn model hits 99% AUC, check for leakage before celebrating</p></li>
+<li><p>Filling missing values before splitting — the imputed value (e.g. median) is computed from the full dataset, leaking test statistics into train; this is exactly what <code class="docutils literal notranslate"><span class="pre">step_impute_median()</span></code> inside a <code class="docutils literal notranslate"><span class="pre">prep(training</span> <span class="pre">=</span> <span class="pre">X_train)</span></code>-scoped recipe prevents structurally</p></li>
+<li><p>Manually computing scaling/imputation statistics outside a <code class="docutils literal notranslate"><span class="pre">recipe()</span></code> and applying them by hand to both sets — the <code class="docutils literal notranslate"><span class="pre">recipe()</span></code>/<code class="docutils literal notranslate"><span class="pre">prep()</span></code>/<code class="docutils literal notranslate"><span class="pre">bake()</span></code> pattern enforces correct fit-on-train behavior the same way <code class="docutils literal notranslate"><span class="pre">sklearn.Pipeline</span></code> does; bypassing it reintroduces the exact risk it exists to close off</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="decision-guide">
+<h2>Decision Guide<a class="headerlink" href="#decision-guide" title="Link to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Encoding a categorical column?
++-- Nominal, &lt;15 unique values, linear model    -&gt; step_dummy() (one level dropped by default)  (§1)
++-- Ordinal (Low/Med/High)                      -&gt; ordered factor + as.integer()                (§1)
++-- High cardinality, tree model                -&gt; frequency encoding (count() + left_join)      (§1)
+\-- High cardinality, strong target signal      -&gt; target encoding with CV (vfold_cv)            (§1)
+
+Transforming a numeric column?
++-- Right-skewed (revenue, counts)              -&gt; log1p()                                       (§2)
++-- Linear model, SVM, KNN, NN                  -&gt; step_normalize() (fit on train only)          (§2)
++-- Has significant outliers                    -&gt; manual median/IQR scaling                     (§2)
+\-- Want auto-normalization                     -&gt; step_YeoJohnson()                              (§2)
+
+Binning a continuous variable?
++-- Business-defined thresholds                 -&gt; cut(breaks = ...)                              (§3)
++-- Equal-sized groups                          -&gt; quantile() breaks on train only, then cut()    (§3)
+\-- Multi-condition business logic              -&gt; case_when()                                    (§3)
+
+Extracting from a datetime column?
++-- Cyclical component (hour, month, weekday)   -&gt; sin/cos encoding                              (§4)
++-- Time elapsed since an event                 -&gt; as.numeric(as_date(ts) - ref_date)             (§4)
+\-- Time since last event per user              -&gt; group_by() |&gt; lag() -&gt; difftime in hours       (§4)
+
+Creating lag/window features?
++-- Previous value                              -&gt; group_by() |&gt; lag()                            (§5)
++-- Rolling mean/std over last N rows           -&gt; slide_dbl(lag(x,1), fn, .before=N-1)           (§5)
++-- Cumulative sum from start of series         -&gt; slide_dbl(lag(x,1), sum, .before=Inf)          (§5)
+\-- Train/test split                            -&gt; initial_time_split() / date cutoff, NOT random (§5)
+
+Combining two columns?
++-- One normalizes the other (CTR, ARPU)        -&gt; ratio feature (na_if() the denominator)       (§6)
++-- Gap from a reference (vs group mean)        -&gt; difference feature                             (§6)
+\-- Both features interact                      -&gt; product feature / step_interact()              (§6)
+
+Text column in a tabular dataset?
++-- Simple signal (length, keywords, counts)    -&gt; str_length(), str_detect()                    (§7)
+\-- Richer vocabulary signal                    -&gt; textrecipes::step_tfidf() (fit on train only)  (§7)
+
+Suspecting leakage?
++-- Model accuracy is unrealistically high      -&gt; check feature correlations with target         (§8)
++-- Time-series with random split               -&gt; switch to initial_time_split()                 (§8)
++-- Same user in train and test                 -&gt; group_initial_split()                          (§8)
+\-- Preprocessing fit on full data              -&gt; use a recipe(), prep(training=X_train) only    (§8)
+</pre></div>
+</div>
+<p><strong>§8 capstone: the full <code class="docutils literal notranslate"><span class="pre">recipe()</span></code>, the direct structural analog to
+<code class="docutils literal notranslate"><span class="pre">ColumnTransformer</span></code>.</strong> §8 shows individual steps in isolation, but real
+feature sets mix column types in one object. Unlike scikit-learn (where
+<code class="docutils literal notranslate"><span class="pre">ColumnTransformer</span></code> is a <em>separate</em> wrapper needed specifically because
+individual transformers are column-blind), <code class="docutils literal notranslate"><span class="pre">recipes::recipe()</span></code> <strong>already</strong>
+routes each <code class="docutils literal notranslate"><span class="pre">step_*()</span></code> to the right columns via <code class="docutils literal notranslate"><span class="pre">tidyselect</span></code> — there is no
+extra wrapping layer to learn. <code class="docutils literal notranslate"><span class="pre">prep()</span></code> fits on train; <code class="docutils literal notranslate"><span class="pre">bake()</span></code> applies
+to test.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">recipes</span><span class="p">)</span>
+
+<span class="n">X_train</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">age</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="m">40</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">33</span><span class="p">),</span>
+<span class="w">  </span><span class="n">platform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;ios&#39;</span><span class="p">,</span><span class="s">&#39;web&#39;</span><span class="p">,</span><span class="s">&#39;ios&#39;</span><span class="p">,</span><span class="s">&#39;android&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">rec</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">recipe</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">platform</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_train</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">step_impute_median</span><span class="p">(</span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w">                              </span><span class="c1"># numeric pipeline, step 1: impute</span>
+<span class="w">  </span><span class="nf">step_normalize</span><span class="p">(</span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w">                                   </span><span class="c1"># numeric pipeline, step 2: scale</span>
+<span class="w">  </span><span class="nf">step_dummy</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span><span class="w"> </span><span class="n">one_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w">                  </span><span class="c1"># categorical pipeline: one-hot encode</span>
+<span class="w">  </span><span class="nf">prep</span><span class="p">(</span><span class="n">training</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_train</span><span class="p">)</span><span class="w">                                  </span><span class="c1"># fit on TRAIN only; use bake(rec, new_data = X_test) on test</span>
+
+<span class="n">out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bake</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span><span class="w"> </span><span class="n">new_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&#39;output shape :&#39;</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="nf">dim</span><span class="p">(</span><span class="n">out</span><span class="p">),</span><span class="w"> </span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot; x &quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;\n&#39;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&#39;feature names:&#39;</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">out</span><span class="p">),</span><span class="w"> </span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;\n&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>output shape : 4 x 4 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>feature names: age, platform_android, platform_ios, platform_web 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./Data Manipulation"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="DM_Intermediate.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Data Manipulation — Intermediate</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="metrics_R.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Business Metrics — R Reference</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,2210 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>dplyr – Technical Reference &#8212; Data Science Study Notes - R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Data Manipulation/Reference_dplyr';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Manipulation — Basic" href="DM_Basic.html" />
+    <link rel="prev" title="Base R — Technical Reference" href="Reference_BaseR.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Data Science Study Notes - R</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Topics
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Causal%20ML/cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Causal%20ML/cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Reference_BaseR.html">Base R — Technical Reference</a></li>
+
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">dplyr – Technical Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DM_Basic.html">Data Manipulation — Basic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DM_Intermediate.html">Data Manipulation — Intermediate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DM_Advanced.html">Data Manipulation — Advanced</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics_R.html">Business Metrics — R Reference</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-index">Quick Index</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use">When to Use</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-data">Sample Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss1-data-inspection">SS1 – Data Inspection</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss2-selection-and-filtering">SS2 – Selection and Filtering</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss3-na-handling">SS3 – NA Handling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss4-data-manipulation">SS4 – Data Manipulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss5-joins-and-merges">SS5 – Joins and Merges</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss6-aggregation-and-groupby">SS6 – Aggregation and GroupBy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss7-window-operations">SS7 – Window Operations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss8-date-and-time">SS8 – Date and Time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss9-string-operations">SS9 – String Operations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss10-i-o">SS10 – I/O</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss11-performance-tips">SS11 – Performance Tips</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decision-guide">Decision Guide</a></li>
+</ul>
+  </nav></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../intro.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="R_Data_Libs.html" class="nav-link">R Data Libraries</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">dplyr – Technical Reference</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="dplyr-technical-reference">
+<h1>dplyr – Technical Reference<a class="headerlink" href="#dplyr-technical-reference" title="Link to this heading">#</a></h1>
+<p>R’s primary data manipulation package. dplyr provides a consistent set of
+verbs for the most common data manipulation tasks. Other tidyverse packages
+(tidyr, stringr, lubridate) are loaded individually in the sections that
+need them.</p>
+<section id="quick-index">
+<h2>Quick Index<a class="headerlink" href="#quick-index" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Pattern</p></th>
+<th class="head text-left"><p>When to use</p></th>
+<th class="head text-left"><p>Section</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Data inspection</p></td>
+<td class="text-left"><p>First look at any data frame</p></td>
+<td class="text-left"><p>SS1</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Selection and filtering</p></td>
+<td class="text-left"><p>Subset rows and columns</p></td>
+<td class="text-left"><p>SS2</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>NA handling</p></td>
+<td class="text-left"><p>Missing values</p></td>
+<td class="text-left"><p>SS3</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Data manipulation</p></td>
+<td class="text-left"><p>Clean, transform, create columns</p></td>
+<td class="text-left"><p>SS4</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Joins and merges</p></td>
+<td class="text-left"><p>Combine data frames</p></td>
+<td class="text-left"><p>SS5</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Aggregation and GroupBy</p></td>
+<td class="text-left"><p>Summarize, reshape, pivot</p></td>
+<td class="text-left"><p>SS6</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Window operations</p></td>
+<td class="text-left"><p>Rank, shift, cumulative, rolling</p></td>
+<td class="text-left"><p>SS7</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Date and time</p></td>
+<td class="text-left"><p>Date arithmetic, extraction</p></td>
+<td class="text-left"><p>SS8</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>String operations</p></td>
+<td class="text-left"><p>Text cleaning and extraction</p></td>
+<td class="text-left"><p>SS9</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>I/O</p></td>
+<td class="text-left"><p>Read and write data</p></td>
+<td class="text-left"><p>SS10</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Performance tips</p></td>
+<td class="text-left"><p>Speed and memory optimization</p></td>
+<td class="text-left"><p>SS11</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="when-to-use">
+<h2>When to Use<a class="headerlink" href="#when-to-use" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Signal</p></th>
+<th class="head text-left"><p>Function to reach for</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>First look at a data frame</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">glimpse()</span></code>, <code class="docutils literal notranslate"><span class="pre">summary()</span></code>, <code class="docutils literal notranslate"><span class="pre">head()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Filter rows by condition</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">filter()</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Select columns</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">select()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Replace NAs</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">tidyr::replace_na()</span></code> or <code class="docutils literal notranslate"><span class="pre">coalesce()</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Apply condition to create a column</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">if_else()</span></code> (binary) or <code class="docutils literal notranslate"><span class="pre">case_when()</span></code> (multi)</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Summarize with aggregation</p></td>
+<td class="text-left"><p>`group_by()</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Apply aggregation but keep original shape</p></td>
+<td class="text-left"><p>`group_by()</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Rank within a group</p></td>
+<td class="text-left"><p>`group_by()</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Compare to previous / next row</p></td>
+<td class="text-left"><p>`group_by()</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Running total within a group</p></td>
+<td class="text-left"><p>`group_by()</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Pivot rows to columns</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">tidyr::pivot_wider()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Combine two data frames on a key</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">*_join()</span></code> family</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Find rows with no match</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">anti_join()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Moving average</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">slider::slide_dbl(x,</span> <span class="pre">mean,</span> <span class="pre">.before</span> <span class="pre">=</span> <span class="pre">n-1)</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Parse date strings</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">lubridate::ymd()</span></code>, <code class="docutils literal notranslate"><span class="pre">ymd_hms()</span></code>, etc.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Extract date parts</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">lubridate::year()</span></code>, <code class="docutils literal notranslate"><span class="pre">month()</span></code>, <code class="docutils literal notranslate"><span class="pre">wday()</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>String pattern match</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">stringr::str_detect()</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="sample-data">
+<h2>Sample Data<a class="headerlink" href="#sample-data" title="Link to this heading">#</a></h2>
+<p>Run this cell first. All sections below reuse these frames.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Small reusable sample frame used throughout this reference</span>
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="m">6</span><span class="p">),</span>
+<span class="w">  </span><span class="n">age</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">34</span><span class="p">,</span><span class="w"> </span><span class="m">28</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">41</span><span class="p">,</span><span class="w"> </span><span class="m">19</span><span class="p">,</span><span class="w"> </span><span class="m">55</span><span class="p">),</span>
+<span class="w">  </span><span class="n">region</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;US&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;EU&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;US&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;EU&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;US&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;EU&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">platform</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;iOS&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Android&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Web&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;iOS&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Android&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Web&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">120</span><span class="p">,</span><span class="w"> </span><span class="m">95</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="m">310</span><span class="p">),</span>
+<span class="w">  </span><span class="n">active</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">A</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">),</span><span class="w"> </span><span class="n">val_a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;c&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;d&quot;</span><span class="p">))</span>
+<span class="n">B</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">),</span><span class="w"> </span><span class="n">val_b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;y&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;z&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;w&quot;</span><span class="p">))</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 6 × 6
+  user_id   age region platform revenue active
+    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt; &lt;lgl&gt; 
+1       1    34 US     iOS          120 TRUE  
+2       2    28 EU     Android       95 TRUE  
+3       3    <span class=" -Color -Color-Red">NA</span> US     Web           <span class=" -Color -Color-Red">NA</span> FALSE 
+4       4    41 EU     iOS          200 TRUE  
+5       5    19 US     Android       15 FALSE 
+6       6    55 EU     Web          310 TRUE  
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="ss1-data-inspection">
+<h2>SS1 – Data Inspection<a class="headerlink" href="#ss1-data-inspection" title="Link to this heading">#</a></h2>
+<p>Always run these first. They tell you shape, types, missing values,
+and distributions before you touch the data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Shape and preview</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
+<span class="nf">tail</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
+
+<span class="c1"># Types and null counts</span>
+<span class="nf">glimpse</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># Summary statistics</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># Null summary</span>
+<span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">column</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">df</span><span class="p">),</span>
+<span class="w">  </span><span class="n">null_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">colSums</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">df</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">null_rate</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="nf">colMeans</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">df</span><span class="p">)),</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">null_count</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+
+<span class="c1"># Cardinality</span>
+<span class="nf">n_distinct</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">region</span><span class="p">)</span>
+<span class="nf">table</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">platform</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>6</li><li>6</li></ol>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 3 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 3 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rows: 6
+Columns: 6
+$ user_id  &lt;dbl&gt; 1, 2, 3, 4, 5, 6
+$ age      &lt;dbl&gt; 34, 28, <span class=" -Color -Color-Red">NA</span>, 41, 19, 55
+$ region   &lt;chr&gt; &quot;US&quot;, &quot;EU&quot;, &quot;US&quot;, &quot;EU&quot;, &quot;US&quot;, &quot;EU&quot;
+$ platform &lt;chr&gt; &quot;iOS&quot;, &quot;Android&quot;, &quot;Web&quot;, &quot;iOS&quot;, &quot;Android&quot;, &quot;Web&quot;
+$ revenue  &lt;dbl&gt; 120, 95, <span class=" -Color -Color-Red">NA</span>, 200, 15, 310
+$ active   &lt;lgl&gt; TRUE, TRUE, FALSE, TRUE, FALSE, TRUE
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    user_id          age             region       platform    revenue   
+ Min.   :1.00   Min.   :19.0   Length   :6   Length   :6   Min.   : 15  
+ 1st Qu.:2.25   1st Qu.:28.0   N.unique :2   N.unique :3   1st Qu.: 95  
+ Median :3.50   Median :34.0   N.blank  :0   N.blank  :0   Median :120  
+ Mean   :3.50   Mean   :35.4   Min.nchar:2   Min.nchar:3   Mean   :148  
+ 3rd Qu.:4.75   3rd Qu.:41.0   Max.nchar:2   Max.nchar:7   3rd Qu.:200  
+ Max.   :6.00   Max.   :55.0                               Max.   :310  
+                NAs    :1                                  NAs    :1    
+   active       
+ Mode :logical  
+ FALSE:2        
+ TRUE :4        
+                
+                
+                
+                
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 3</caption>
+<thead>
+	<tr><th scope=col>column</th><th scope=col>null_count</th><th scope=col>null_rate</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>age    </td><td>1</td><td>0.167</td></tr>
+	<tr><td>revenue</td><td>1</td><td>0.167</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html">2</div><div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Android     iOS     Web 
+      2       2       2 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="ss2-selection-and-filtering">
+<h2>SS2 – Selection and Filtering<a class="headerlink" href="#ss2-selection-and-filtering" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">select()</span></code> picks columns, <code class="docutils literal notranslate"><span class="pre">filter()</span></code> picks rows by condition,
+<code class="docutils literal notranslate"><span class="pre">slice()</span></code> picks rows by position. Row and column selection are
+separate verbs chained with the pipe.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Column selection</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">region</span><span class="p">)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="o">-</span><span class="n">active</span><span class="p">)</span><span class="w">             </span><span class="c1"># drop a column</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">pull</span><span class="p">(</span><span class="n">revenue</span><span class="p">)</span><span class="w">               </span><span class="c1"># single column as bare vector</span>
+
+<span class="c1"># Row selection by position</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">slice</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">slice_head</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">slice_tail</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+
+<span class="c1"># Filter rows by condition</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">age</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">30</span><span class="p">)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">age</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">region</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;US&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">platform</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;iOS&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Android&quot;</span><span class="p">))</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">revenue</span><span class="p">))</span>
+
+<span class="c1"># Row + column together</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">revenue</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">100</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 2</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>region</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>US</td></tr>
+	<tr><td>2</td><td>EU</td></tr>
+	<tr><td>3</td><td>US</td></tr>
+	<tr><td>4</td><td>EU</td></tr>
+	<tr><td>5</td><td>US</td></tr>
+	<tr><td>6</td><td>EU</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 5</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>120</li><li>95</li><li>&lt;NA&gt;</li><li>200</li><li>15</li><li>310</li></ol>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 3 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td>TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td>TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 3 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS</td><td>120</td><td>TRUE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS</td><td>200</td><td>TRUE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web</td><td>310</td><td>TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 1 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS</td><td>120</td><td>TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 4 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 5 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 3 × 3</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>region</th><th scope=col>revenue</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>US</td><td>120</td></tr>
+	<tr><td>4</td><td>EU</td><td>200</td></tr>
+	<tr><td>6</td><td>EU</td><td>310</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">filter()</span></code> silently drops rows where the condition evaluates to <code class="docutils literal notranslate"><span class="pre">NA</span></code> – always
+use <code class="docutils literal notranslate"><span class="pre">is.na()</span></code> explicitly when NA rows matter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">select(-c(col1,</span> <span class="pre">col2))</span></code> to drop multiple columns at once – the minus applies
+per column not as a vector subtraction</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pull()</span></code> returns a plain vector; <code class="docutils literal notranslate"><span class="pre">select()</span></code> always returns a data frame</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss3-na-handling">
+<h2>SS3 – NA Handling<a class="headerlink" href="#ss3-na-handling" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">NA</span></code> is R’s null marker. Unlike pandas, R aggregations return <code class="docutils literal notranslate"><span class="pre">NA</span></code>
+if any input is <code class="docutils literal notranslate"><span class="pre">NA</span></code> – always pass <code class="docutils literal notranslate"><span class="pre">na.rm</span> <span class="pre">=</span> <span class="pre">TRUE</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">tidyr</span><span class="p">)</span>
+
+<span class="c1"># Detect</span>
+<span class="nf">is.na</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">revenue</span><span class="p">)</span>
+<span class="nf">sum</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">revenue</span><span class="p">))</span>
+
+<span class="c1"># Fill with a value</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">replace_na</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">))</span>
+
+<span class="c1"># Coalesce -- first non-NA wins</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">coalesce</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">))</span>
+
+<span class="c1"># Fill with group mean</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">replace_na</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="c1"># Forward fill (sort first)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">fill</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">.direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;down&quot;</span><span class="p">)</span>
+
+<span class="c1"># Drop rows with NAs</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">drop_na</span><span class="p">(</span><span class="n">revenue</span><span class="p">)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">drop_na</span><span class="p">()</span>
+
+<span class="c1"># Aggregations -- na.rm = TRUE is required, unlike pandas which skips NaN by default</span>
+<span class="nf">sum</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>FALSE</li><li>FALSE</li><li>TRUE</li><li>FALSE</li><li>FALSE</li><li>FALSE</li></ol>
+</div><div class="output text_html">1</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td>  0</td><td>FALSE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td>  0</td><td>FALSE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120.0</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95.0</td><td> TRUE</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> 67.5</td><td>FALSE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200.0</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15.0</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310.0</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> 95</td><td>FALSE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 5 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 5 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html">740</div><div class="output text_html">148</div></div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Forgetting <code class="docutils literal notranslate"><span class="pre">na.rm</span> <span class="pre">=</span> <span class="pre">TRUE</span></code> – <code class="docutils literal notranslate"><span class="pre">sum(c(1,</span> <span class="pre">2,</span> <span class="pre">NA))</span></code> returns <code class="docutils literal notranslate"><span class="pre">NA</span></code>, not <code class="docutils literal notranslate"><span class="pre">3</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">df$col</span> <span class="pre">==</span> <span class="pre">NA</span></code> never works – always use <code class="docutils literal notranslate"><span class="pre">is.na()</span></code></p></li>
+<li><p>Forward-filling without <code class="docutils literal notranslate"><span class="pre">arrange()</span></code> first – fills in row order, not time order</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss4-data-manipulation">
+<h2>SS4 – Data Manipulation<a class="headerlink" href="#ss4-data-manipulation" title="Link to this heading">#</a></h2>
+<p>Column creation, renaming, type casting, and conditional logic
+built around <code class="docutils literal notranslate"><span class="pre">mutate()</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Add / overwrite columns</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">rev_per_user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">revenue</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">n</span><span class="p">())</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">log_rev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">log1p</span><span class="p">(</span><span class="n">revenue</span><span class="p">))</span>
+
+<span class="c1"># Rename</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">rename</span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">income</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">revenue</span><span class="p">)</span>
+
+<span class="c1"># Type casting</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">age</span><span class="p">))</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">platform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">platform</span><span class="p">))</span>
+
+<span class="c1"># Conditional logic -- binary</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">tier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">revenue</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;High&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Low&quot;</span><span class="p">))</span>
+
+<span class="c1"># Conditional logic -- multi-branch (case_when, first match wins)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">tier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">200</span><span class="w">              </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Premium&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">100</span><span class="w">              </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Standard&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="w">                </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Low&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Unknown&quot;</span>
+<span class="p">))</span>
+
+<span class="c1"># Value lookup (discrete replacement)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">region_full</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_match</span><span class="p">(</span><span class="n">region</span><span class="p">,</span>
+<span class="w">  </span><span class="s">&quot;US&quot;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;United States&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s">&quot;EU&quot;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Europe&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">region</span>
+<span class="p">))</span>
+
+<span class="c1"># Binning</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">age_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span>
+<span class="w">  </span><span class="n">age</span><span class="p">,</span>
+<span class="w">  </span><span class="n">breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">18</span><span class="p">,</span><span class="w"> </span><span class="m">35</span><span class="p">,</span><span class="w"> </span><span class="m">55</span><span class="p">,</span><span class="w"> </span><span class="m">100</span><span class="p">),</span>
+<span class="w">  </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Under 18&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;18-34&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;35-54&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;55+&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">include.lowest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">))</span>
+
+<span class="c1"># Drop columns or rows</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="o">-</span><span class="n">active</span><span class="p">)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">slice</span><span class="p">(</span><span class="m">-1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 7</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>rev_per_user</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td>20.00000</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td>15.83333</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>      NA</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td>33.33333</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td> 2.50000</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td>51.66667</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 7</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>log_rev</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td>4.795791</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td>4.564348</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>      NA</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td>5.303305</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td>2.772589</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td>5.739793</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 6</caption>
+<thead>
+	<tr><th scope=col>user</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>income</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;fct&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 7</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>tier</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td>High</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td>Low </td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>NA  </td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td>High</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td>Low </td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td>High</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 7</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>tier</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td>Standard</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td>Low     </td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>Unknown </td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td>Standard</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td>Low     </td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td>Premium </td></tr>
+</tbody>
+</table>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message:
+“There was 1 warning in `mutate()`.
+<span class=" -Color -Color-Cyan">ℹ</span> In argument: `region_full = case_match(region, &quot;US&quot; ~ &quot;United States&quot;, &quot;EU&quot; ~
+  &quot;Europe&quot;, .default = region)`.
+Caused by warning:
+<span class=" -Color -Color-Yellow">!</span> `case_match()` was deprecated in dplyr 1.2.0.
+<span class=" -Color -Color-Cyan">ℹ</span> Please use `recode_values()` instead.”
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 7</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>region_full</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td>United States</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td>Europe       </td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>United States</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td>Europe       </td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td>United States</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td>Europe       </td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 7</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>age_group</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;fct&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td>18-34</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td>18-34</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>NA   </td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td>35-54</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td>18-34</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td>35-54</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 5</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 5 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">if_else()</span></code> is strict about types – both branches must return the same type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">case_when(.default</span> <span class="pre">=</span> <span class="pre">col)</span></code> preserves unmatched values; without <code class="docutils literal notranslate"><span class="pre">.default</span></code> they
+become <code class="docutils literal notranslate"><span class="pre">NA</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rename(new</span> <span class="pre">=</span> <span class="pre">old)</span></code> – new name comes first, opposite of a Python dict</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss5-joins-and-merges">
+<h2>SS5 – Joins and Merges<a class="headerlink" href="#ss5-joins-and-merges" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">*_join()</span></code> family always matches on columns, never on row index –
+no <code class="docutils literal notranslate"><span class="pre">.join()</span></code> vs <code class="docutils literal notranslate"><span class="pre">.merge()</span></code> ambiguity.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Basic joins</span>
+<span class="nf">inner_join</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">)</span>
+<span class="nf">left_join</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">)</span>
+<span class="nf">right_join</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">)</span>
+<span class="nf">full_join</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">)</span>
+
+<span class="c1"># Join on differently named columns</span>
+<span class="nf">left_join</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;id&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">))</span>
+
+<span class="c1"># Handle overlapping column names</span>
+<span class="nf">left_join</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;_a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;_b&quot;</span><span class="p">))</span>
+
+<span class="c1"># Anti-join -- rows in A with no match in B</span>
+<span class="nf">anti_join</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">)</span>
+
+<span class="c1"># Stack vertically</span>
+<span class="nf">bind_rows</span><span class="p">(</span><span class="n">A</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">id</span><span class="p">))</span>
+
+<span class="c1"># Guard against fan-out (dplyr 1.1+)</span>
+<span class="nf">tryCatch</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">left_join</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">relationship</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;one-to-one&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="nf">cat</span><span class="p">(</span><span class="s">&quot;cardinality error caught\n&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 3 × 3</caption>
+<thead>
+	<tr><th scope=col>id</th><th scope=col>val_a</th><th scope=col>val_b</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>2</td><td>b</td><td>x</td></tr>
+	<tr><td>3</td><td>c</td><td>y</td></tr>
+	<tr><td>4</td><td>d</td><td>z</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 4 × 3</caption>
+<thead>
+	<tr><th scope=col>id</th><th scope=col>val_a</th><th scope=col>val_b</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>a</td><td>NA</td></tr>
+	<tr><td>2</td><td>b</td><td>x </td></tr>
+	<tr><td>3</td><td>c</td><td>y </td></tr>
+	<tr><td>4</td><td>d</td><td>z </td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 4 × 3</caption>
+<thead>
+	<tr><th scope=col>id</th><th scope=col>val_a</th><th scope=col>val_b</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>2</td><td>b </td><td>x</td></tr>
+	<tr><td>3</td><td>c </td><td>y</td></tr>
+	<tr><td>4</td><td>d </td><td>z</td></tr>
+	<tr><td>5</td><td>NA</td><td>w</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 5 × 3</caption>
+<thead>
+	<tr><th scope=col>id</th><th scope=col>val_a</th><th scope=col>val_b</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>a </td><td>NA</td></tr>
+	<tr><td>2</td><td>b </td><td>x </td></tr>
+	<tr><td>3</td><td>c </td><td>y </td></tr>
+	<tr><td>4</td><td>d </td><td>z </td></tr>
+	<tr><td>5</td><td>NA</td><td>w </td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 4 × 3</caption>
+<thead>
+	<tr><th scope=col>id</th><th scope=col>val_a</th><th scope=col>val_b</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>a</td><td>NA</td></tr>
+	<tr><td>2</td><td>b</td><td>x </td></tr>
+	<tr><td>3</td><td>c</td><td>y </td></tr>
+	<tr><td>4</td><td>d</td><td>z </td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 4 × 3</caption>
+<thead>
+	<tr><th scope=col>id</th><th scope=col>val_a</th><th scope=col>val_b</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>a</td><td>NA</td></tr>
+	<tr><td>2</td><td>b</td><td>x </td></tr>
+	<tr><td>3</td><td>c</td><td>y </td></tr>
+	<tr><td>4</td><td>d</td><td>z </td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 1 × 2</caption>
+<thead>
+	<tr><th scope=col>id</th><th scope=col>val_a</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>a</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 8 × 1</caption>
+<thead>
+	<tr><th scope=col>id</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td></tr>
+	<tr><td>2</td></tr>
+	<tr><td>3</td></tr>
+	<tr><td>4</td></tr>
+	<tr><td>2</td></tr>
+	<tr><td>3</td></tr>
+	<tr><td>4</td></tr>
+	<tr><td>5</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 4 × 3</caption>
+<thead>
+	<tr><th scope=col>id</th><th scope=col>val_a</th><th scope=col>val_b</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>a</td><td>NA</td></tr>
+	<tr><td>2</td><td>b</td><td>x </td></tr>
+	<tr><td>3</td><td>c</td><td>y </td></tr>
+	<tr><td>4</td><td>d</td><td>z </td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Demo</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;inner_join:\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="nf">inner_join</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nanti_join (in A, not in B):\n&quot;</span><span class="p">);</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="nf">anti_join</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>inner_join:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 3
+     id val_a val_b
+  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;
+1     2 b     x    
+2     3 c     y    
+3     4 d     z    
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>anti_join (in A, not in B):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 1 × 2
+     id val_a
+  &lt;dbl&gt; &lt;chr&gt;
+1     1 a    
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Joining on columns with different types – dplyr raises a type-mismatch error,
+cast both keys to the same type first</p></li>
+<li><p>Forgetting <code class="docutils literal notranslate"><span class="pre">suffix</span> <span class="pre">=</span></code> when both frames share non-key column names – dplyr adds
+<code class="docutils literal notranslate"><span class="pre">.x</span></code> / <code class="docutils literal notranslate"><span class="pre">.y</span></code> by default</p></li>
+<li><p>Row count grows after a left join – check key uniqueness in the right table
+with <code class="docutils literal notranslate"><span class="pre">count(B,</span> <span class="pre">id)</span></code> before joining</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss6-aggregation-and-groupby">
+<h2>SS6 – Aggregation and GroupBy<a class="headerlink" href="#ss6-aggregation-and-groupby" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">tidyr</span><span class="p">)</span>
+
+<span class="c1"># Basic aggregation</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">  </span><span class="n">total_rev</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">avg_rev</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">unique_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">user_id</span><span class="p">),</span>
+<span class="w">  </span><span class="n">n_rows</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="c1"># Group by</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">  </span><span class="n">total_rev</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">avg_rev</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">unique_users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">user_id</span><span class="p">),</span>
+<span class="w">  </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Conditional aggregation</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">  </span><span class="n">ios_rev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">if_else</span><span class="p">(</span><span class="n">platform</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;iOS&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Group stats back on every row (mutate, not summarise)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">region_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">pct_of_region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">revenue</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">region_total</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="c1"># Pivot wider -- two categorical dimensions</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">platform</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">pivot_wider</span><span class="p">(</span><span class="n">names_from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">platform</span><span class="p">,</span><span class="w"> </span><span class="n">values_from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">values_fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 1 × 4</caption>
+<thead>
+	<tr><th scope=col>total_rev</th><th scope=col>avg_rev</th><th scope=col>unique_users</th><th scope=col>n_rows</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>740</td><td>148</td><td>6</td><td>6</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 4</caption>
+<thead>
+	<tr><th scope=col>region</th><th scope=col>total_rev</th><th scope=col>avg_rev</th><th scope=col>unique_users</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>EU</td><td>605</td><td>201.6667</td><td>3</td></tr>
+	<tr><td>US</td><td>135</td><td> 67.5000</td><td>3</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 2</caption>
+<thead>
+	<tr><th scope=col>region</th><th scope=col>ios_rev</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>EU</td><td>200</td></tr>
+	<tr><td>US</td><td>120</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 8</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>region_total</th><th scope=col>pct_of_region</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td>135</td><td>0.8888889</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td>605</td><td>0.1570248</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>135</td><td>       NA</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td>605</td><td>0.3305785</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td>135</td><td>0.1111111</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td>605</td><td>0.5123967</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 4</caption>
+<thead>
+	<tr><th scope=col>region</th><th scope=col>Android</th><th scope=col>Web</th><th scope=col>iOS</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>EU</td><td>95</td><td>310</td><td>200</td></tr>
+	<tr><td>US</td><td>15</td><td>  0</td><td>120</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Forgetting <code class="docutils literal notranslate"><span class="pre">.groups</span> <span class="pre">=</span> <span class="pre">&quot;drop&quot;</span></code> in <code class="docutils literal notranslate"><span class="pre">summarise()</span></code> – leaves result grouped and
+silently corrupts downstream operations</p></li>
+<li><p>Forgetting <code class="docutils literal notranslate"><span class="pre">ungroup()</span></code> after <code class="docutils literal notranslate"><span class="pre">group_by()</span> <span class="pre">|&gt;</span> <span class="pre">mutate()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pivot_wider()</span></code> without <code class="docutils literal notranslate"><span class="pre">values_fill</span> <span class="pre">=</span> <span class="pre">0</span></code> – missing combinations become <code class="docutils literal notranslate"><span class="pre">NA</span></code></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss7-window-operations">
+<h2>SS7 – Window Operations<a class="headerlink" href="#ss7-window-operations" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">slider</span><span class="p">)</span>
+
+<span class="c1"># Ranking</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">row_num</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">row_number</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">revenue</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">rnk</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">min_rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">revenue</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">dense_rnk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">dense_rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">revenue</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1"># Rank within group</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">rank_in_region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">dense_rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">revenue</span><span class="p">)))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="c1"># Lag / lead (sort first)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">prev_rev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">lag</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">next_rev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">lead</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="c1"># Running totals</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">run_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">cumsum</span><span class="p">(</span><span class="nf">replace_na</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">))</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="c1"># Rolling window (slider package)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">roll_mean_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">slide_dbl</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">mean</span><span class="p">,</span><span class="w"> </span><span class="n">.before</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">.complete</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">ungroup</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 9</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>row_num</th><th scope=col>rnk</th><th scope=col>dense_rnk</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td> 3</td><td> 3</td><td> 3</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td> 4</td><td> 4</td><td> 4</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>NA</td><td>NA</td><td>NA</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td> 2</td><td> 2</td><td> 2</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td> 5</td><td> 5</td><td> 5</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td> 1</td><td> 1</td><td> 1</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 7</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>rank_in_region</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td> 1</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td> 3</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>NA</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td> 2</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td> 2</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td> 1</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 8</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>prev_rev</th><th scope=col>next_rev</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td> NA</td><td> NA</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td> NA</td><td>200</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>120</td><td> 15</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td> 95</td><td>310</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td> NA</td><td> NA</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td>200</td><td> NA</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 7</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>run_total</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td>120</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td> 95</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>120</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td>295</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td>135</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td>605</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 7</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>roll_mean_2</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td>120.0</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td> 95.0</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td>120.0</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td>147.5</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td> 15.0</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td>255.0</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Forgetting <code class="docutils literal notranslate"><span class="pre">arrange()</span></code> before <code class="docutils literal notranslate"><span class="pre">lag()</span></code> / <code class="docutils literal notranslate"><span class="pre">lead()</span></code> – operates on row order, not
+time order</p></li>
+<li><p>Forgetting <code class="docutils literal notranslate"><span class="pre">ungroup()</span></code> after grouped <code class="docutils literal notranslate"><span class="pre">mutate()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slide_dbl()</span></code> without wrapping in <code class="docutils literal notranslate"><span class="pre">lag(x,</span> <span class="pre">1)</span></code> first includes the current row in
+rolling stats – leakage risk in time-series features</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss8-date-and-time">
+<h2>SS8 – Date and Time<a class="headerlink" href="#ss8-date-and-time" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">lubridate</span></code> parses and manipulates dates. Functions are named after
+the expected format: <code class="docutils literal notranslate"><span class="pre">ymd()</span></code>, <code class="docutils literal notranslate"><span class="pre">mdy()</span></code>, <code class="docutils literal notranslate"><span class="pre">ymd_hms()</span></code>, etc.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span>
+
+<span class="n">dates_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">user_id</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span>
+<span class="w">  </span><span class="n">event_ts</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;2024-01-05 10:30:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2024-02-14 08:00:00&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s">&quot;2024-03-01 22:15:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2024-03-31 09:45:00&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">signup</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">as.Date</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;2023-06-01&quot;</span><span class="p">,</span><span class="s">&quot;2023-09-15&quot;</span><span class="p">,</span><span class="s">&quot;2024-01-01&quot;</span><span class="p">,</span><span class="s">&quot;2023-12-01&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="n">dates_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dates_df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">event_ts</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">ymd_hms</span><span class="p">(</span><span class="n">event_ts</span><span class="p">),</span>
+<span class="w">  </span><span class="n">year</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">year</span><span class="p">(</span><span class="n">event_ts</span><span class="p">),</span>
+<span class="w">  </span><span class="n">month</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">month</span><span class="p">(</span><span class="n">event_ts</span><span class="p">),</span>
+<span class="w">  </span><span class="n">day</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nf">day</span><span class="p">(</span><span class="n">event_ts</span><span class="p">),</span>
+<span class="w">  </span><span class="n">hour</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">hour</span><span class="p">(</span><span class="n">event_ts</span><span class="p">),</span>
+<span class="w">  </span><span class="n">day_of_week</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">wday</span><span class="p">(</span><span class="n">event_ts</span><span class="p">,</span><span class="w"> </span><span class="n">week_start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w">   </span><span class="c1"># 0=Mon, 6=Sun</span>
+<span class="w">  </span><span class="n">is_weekend</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="nf">wday</span><span class="p">(</span><span class="n">event_ts</span><span class="p">,</span><span class="w"> </span><span class="n">week_start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">5</span><span class="p">),</span>
+<span class="w">  </span><span class="c1"># Elapsed time</span>
+<span class="w">  </span><span class="n">days_since_signup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="nf">as_date</span><span class="p">(</span><span class="n">event_ts</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">signup</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;days&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="c1"># Date arithmetic</span>
+<span class="w">  </span><span class="n">plus_7d</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nf">as_date</span><span class="p">(</span><span class="n">event_ts</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">days</span><span class="p">(</span><span class="m">7</span><span class="p">),</span>
+<span class="w">  </span><span class="n">minus_1mo</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">as_date</span><span class="p">(</span><span class="n">event_ts</span><span class="p">)</span><span class="w"> </span><span class="o">%m-%</span><span class="w"> </span><span class="nf">months</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="w">   </span><span class="c1"># calendar-aware month subtraction</span>
+<span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">dates_df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">event_ts</span><span class="p">,</span><span class="w"> </span><span class="n">day_of_week</span><span class="p">,</span><span class="w"> </span><span class="n">is_weekend</span><span class="p">,</span><span class="w"> </span><span class="n">days_since_signup</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘lubridate’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    date, intersect, setdiff, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 4 × 5
+  user_id event_ts            day_of_week is_weekend days_since_signup
+    &lt;int&gt; &lt;dttm&gt;                    &lt;dbl&gt;      &lt;int&gt;             &lt;dbl&gt;
+1       1 2024-01-05 10:30:00           4          0               218
+2       2 2024-02-14 08:00:00           2          0               152
+3       3 2024-03-01 22:15:00           4          0                60
+4       4 2024-03-31 09:45:00           6          1               121
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">wday()</span></code> default is 1 = Sunday – always pass <code class="docutils literal notranslate"><span class="pre">week_start</span> <span class="pre">=</span> <span class="pre">1</span></code> and subtract 1
+to match Monday-origin conventions</p></li>
+<li><p>Plain <code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">months(1)</span></code> on Jan 31 overflows into March – use <code class="docutils literal notranslate"><span class="pre">%m+%</span></code> / <code class="docutils literal notranslate"><span class="pre">%m-%</span></code> for
+calendar-correct month arithmetic</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">.dt.*</span></code>-style chaining from pandas habit – lubridate uses standalone
+functions like <code class="docutils literal notranslate"><span class="pre">year(x)</span></code>, <code class="docutils literal notranslate"><span class="pre">month(x)</span></code>, not <code class="docutils literal notranslate"><span class="pre">x$year()</span></code></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss9-string-operations">
+<h2>SS9 – String Operations<a class="headerlink" href="#ss9-string-operations" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">stringr</span></code> provides vectorized string functions, all prefixed <code class="docutils literal notranslate"><span class="pre">str_*</span></code>.
+Regex is always on – use <code class="docutils literal notranslate"><span class="pre">fixed()</span></code> or <code class="docutils literal notranslate"><span class="pre">coll()</span></code> for literal matching.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span>
+
+<span class="n">str_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;  Alice Smith &quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;BOB JONES&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;carol white&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">email</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;alice@example.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bob@test.org&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;carol@example.com&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">revenue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;$1,200&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;$950&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;$2,000&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">str_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">str_df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">name_clean</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">str_to_title</span><span class="p">(</span><span class="nf">str_trim</span><span class="p">(</span><span class="n">name</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">domain</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nf">str_extract</span><span class="p">(</span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;@(.+)$&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">is_example</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">str_detect</span><span class="p">(</span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;example\\.com&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="n">revenue_clean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="nf">str_remove_all</span><span class="p">(</span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;[$,]&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">str_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 7
+  name             email      revenue name_clean domain is_example revenue_clean
+  &lt;chr&gt;            &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;  &lt;lgl&gt;              &lt;dbl&gt;
+1 &quot;  Alice Smith &quot; alice@exa… $1,200  Alice Smi… @exam… TRUE                1200
+2 &quot;BOB JONES&quot;      bob@test.… $950    Bob Jones  @test… FALSE                950
+3 &quot;carol white&quot;    carol@exa… $2,000  Carol Whi… @exam… TRUE                2000
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span>
+
+<span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;hello world&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;foo bar baz&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test_string&quot;</span><span class="p">)</span>
+
+<span class="c1"># Case and whitespace</span>
+<span class="nf">str_to_lower</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nf">str_to_upper</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nf">str_trim</span><span class="p">(</span><span class="s">&quot;  hello  &quot;</span><span class="p">)</span>
+
+<span class="c1"># Detect / match</span>
+<span class="nf">str_detect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bar&quot;</span><span class="p">)</span><span class="w">           </span><span class="c1"># returns logical vector</span>
+<span class="nf">str_starts</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;foo&quot;</span><span class="p">)</span>
+<span class="nf">str_ends</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;baz&quot;</span><span class="p">)</span>
+
+<span class="c1"># Replace</span>
+<span class="nf">str_replace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;o&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;0&quot;</span><span class="p">)</span><span class="w">      </span><span class="c1"># first match only</span>
+<span class="nf">str_replace_all</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;o&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;0&quot;</span><span class="p">)</span><span class="w">  </span><span class="c1"># all matches (pandas default)</span>
+<span class="nf">str_remove_all</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\\s+&quot;</span><span class="p">)</span><span class="w">      </span><span class="c1"># remove all whitespace</span>
+
+<span class="c1"># Extract</span>
+<span class="nf">str_extract</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\\w+&quot;</span><span class="p">)</span><span class="w">        </span><span class="c1"># first word</span>
+<span class="nf">str_length</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">                  </span><span class="c1"># character count</span>
+<span class="nf">str_sub</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w">               </span><span class="c1"># first 3 characters (1-indexed, inclusive)</span>
+
+<span class="c1"># Split</span>
+<span class="nf">str_split</span><span class="p">(</span><span class="s">&quot;a,b,c&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="p">)</span><span class="w">       </span><span class="c1"># returns a list</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'hello world'</li><li>'foo bar baz'</li><li>'test_string'</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'HELLO WORLD'</li><li>'FOO BAR BAZ'</li><li>'TEST_STRING'</li></ol>
+</div><div class="output text_html">'hello'</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>FALSE</li><li>TRUE</li><li>FALSE</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>FALSE</li><li>TRUE</li><li>FALSE</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>FALSE</li><li>TRUE</li><li>FALSE</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'hell0 world'</li><li>'f0o bar baz'</li><li>'test_string'</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'hell0 w0rld'</li><li>'f00 bar baz'</li><li>'test_string'</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'helloworld'</li><li>'foobarbaz'</li><li>'test_string'</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'hello'</li><li>'foo'</li><li>'test_string'</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>11</li><li>11</li><li>11</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'hel'</li><li>'foo'</li><li>'tes'</li></ol>
+</div><div class="output text_html"><ol>
+	<li><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'a'</li><li>'b'</li><li>'c'</li></ol>
+</li>
+</ol>
+</div></div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_replace()</span></code> replaces the first match only – use <code class="docutils literal notranslate"><span class="pre">str_replace_all()</span></code> for
+pandas’ default all-occurrences behavior</p></li>
+<li><p>Regex is always on in stringr – use <code class="docutils literal notranslate"><span class="pre">fixed(&quot;.&quot;)</span></code> when you mean a literal dot,
+not the regex wildcard</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str_detect()</span></code> returns <code class="docutils literal notranslate"><span class="pre">NA</span></code> for <code class="docutils literal notranslate"><span class="pre">NA</span></code> input (not <code class="docutils literal notranslate"><span class="pre">FALSE</span></code>) – <code class="docutils literal notranslate"><span class="pre">filter()</span></code> drops
+<code class="docutils literal notranslate"><span class="pre">NA</span></code> rows automatically, but <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> keeps them as <code class="docutils literal notranslate"><span class="pre">NA</span></code></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss10-i-o">
+<h2>SS10 – I/O<a class="headerlink" href="#ss10-i-o" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span>
+
+<span class="c1"># Read CSV</span>
+<span class="c1"># df &lt;- read_csv(&quot;file.csv&quot;)</span>
+<span class="c1"># df &lt;- read_csv(&quot;file.csv&quot;, col_select = c(user_id, date, revenue))</span>
+<span class="c1"># df &lt;- read_csv(&quot;file.csv&quot;, col_types = cols(user_id = col_character()))</span>
+<span class="c1"># df &lt;- read_csv(&quot;file.csv&quot;, n_max = 1000)</span>
+
+<span class="c1"># Write</span>
+<span class="c1"># write_csv(df, &quot;output.csv&quot;)    # no row-names column (unlike base write.csv)</span>
+
+<span class="c1"># JSON</span>
+<span class="c1"># jsonlite::fromJSON(&quot;file.json&quot;)</span>
+<span class="c1"># jsonlite::write_json(df, &quot;output.json&quot;)</span>
+
+<span class="c1"># Excel</span>
+<span class="c1"># readxl::read_excel(&quot;file.xlsx&quot;, sheet = &quot;Sheet1&quot;)</span>
+<span class="c1"># writexl::write_xlsx(df, &quot;output.xlsx&quot;)</span>
+
+<span class="c1"># SQL</span>
+<span class="c1"># conn &lt;- DBI::dbConnect(RSQLite::SQLite(), &quot;db.sqlite&quot;)</span>
+<span class="c1"># df   &lt;- DBI::dbGetQuery(conn, &quot;SELECT * FROM table&quot;)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;read_csv() key arguments:\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  col_select  : load only specific columns\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  col_types   : specify types on load to avoid silent coercion\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  n_max       : load first N rows only\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  na          : strings to treat as NA (default: c(&#39;&#39;, &#39;NA&#39;))\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>read_csv() key arguments:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  col_select  : load only specific columns
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  col_types   : specify types on load to avoid silent coercion
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  n_max       : load first N rows only
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  na          : strings to treat as NA (default: c(&#39;&#39;, &#39;NA&#39;))
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Common mistakes:</strong></p>
+<ul class="simple">
+<li><p>Using base <code class="docutils literal notranslate"><span class="pre">write.csv()</span></code> – writes row names as an unnamed first column by
+default; use <code class="docutils literal notranslate"><span class="pre">readr::write_csv()</span></code> instead</p></li>
+<li><p>Not specifying <code class="docutils literal notranslate"><span class="pre">col_types</span></code> for ID columns – numeric IDs load as <code class="docutils literal notranslate"><span class="pre">double</span></code> and
+lose leading zeros (zip codes, product codes)</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ss11-performance-tips">
+<h2>SS11 – Performance Tips<a class="headerlink" href="#ss11-performance-tips" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Vectorized operations beat rowwise() every time</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">rev2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">revenue</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">                        </span><span class="c1"># fast - vectorized</span>
+<span class="c1"># df |&gt; rowwise() |&gt; mutate(rev2 = revenue * 2) |&gt; ungroup()  # slow - row loop</span>
+
+<span class="c1"># filter() early to shrink the frame before expensive operations</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">revenue</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">summarise</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span><span class="p">)</span>
+
+<span class="c1"># Factor for low-cardinality string columns</span>
+<span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">platform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">platform</span><span class="p">))</span>
+
+<span class="c1"># Read only needed columns</span>
+<span class="c1"># read_csv(&quot;large.csv&quot;, col_select = c(user_id, date, revenue))</span>
+
+<span class="c1"># For large data: dtplyr (data.table backend), arrow, or duckdb</span>
+<span class="c1"># dtplyr::lazy_dt(df) |&gt; filter(...) |&gt; as_tibble()</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Key performance rules:\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  1. Avoid rowwise() -- replace with vectorized mutate()\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  2. filter() early to reduce rows before grouping\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  3. Use as.factor() for repeated low-cardinality strings\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  4. col_select= when loading -- only read what you need\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  5. dtplyr / arrow / duckdb for data that exceeds memory\n&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 7</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th><th scope=col>rev2</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td><td>240</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td><td>190</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td><td> NA</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td><td>400</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td><td> 30</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td><td>620</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 2</caption>
+<thead>
+	<tr><th scope=col>region</th><th scope=col>n</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>EU</td><td>3</td></tr>
+	<tr><td>US</td><td>2</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 6</caption>
+<thead>
+	<tr><th scope=col>user_id</th><th scope=col>age</th><th scope=col>region</th><th scope=col>platform</th><th scope=col>revenue</th><th scope=col>active</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;fct&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;lgl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>34</td><td>US</td><td>iOS    </td><td>120</td><td> TRUE</td></tr>
+	<tr><td>2</td><td>28</td><td>EU</td><td>Android</td><td> 95</td><td> TRUE</td></tr>
+	<tr><td>3</td><td>NA</td><td>US</td><td>Web    </td><td> NA</td><td>FALSE</td></tr>
+	<tr><td>4</td><td>41</td><td>EU</td><td>iOS    </td><td>200</td><td> TRUE</td></tr>
+	<tr><td>5</td><td>19</td><td>US</td><td>Android</td><td> 15</td><td>FALSE</td></tr>
+	<tr><td>6</td><td>55</td><td>EU</td><td>Web    </td><td>310</td><td> TRUE</td></tr>
+</tbody>
+</table>
+</div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Key performance rules:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1. Avoid rowwise() -- replace with vectorized mutate()
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2. filter() early to reduce rows before grouping
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3. Use as.factor() for repeated low-cardinality strings
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4. col_select= when loading -- only read what you need
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5. dtplyr / arrow / duckdb for data that exceeds memory
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="decision-guide">
+<h2>Decision Guide<a class="headerlink" href="#decision-guide" title="Link to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Aggregating data?
++-- One metric, one grouping dimension      -&gt; group_by() |&gt; summarise()
++-- Two categorical dimensions              -&gt; summarise() |&gt; pivot_wider()
++-- Frequency count                         -&gt; count() / table()
++-- Stats back on every row                 -&gt; group_by() |&gt; mutate()
+
+Filtering rows?
++-- Any condition                           -&gt; filter()
++-- By position                             -&gt; slice() / slice_head() / slice_tail()
+
+Selecting columns?
++-- Keep specific columns                   -&gt; select(col1, col2)
++-- Drop specific columns                   -&gt; select(-col1)
++-- Single column as vector                 -&gt; pull(col)
+
+Labeling or bucketing?
++-- Binary condition                        -&gt; if_else()
++-- Multiple conditions                     -&gt; case_when(.default = val)
++-- Discrete value lookup                   -&gt; case_match()
++-- Continuous bins                         -&gt; cut(breaks = ...)
+
+Combining data frames?
++-- Match on a key column                   -&gt; *_join()
++-- Rows in A with no match in B            -&gt; anti_join()
++-- Stack rows vertically                   -&gt; bind_rows()
+
+Window operations?
++-- Rank within group                       -&gt; group_by() |&gt; mutate(dense_rank())
++-- Previous / next value                   -&gt; group_by() |&gt; mutate(lag() / lead())
++-- Running total                           -&gt; group_by() |&gt; mutate(cumsum())
++-- Moving average                          -&gt; slide_dbl() from slider package
+
+NA handling?
++-- Fill with value                         -&gt; replace_na() / coalesce()
++-- Fill from previous row                  -&gt; arrange() then fill(.direction=&quot;down&quot;)
++-- Drop rows                               -&gt; drop_na()
++-- Aggregate safely                        -&gt; always pass na.rm = TRUE
+
+Slow code?
++-- rowwise() in a mutate                   -&gt; replace with vectorized mutate()
++-- Loading a large file fully              -&gt; col_select= or n_max=
++-- Low-cardinality string column           -&gt; as.factor()
+</pre></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./Data Manipulation"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Reference_BaseR.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Base R — Technical Reference</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="DM_Basic.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Data Manipulation — Basic</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

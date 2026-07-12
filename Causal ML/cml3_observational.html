@@ -1,0 +1,1338 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>How do you estimate causal effects from observational data? &#8212; Data Science Study Notes - R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Causal ML/cml3_observational';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How do you estimate individual-level treatment effects?" href="cml4_heterogeneous.html" />
+    <link rel="prev" title="How do you design and analyze experiments?" href="cml2_experiments.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Data Science Study Notes - R</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    Topics
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Data%20Manipulation/R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Data%20Manipulation/R_Data_Libs.html">
+    R Data Library & Data Manipulation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Sampling%20Methods/Reference_Sampling.html">
+    Sampling Methods
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Statistical%20Inference/Statistical_Inference.html">
+    Statistical Inference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="cml0_overview.html">
+    Causal Machine Learning
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="cml1_foundations.html">Why does causality matter?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cml2_experiments.html">How do you design and analyze experiments?</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">How do you estimate causal effects from observational data?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cml4_heterogeneous.html">How do you estimate individual-level treatment effects?</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss0-shared-toy-dataset">SS0 – Shared Toy Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss1-confounders-selection-bias">SS1 – Confounders &amp; Selection Bias</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-it-is">What it is</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assumption-ignorability-unconfoundedness">Assumption: Ignorability (Unconfoundedness)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#if-violated">If violated</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss2-propensity-score-matching-matchit">SS2 – Propensity Score Matching (MatchIt)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">What it is</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assumptions">Assumptions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#r-matchit-package">R: <code class="docutils literal notranslate"><span class="pre">MatchIt</span></code> package</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss3-ipw-doubly-robust-estimation-aipw">SS3 – IPW &amp; Doubly Robust Estimation (AIPW)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipw-inverse-probability-weighting">IPW (Inverse Probability Weighting)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#doubly-robust-aipw">Doubly Robust (AIPW)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss4-difference-in-differences-did">SS4 – Difference-in-Differences (DiD)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">What it is</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#formula">Formula</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Assumptions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validation">Validation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss5-regression-discontinuity-rd">SS5 – Regression Discontinuity (RD)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">What it is</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#toy-scenario">Toy scenario</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#r-rdrobust-package">R: <code class="docutils literal notranslate"><span class="pre">rdrobust</span></code> package</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Reference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ss6-sensitivity-analysis">SS6 – Sensitivity Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-it-matters">Why it matters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#three-standard-tools">Three standard tools</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#formula-e-value-vanderweele-ding-2017">Formula (E-value, VanderWeele &amp; Ding 2017)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#method-comparison-summary">Method Comparison Summary</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interview-q-a">Interview Q&amp;A</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gotchas">Gotchas</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../intro.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="cml0_overview.html" class="nav-link">Causal Machine Learning (R)</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">How do you estimate causal effects from observational data?</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="how-do-you-estimate-causal-effects-from-observational-data">
+<h1>How do you estimate causal effects from observational data?<a class="headerlink" href="#how-do-you-estimate-causal-effects-from-observational-data" title="Link to this heading">#</a></h1>
+<p><strong>Topics:</strong> Confounders  - Propensity Score Matching (MatchIt)  - IPW  - Doubly Robust (AIPW)  - Difference-in-Differences  - Regression Discontinuity (rdrobust)  - Sensitivity Analysis</p>
+<blockquote>
+<div><p><strong>Toy dataset:</strong> job training programme. Healthier workers self-select into training AND
+earn more. All sections use this shared confounded dataset. We compare naive estimates
+to corrected ones using each method.</p>
+</div></blockquote>
+<hr class="docutils" />
+<section id="ss0-shared-toy-dataset">
+<h2>SS0 – Shared Toy Dataset<a class="headerlink" href="#ss0-shared-toy-dataset" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">patchwork</span><span class="p">)</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">2000</span>
+
+<span class="c1"># Data generating process (LaLonde-style)</span>
+<span class="n">health</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w">                                   </span><span class="c1"># confounder: baseline health</span>
+<span class="n">X2</span><span class="w">        </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w">                                   </span><span class="c1"># second covariate</span>
+<span class="n">T_obs</span><span class="w">     </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rbinom</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="nf">plogis</span><span class="p">(</span><span class="m">0.5</span><span class="o">*</span><span class="n">health</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.3</span><span class="o">*</span><span class="n">X2</span><span class="p">))</span><span class="w"> </span><span class="c1"># healthier/motivated workers select in</span>
+<span class="n">true_ate</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">2.0</span><span class="w">                                        </span><span class="c1"># true ATE: training raises earnings by $2k</span>
+<span class="n">outcome</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">true_ate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">T_obs</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1.5</span><span class="o">*</span><span class="n">health</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.8</span><span class="o">*</span><span class="n">X2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">id</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span>
+<span class="w">  </span><span class="n">health</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">health</span><span class="p">,</span>
+<span class="w">  </span><span class="n">X2</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">X2</span><span class="p">,</span>
+<span class="w">  </span><span class="bp">T</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">T_obs</span><span class="p">,</span>
+<span class="w">  </span><span class="n">Y</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">outcome</span>
+<span class="p">)</span>
+
+<span class="n">naive_ate</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">])</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;n = %d  (%d treated, %d control)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">T_obs</span><span class="p">),</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="m">1</span><span class="o">-</span><span class="n">T_obs</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;True ATE            : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">true_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Naive ATE (biased)  : %.3f  (upward bias from health confounder)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">naive_ate</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>n = 2000  (1006 treated, 994 control)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True ATE            : 2.000
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Naive ATE (biased)  : 2.909  (upward bias from health confounder)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="ss1-confounders-selection-bias">
+<h2>SS1 – Confounders &amp; Selection Bias<a class="headerlink" href="#ss1-confounders-selection-bias" title="Link to this heading">#</a></h2>
+<section id="what-it-is">
+<h3>What it is<a class="headerlink" href="#what-it-is" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Confounder</strong>: causes both treatment and outcome – creates spurious association</p></li>
+<li><p><strong>Selection bias</strong>: treated and control groups differ systematically BEFORE treatment</p></li>
+<li><p>Naive comparison mixes the treatment effect with pre-existing differences</p></li>
+</ul>
+</section>
+<section id="assumption-ignorability-unconfoundedness">
+<h3>Assumption: Ignorability (Unconfoundedness)<a class="headerlink" href="#assumption-ignorability-unconfoundedness" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\((Y(0), Y(1)) \perp T \mid X\)</span> – given observed covariates, assignment is as good as random.
+Also called: no unmeasured confounders, selection on observables, conditional independence.</p>
+</section>
+<section id="if-violated">
+<h3>If violated<a class="headerlink" href="#if-violated" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>IV (cml1 SS7) – find a variable that affects T but not Y directly</p></li>
+<li><p>DiD (SS4) – use time variation to absorb fixed unobserved confounders</p></li>
+<li><p>Sensitivity analysis (SS6) – bound the estimate under various confounding scenarios</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">patchwork</span><span class="p">)</span>
+
+<span class="c1"># Show the confounder distribution and bias</span>
+<span class="n">p1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">health</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="bp">T</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_density</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="s">&quot;#2ECC71&quot;</span><span class="p">),</span>
+<span class="w">                    </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Control&quot;</span><span class="p">,</span><span class="s">&quot;Treated&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Treated group is healthier&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Health (confounder)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Density&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">),</span>
+<span class="w">                                         </span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;top&quot;</span><span class="p">)</span>
+
+<span class="c1"># Adjusted estimate via lm()</span>
+<span class="n">adj_ate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="nf">lm</span><span class="p">(</span><span class="n">Y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="bp">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">health</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">X2</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="p">))[</span><span class="s">&quot;T&quot;</span><span class="p">]</span>
+
+<span class="n">est_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;True ATE&quot;</span><span class="p">,</span><span class="s">&quot;Naive&quot;</span><span class="p">,</span><span class="s">&quot;lm() adjusted&quot;</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;True ATE&quot;</span><span class="p">,</span><span class="s">&quot;Naive&quot;</span><span class="p">,</span><span class="s">&quot;lm() adjusted&quot;</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">true_ate</span><span class="p">,</span><span class="w"> </span><span class="n">naive_ate</span><span class="p">,</span><span class="w"> </span><span class="n">adj_ate</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">p2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">est_df</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">label</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">label</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_col</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.85</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_hline</span><span class="p">(</span><span class="n">yintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true_ate</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dashed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#7F8C8D&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_text</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)),</span><span class="w"> </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-0.3</span><span class="p">,</span><span class="w"> </span><span class="n">fontface</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2.8</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;#7F8C8D&quot;</span><span class="p">,</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="s">&quot;#2ECC71&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">guide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;none&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Naive vs Adjusted estimates&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ATE estimate&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;True ATE      : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">true_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Naive ATE     : %.3f  (biased upward)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">naive_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;lm() adjusted : %.3f  (controls for health + X2)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">adj_ate</span><span class="p">))</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">plot_annotation</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Confounding and Selection Bias&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">theme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">11</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True ATE      : 2.000
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Naive ATE     : 2.909  (biased upward)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>lm() adjusted : 1.976  (controls for health + X2)
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/6da58e9b5df3c45254c6765663df0e75b6159f56b0cd34f0a6b8a3fc4b6a6ff5.png"><img alt="../_images/6da58e9b5df3c45254c6765663df0e75b6159f56b0cd34f0a6b8a3fc4b6a6ff5.png" src="../_images/6da58e9b5df3c45254c6765663df0e75b6159f56b0cd34f0a6b8a3fc4b6a6ff5.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ss2-propensity-score-matching-matchit">
+<h2>SS2 – Propensity Score Matching (MatchIt)<a class="headerlink" href="#ss2-propensity-score-matching-matchit" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h3>What it is<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Propensity score: <span class="math notranslate nohighlight">\(e(x) = P(T=1 \mid X=x)\)</span></p></li>
+<li><p>Match each treated unit to a control with similar propensity score</p></li>
+<li><p>Creates a pseudo-randomised dataset where groups are comparable</p></li>
+</ul>
+</section>
+<section id="assumptions">
+<h3>Assumptions<a class="headerlink" href="#assumptions" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Ignorability</strong>: no unmeasured confounders</p></li>
+<li><p><strong>Overlap</strong>: <span class="math notranslate nohighlight">\(0 &lt; P(T=1 \mid X) &lt; 1\)</span> for all X</p></li>
+<li><p>SMD &lt; 0.1 after matching</p></li>
+</ul>
+</section>
+<section id="r-matchit-package">
+<h3>R: <code class="docutils literal notranslate"><span class="pre">MatchIt</span></code> package<a class="headerlink" href="#r-matchit-package" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">MatchIt::matchit()</span></code> handles propensity model estimation, matching, and balance
+checking in one call – far more robust than sklearn-based manual matching.</p>
+</section>
+<section id="reference">
+<h3>Reference<a class="headerlink" href="#reference" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Rosenbaum &amp; Rubin (1983); Ho, Imai, King &amp; Stuart (2011) on MatchIt</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">MatchIt</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">patchwork</span><span class="p">)</span>
+
+<span class="c1"># Fit propensity score matching</span>
+<span class="n">m_out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span><span class="bp">T</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">health</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">X2</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;nearest&quot;</span><span class="p">,</span><span class="w">    </span><span class="c1"># nearest-neighbour matching</span>
+<span class="w">                 </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;logit&quot;</span><span class="p">,</span><span class="w">    </span><span class="c1"># propensity score via logistic regression</span>
+<span class="w">                 </span><span class="n">ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w">             </span><span class="c1"># 1:1 matching</span>
+<span class="w">                 </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">m_out</span><span class="p">)</span><span class="w">   </span><span class="c1"># shows SMD before/after</span>
+
+<span class="c1"># Extract matched data</span>
+<span class="n">df_matched</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">match.data</span><span class="p">(</span><span class="n">m_out</span><span class="p">)</span>
+<span class="n">psm_ate</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span>
+<span class="w">              </span><span class="nf">mean</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">])</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\nTrue ATE  : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">true_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Naive ATE : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">naive_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;PSM ATE   : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">psm_ate</span><span class="p">))</span>
+
+<span class="c1"># Overlap plot (propensity scores before matching)</span>
+<span class="n">ps</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="nf">glm</span><span class="p">(</span><span class="bp">T</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">health</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">X2</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">binomial</span><span class="p">),</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;response&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">pscore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ps</span><span class="p">)</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pscore</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="bp">T</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_density</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="s">&quot;#2ECC71&quot;</span><span class="p">),</span>
+<span class="w">                    </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Control&quot;</span><span class="p">,</span><span class="s">&quot;Treated&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;PS Overlap (before matching)&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Propensity score&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Density&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">),</span>
+<span class="w">                                         </span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;top&quot;</span><span class="p">)</span>
+
+<span class="c1"># Balance plot (SMD before/after)</span>
+<span class="n">smd_before</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="w"> </span><span class="o">/</span>
+<span class="w">              </span><span class="nf">sqrt</span><span class="p">((</span><span class="nf">var</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+<span class="n">smd_after</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="nf">mean</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span>
+<span class="w">                  </span><span class="nf">mean</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="w"> </span><span class="o">/</span>
+<span class="w">              </span><span class="nf">sqrt</span><span class="p">((</span><span class="nf">var</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">+</span>
+<span class="w">                    </span><span class="nf">var</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+
+<span class="n">bal_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">covariate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;health&quot;</span><span class="p">,</span><span class="s">&quot;X2&quot;</span><span class="p">),</span><span class="w"> </span><span class="m">2</span><span class="p">),</span>
+<span class="w">  </span><span class="n">when</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Before&quot;</span><span class="p">,</span><span class="s">&quot;After&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">),</span>
+<span class="w">  </span><span class="n">smd</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">abs</span><span class="p">(</span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="w"> </span><span class="o">/</span>
+<span class="w">      </span><span class="nf">sqrt</span><span class="p">((</span><span class="nf">var</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="o">/</span><span class="m">2</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">abs</span><span class="p">(</span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">X2</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">X2</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="w"> </span><span class="o">/</span>
+<span class="w">      </span><span class="nf">sqrt</span><span class="p">((</span><span class="nf">var</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">X2</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">X2</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="o">/</span><span class="m">2</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">abs</span><span class="p">(</span><span class="nf">mean</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="w"> </span><span class="o">/</span>
+<span class="w">      </span><span class="nf">sqrt</span><span class="p">((</span><span class="nf">var</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">health</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="o">/</span><span class="m">2</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">abs</span><span class="p">(</span><span class="nf">mean</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">X2</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">X2</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="w"> </span><span class="o">/</span>
+<span class="w">      </span><span class="nf">sqrt</span><span class="p">((</span><span class="nf">var</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">X2</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="n">df_matched</span><span class="o">$</span><span class="n">X2</span><span class="p">[</span><span class="n">df_matched</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span><span class="o">/</span><span class="m">2</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">p2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">bal_df</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">covariate</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smd</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">when</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_col</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dodge&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.85</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_hline</span><span class="p">(</span><span class="n">yintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dashed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#E74C3C&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;#2ECC71&quot;</span><span class="p">,</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SMD Before/After Matching&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Standardised Mean Difference&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">),</span>
+<span class="w">                                         </span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;top&quot;</span><span class="p">)</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">plot_annotation</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Propensity Score Matching (MatchIt)&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">theme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">11</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message:
+“Fewer control units than treated units; not all treated units will get
+a match.”
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+matchit(formula = T ~ health + X2, data = df, method = &quot;nearest&quot;, 
+    distance = &quot;logit&quot;, replace = FALSE, ratio = 1)
+
+Summary of Balance for All Data:
+         Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+distance        0.5402        0.4654          0.5721     0.9810    0.1582
+health          0.2157       -0.2497          0.4858     0.9644    0.1355
+X2              0.1317       -0.1584          0.2925     0.9706    0.0816
+         eCDF Max
+distance   0.2382
+health     0.2151
+X2         0.1282
+
+Summary of Balance for Matched Data:
+         Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+distance        0.5441        0.4654          0.6021     0.9187    0.1650
+health          0.2408       -0.2497          0.5120     0.9182    0.1418
+X2              0.1486       -0.1584          0.3095     0.9491    0.0860
+         eCDF Max Std. Pair Dist.
+distance   0.2445          0.6021
+health     0.2223          0.7286
+X2         0.1328          0.9920
+
+Sample Sizes:
+          Control Treated
+All           994    1006
+Matched       994     994
+Unmatched       0      12
+Discarded       0       0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True ATE  : 2.000
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Naive ATE : 2.909
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>PSM ATE   : 2.956
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/3b06b5457d34409dfdd5dd35b10c6f2c4f8701912ef35f65b796df27896d124b.png"><img alt="../_images/3b06b5457d34409dfdd5dd35b10c6f2c4f8701912ef35f65b796df27896d124b.png" src="../_images/3b06b5457d34409dfdd5dd35b10c6f2c4f8701912ef35f65b796df27896d124b.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ss3-ipw-doubly-robust-estimation-aipw">
+<h2>SS3 – IPW &amp; Doubly Robust Estimation (AIPW)<a class="headerlink" href="#ss3-ipw-doubly-robust-estimation-aipw" title="Link to this heading">#</a></h2>
+<section id="ipw-inverse-probability-weighting">
+<h3>IPW (Inverse Probability Weighting)<a class="headerlink" href="#ipw-inverse-probability-weighting" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Reweight each observation by 1/P(received treatment)</p></li>
+<li><p>Treated units with low propensity (unexpectedly treated) get high weight</p></li>
+<li><p>Unbiased if the propensity model is correctly specified</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\hat{\text{ATE}}_{\text{IPW}} = \frac{1}{n} \sum_i \left[ \frac{T_i Y_i}{\hat e(X_i)} - \frac{(1-T_i) Y_i}{1-\hat e(X_i)} \right]\]</div>
+</section>
+<section id="doubly-robust-aipw">
+<h3>Doubly Robust (AIPW)<a class="headerlink" href="#doubly-robust-aipw" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Combines an outcome model and a propensity model</p></li>
+<li><p>Unbiased if <strong>either</strong> model is correctly specified (not necessarily both)</p></li>
+<li><p>Standard default for observational ATE estimation in practice</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+
+<span class="c1"># Estimate propensity scores</span>
+<span class="n">ps_model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="bp">T</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">health</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">X2</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">binomial</span><span class="p">)</span>
+<span class="n">ps</span><span class="w">        </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">ps_model</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;response&quot;</span><span class="p">)</span>
+
+<span class="c1"># IPW estimate</span>
+<span class="n">df_ipw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">  </span><span class="n">ps</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">ps</span><span class="p">,</span>
+<span class="w">  </span><span class="n">weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="bp">T</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ps</span><span class="p">))</span>
+<span class="p">)</span>
+<span class="n">ipw_ate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">df_ipw</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">df_ipw</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">df_ipw</span><span class="o">$</span><span class="n">ps</span><span class="p">[</span><span class="n">df_ipw</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span>
+<span class="w">           </span><span class="nf">mean</span><span class="p">(</span><span class="n">df_ipw</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="n">df_ipw</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">df_ipw</span><span class="o">$</span><span class="n">ps</span><span class="p">[</span><span class="n">df_ipw</span><span class="o">$</span><span class="bp">T</span><span class="o">==</span><span class="m">0</span><span class="p">]))</span>
+
+<span class="c1"># Doubly Robust (AIPW)</span>
+<span class="c1"># Outcome model: E[Y | T, X]</span>
+<span class="n">out_model_1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">Y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">health</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">X2</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+<span class="n">out_model_0</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">Y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">health</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">X2</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">))</span>
+<span class="n">mu1_hat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">out_model_1</span><span class="p">,</span><span class="w"> </span><span class="n">newdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="p">)</span>
+<span class="n">mu0_hat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">out_model_0</span><span class="p">,</span><span class="w"> </span><span class="n">newdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># AIPW influence function</span>
+<span class="n">aipw_scores</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="n">mu1_hat</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mu0_hat</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">ps</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mu1_hat</span><span class="p">)</span><span class="w"> </span><span class="o">-</span>
+<span class="w">  </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="bp">T</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ps</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mu0_hat</span><span class="p">)</span>
+<span class="n">aipw_ate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">aipw_scores</span><span class="p">)</span>
+
+<span class="n">adj_ate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="nf">lm</span><span class="p">(</span><span class="n">Y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="bp">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">health</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">X2</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="p">))[</span><span class="s">&quot;T&quot;</span><span class="p">]</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;True ATE      : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">true_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Naive ATE     : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">naive_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;lm() adjusted : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">adj_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;IPW ATE       : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ipw_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;AIPW ATE      : %.3f  &lt;- doubly robust\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">aipw_ate</span><span class="p">))</span>
+
+<span class="n">est_all</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;True ATE&quot;</span><span class="p">,</span><span class="s">&quot;Naive&quot;</span><span class="p">,</span><span class="s">&quot;lm()&quot;</span><span class="p">,</span><span class="s">&quot;IPW&quot;</span><span class="p">,</span><span class="s">&quot;AIPW&quot;</span><span class="p">),</span>
+<span class="w">                  </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;True ATE&quot;</span><span class="p">,</span><span class="s">&quot;Naive&quot;</span><span class="p">,</span><span class="s">&quot;lm()&quot;</span><span class="p">,</span><span class="s">&quot;IPW&quot;</span><span class="p">,</span><span class="s">&quot;AIPW&quot;</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">ate</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">true_ate</span><span class="p">,</span><span class="w"> </span><span class="n">naive_ate</span><span class="p">,</span><span class="w"> </span><span class="n">adj_ate</span><span class="p">,</span><span class="w"> </span><span class="n">ipw_ate</span><span class="p">,</span><span class="w"> </span><span class="n">aipw_ate</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">est_all</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ate</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_col</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.85</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_hline</span><span class="p">(</span><span class="n">yintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true_ate</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dashed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#7F8C8D&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_text</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">ate</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)),</span><span class="w"> </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-0.4</span><span class="p">,</span><span class="w"> </span><span class="n">fontface</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;#7F8C8D&quot;</span><span class="p">,</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="s">&quot;#3498DB&quot;</span><span class="p">,</span><span class="s">&quot;#F39C12&quot;</span><span class="p">,</span><span class="s">&quot;#2ECC71&quot;</span><span class="p">),</span>
+<span class="w">                    </span><span class="n">guide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;none&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ATE Estimates: Naive vs Adjusted Methods&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Corrected methods recover ATE; naive is biased&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ATE estimate&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True ATE      : 2.000
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Naive ATE     : 2.909
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>lm() adjusted : 1.976
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>IPW ATE       : 3.897
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AIPW ATE      : 1.971  &lt;- doubly robust
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/10044a1bdb8b8c1e7ccf8e1091b418e073706df52dd297624a0982d09159f2ca.png"><img alt="../_images/10044a1bdb8b8c1e7ccf8e1091b418e073706df52dd297624a0982d09159f2ca.png" src="../_images/10044a1bdb8b8c1e7ccf8e1091b418e073706df52dd297624a0982d09159f2ca.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ss4-difference-in-differences-did">
+<h2>SS4 – Difference-in-Differences (DiD)<a class="headerlink" href="#ss4-difference-in-differences-did" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h3>What it is<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Compare the change in outcomes over time between a treated and a control group</p></li>
+<li><p>Controls for time-invariant unobserved confounders (fixed effects)</p></li>
+<li><p>Requires the <strong>parallel trends</strong> assumption: outcomes would trend the same without treatment</p></li>
+</ul>
+</section>
+<section id="formula">
+<h3>Formula<a class="headerlink" href="#formula" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\hat{\text{ATE}}_{\text{DiD}} = (\bar{Y}_{T,\text{post}} - \bar{Y}_{T,\text{pre}}) - (\bar{Y}_{C,\text{post}} - \bar{Y}_{C,\text{pre}})\]</div>
+<p>Equivalently: <span class="math notranslate nohighlight">\(Y = \alpha + \beta_1 \text{Post} + \beta_2 \text{Treated} + \beta_3 (\text{Post} \times \text{Treated}) + \varepsilon\)</span>. The coefficient <span class="math notranslate nohighlight">\(\beta_3\)</span> is the DiD estimator.</p>
+</section>
+<section id="id3">
+<h3>Assumptions<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Parallel trends</strong>: treated and control groups trend the same in the absence of treatment</p></li>
+<li><p><strong>No anticipation</strong>: units do not change behaviour before treatment</p></li>
+<li><p><strong>SUTVA</strong>: no spillover between groups</p></li>
+</ul>
+</section>
+<section id="validation">
+<h3>Validation<a class="headerlink" href="#validation" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Parallel pre-trends plot: do the groups trend together before treatment?</p></li>
+<li><p>Event study: plot coefficients per period; pre-period coefs should be near zero</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+
+<span class="c1"># Simulate a DiD panel: 200 units, 10 periods, treated from period 6 onwards</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">n_units</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">200</span><span class="p">;</span><span class="w"> </span><span class="n">n_pre</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5</span><span class="p">;</span><span class="w"> </span><span class="n">n_post</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5</span>
+<span class="n">did_true_ate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1.5</span>
+
+<span class="n">units</span><span class="w">      </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="n">n_units</span><span class="p">,</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n_pre</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n_post</span><span class="p">)</span>
+<span class="n">time_</span><span class="w">      </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="n">n_pre</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n_post</span><span class="p">),</span><span class="w"> </span><span class="n">n_units</span><span class="p">)</span>
+<span class="n">treated_id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="n">n_units</span><span class="p">,</span><span class="w"> </span><span class="n">n_units</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+<span class="n">treated</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">treated_id</span>
+<span class="n">post</span><span class="w">       </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">time_</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">n_pre</span>
+
+<span class="c1"># Unit-level fixed effects + common time trend + treatment</span>
+<span class="n">unit_fe</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n_units</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">),</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n_pre</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n_post</span><span class="p">)</span>
+<span class="n">time_fe</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="nf">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">length.out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n_pre</span><span class="p">),</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="m">2.2</span><span class="p">,</span><span class="w"> </span><span class="m">3.5</span><span class="p">,</span><span class="w"> </span><span class="n">length.out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n_post</span><span class="p">)),</span>
+<span class="w">                </span><span class="n">n_units</span><span class="p">)</span>
+<span class="n">Y_did</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">unit_fe</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">time_fe</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="n">did_true_ate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">treated</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">post</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">            </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n_units</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">n_pre</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n_post</span><span class="p">),</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span>
+
+<span class="n">panel</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">units</span><span class="p">,</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time_</span><span class="p">,</span><span class="w"> </span><span class="n">treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">treated</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">post</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">post</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Y_did</span><span class="p">)</span>
+
+<span class="c1"># DiD regression (interaction term)</span>
+<span class="n">did_model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">Y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">post</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">treated</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">panel</span><span class="p">)</span>
+<span class="n">did_ate</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">did_model</span><span class="p">)[</span><span class="s">&quot;postTRUE:treatedTRUE&quot;</span><span class="p">]</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;True DiD ATE : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">did_true_ate</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;DiD estimate : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">did_ate</span><span class="p">))</span>
+
+<span class="c1"># Parallel trends plot</span>
+<span class="n">mean_Y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">panel</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="w"> </span><span class="n">treated</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">mean_Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;drop&quot;</span><span class="p">)</span>
+
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">mean_Y</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean_Y</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">treated</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">treated</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n_pre</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dotted&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;black&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">annotate</span><span class="p">(</span><span class="s">&quot;text&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n_pre</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.7</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">mean_Y</span><span class="o">$</span><span class="n">mean_Y</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span>
+<span class="w">           </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Treatment starts&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3.5</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#555555&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_color_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="s">&quot;#2ECC71&quot;</span><span class="p">),</span>
+<span class="w">                     </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Control&quot;</span><span class="p">,</span><span class="s">&quot;Treated&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_linetype_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;solid&quot;</span><span class="p">,</span><span class="s">&quot;solid&quot;</span><span class="p">),</span>
+<span class="w">                        </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Control&quot;</span><span class="p">,</span><span class="s">&quot;Treated&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Difference-in-Differences (DiD estimate = %.3f, true = %.3f)&quot;</span><span class="p">,</span>
+<span class="w">                       </span><span class="n">did_ate</span><span class="p">,</span><span class="w"> </span><span class="n">did_true_ate</span><span class="p">),</span>
+<span class="w">       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Parallel pre-trends support the assumption&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Time period&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mean outcome&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">),</span>
+<span class="w">                                         </span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;top&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True DiD ATE : 1.500
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DiD estimate : 1.569
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/a594cc6b6929f3f471c86a4827987884baa3d55edf23a5718f2c6bb6ecff6a0e.png"><img alt="../_images/a594cc6b6929f3f471c86a4827987884baa3d55edf23a5718f2c6bb6ecff6a0e.png" src="../_images/a594cc6b6929f3f471c86a4827987884baa3d55edf23a5718f2c6bb6ecff6a0e.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ss5-regression-discontinuity-rd">
+<h2>SS5 – Regression Discontinuity (RD)<a class="headerlink" href="#ss5-regression-discontinuity-rd" title="Link to this heading">#</a></h2>
+<section id="id4">
+<h3>What it is<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Exploits a threshold rule: units just above and below the cutoff are similar except for treatment</p></li>
+<li><p>Estimates a <strong>Local ATE (LATE)</strong> at the cutoff – not an ATE for the full population</p></li>
+<li><p>Sharp RD: crossing cutoff deterministically assigns treatment</p></li>
+<li><p>Fuzzy RD: crossing cutoff changes the <em>probability</em> of treatment (use IV approach)</p></li>
+</ul>
+</section>
+<section id="toy-scenario">
+<h3>Toy scenario<a class="headerlink" href="#toy-scenario" title="Link to this heading">#</a></h3>
+<p>Scholarship cutoff: students who score &gt;= 60 on an entrance exam receive a scholarship
+(treatment). We compare earnings for students just above and just below the threshold.</p>
+</section>
+<section id="r-rdrobust-package">
+<h3>R: <code class="docutils literal notranslate"><span class="pre">rdrobust</span></code> package<a class="headerlink" href="#r-rdrobust-package" title="Link to this heading">#</a></h3>
+<p>Handles bandwidth selection (CCT), robust confidence intervals, and the McCrary
+density test all in one package – far more reliable than manual local linear regression.</p>
+</section>
+<section id="id5">
+<h3>Reference<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Imbens &amp; Lemieux (2008); Calonico, Cattaneo &amp; Titiunik (2014)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">rdrobust</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+<span class="n">n_rd</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">2000</span>
+<span class="n">cutoff</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">60</span>
+<span class="n">rd_true</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1.5</span>
+
+<span class="n">score</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">runif</span><span class="p">(</span><span class="n">n_rd</span><span class="p">,</span><span class="w"> </span><span class="m">40</span><span class="p">,</span><span class="w"> </span><span class="m">80</span><span class="p">)</span><span class="w">               </span><span class="c1"># running variable: entrance exam score</span>
+<span class="n">T_rd</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">score</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">cutoff</span><span class="p">)</span><span class="w">         </span><span class="c1"># sharp assignment</span>
+<span class="n">Y_rd</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.05</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">score</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cutoff</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rd_true</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">T_rd</span><span class="w"> </span><span class="o">+</span>
+<span class="w">           </span><span class="m">0.01</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">score</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cutoff</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">T_rd</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n_rd</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span>
+
+<span class="c1"># rdrobust: automatic bandwidth selection (CCT), bias-corrected CI</span>
+<span class="n">rdr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rdrobust</span><span class="p">(</span><span class="n">Y_rd</span><span class="p">,</span><span class="w"> </span><span class="n">score</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cutoff</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;rdrobust output:\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">rdr</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;\nTrue RD effect : %.3f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rd_true</span><span class="p">))</span>
+
+<span class="c1"># Scatter plot with local linear fit each side</span>
+<span class="n">bw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rdr</span><span class="o">$</span><span class="n">bws</span><span class="p">[</span><span class="s">&quot;h&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">   </span><span class="c1"># optimal bandwidth</span>
+
+<span class="n">df_rd</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">score</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Y_rd</span><span class="p">,</span><span class="w"> </span><span class="bp">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T_rd</span><span class="p">)</span>
+<span class="n">df_bw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_rd</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">score</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cutoff</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">bw</span><span class="p">)</span>
+
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">df_rd</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="bp">T</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.15</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_smooth</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_bw</span><span class="p">,</span>
+<span class="w">              </span><span class="nf">aes</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="bp">T</span><span class="p">)),</span>
+<span class="w">              </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lm&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">formula</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">se</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cutoff</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dashed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;black&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_color_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="s">&quot;#2ECC71&quot;</span><span class="p">),</span>
+<span class="w">                     </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Below cutoff (control)&quot;</span><span class="p">,</span><span class="s">&quot;Above cutoff (treated)&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">annotate</span><span class="p">(</span><span class="s">&quot;text&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cutoff</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">Y_rd</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span>
+<span class="w">           </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;RD = %.3f\n(true = %.1f)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rdr</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="s">&quot;Conventional&quot;</span><span class="p">,],</span><span class="w"> </span><span class="n">rd_true</span><span class="p">),</span>
+<span class="w">           </span><span class="n">hjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">fontface</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3.5</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#3498DB&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Regression Discontinuity Design&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Bandwidth = %.2f (CCT optimal), cutoff = %d&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bw</span><span class="p">,</span><span class="w"> </span><span class="n">cutoff</span><span class="p">),</span>
+<span class="w">       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Entrance exam score (running variable)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Earnings outcome&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">),</span>
+<span class="w">                                         </span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;top&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>rdrobust output:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call: rdrobust
+
+Sharp RD estimates using local polynomial regression.
+
+Number of Obs.                 2000
+BW type                       mserd
+Kernel                   Triangular
+VCE method                       NN
+
+                               Left        Right
+Number of Obs.                 1023          977
+Eff. Number of Obs.             392          364
+Order est. (p)                    1            1
+Order bias (q)                    2            2
+BW est. (h)                   7.830        7.830
+BW bias (b)                  12.322       12.322
+rho (h/b)                     0.635        0.635
+Unique Obs.                    1023          977
+
+=====================================================================
+                   Point    Robust Inference
+                Estimate         z     P&gt;|z|      [ 95% C.I. ]       
+---------------------------------------------------------------------
+     RD Effect     1.396    14.540     0.000     [1.193 , 1.565]     
+=====================================================================
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True RD effect : 1.500
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/2bc95dcee8ac92180a9cb399cdcb9f3079c7df31218dfbd4226d0defee190303.png"><img alt="../_images/2bc95dcee8ac92180a9cb399cdcb9f3079c7df31218dfbd4226d0defee190303.png" src="../_images/2bc95dcee8ac92180a9cb399cdcb9f3079c7df31218dfbd4226d0defee190303.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ss6-sensitivity-analysis">
+<h2>SS6 – Sensitivity Analysis<a class="headerlink" href="#ss6-sensitivity-analysis" title="Link to this heading">#</a></h2>
+<section id="why-it-matters">
+<h3>Why it matters<a class="headerlink" href="#why-it-matters" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Unconfoundedness is <strong>untestable</strong> – there could always be a hidden confounder</p></li>
+<li><p>Sensitivity analysis asks: <em>how strong would U have to be to overturn my conclusion?</em></p></li>
+<li><p>Every observational estimate should report at least one of these numbers</p></li>
+</ul>
+</section>
+<section id="three-standard-tools">
+<h3>Three standard tools<a class="headerlink" href="#three-standard-tools" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>Question</p></th>
+<th class="head"><p>Robust looks like</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>E-value</strong></p></td>
+<td><p>Minimum RR that U needs with <em>both</em> T and Y to explain the effect away</p></td>
+<td><p>Large E-value (&gt; 2)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Rosenbaum bounds (Gamma)</strong></p></td>
+<td><p>How much could treatment odds differ between matched units before significance is lost?</p></td>
+<td><p>Large Gamma (&gt; 2)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Oster’s delta</strong></p></td>
+<td><p>How much stronger does selection on unobservables need to be vs observables to drive the coefficient to 0?</p></td>
+<td><p>delta &gt;= 1</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="formula-e-value-vanderweele-ding-2017">
+<h3>Formula (E-value, VanderWeele &amp; Ding 2017)<a class="headerlink" href="#formula-e-value-vanderweele-ding-2017" title="Link to this heading">#</a></h3>
+<p>For a risk ratio <span class="math notranslate nohighlight">\(\text{RR} \geq 1\)</span>:
+$<span class="math notranslate nohighlight">\(E = \text{RR} + \sqrt{\text{RR} \cdot (\text{RR} - 1)}\)</span>$</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">);</span><span class="w"> </span><span class="nf">library</span><span class="p">(</span><span class="n">patchwork</span><span class="p">)</span>
+
+<span class="c1"># E-value function</span>
+<span class="n">e_value</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">rr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">rr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">rr</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">rr</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">rr</span><span class="p">)</span>
+<span class="w">  </span><span class="n">rr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">(</span><span class="n">rr</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">rr</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="c1"># Our observational estimate: interpret as a risk ratio</span>
+<span class="n">observed_rr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1.5</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;Observed risk ratio : %.2f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">observed_rr</span><span class="p">))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;E-value             : %.2f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">e_value</span><span class="p">(</span><span class="n">observed_rr</span><span class="p">)))</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;-&gt; A hidden confounder would need RR &gt;= this with BOTH treatment AND outcome\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;   to fully explain away the association.\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># E-value curve</span>
+<span class="n">rr_grid</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="m">1.01</span><span class="p">,</span><span class="w"> </span><span class="m">4.0</span><span class="p">,</span><span class="w"> </span><span class="m">0.01</span><span class="p">)</span>
+<span class="n">eval_df</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">rr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rr_grid</span><span class="p">,</span><span class="w"> </span><span class="n">eval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">e_value</span><span class="p">(</span><span class="n">rr_grid</span><span class="p">))</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">eval_df</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rr</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eval</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#9B59B6&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">rr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">observed_rr</span><span class="p">,</span><span class="w"> </span><span class="n">eval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">e_value</span><span class="p">(</span><span class="n">observed_rr</span><span class="p">)),</span>
+<span class="w">             </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#E74C3C&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">annotate</span><span class="p">(</span><span class="s">&quot;text&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">observed_rr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">e_value</span><span class="p">(</span><span class="n">observed_rr</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.3</span><span class="p">,</span>
+<span class="w">           </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;RR=%.1f\nE=%.2f&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">observed_rr</span><span class="p">,</span><span class="w"> </span><span class="nf">e_value</span><span class="p">(</span><span class="n">observed_rr</span><span class="p">)),</span>
+<span class="w">           </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fontface</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;E-value&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Higher = more robust&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Observed risk ratio&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;E-value&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="c1"># Sensitivity curve: how does estimate shift as confounder strength grows?</span>
+<span class="n">naive_effect</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">naive_ate</span>
+<span class="n">conf_strength</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">2.0</span><span class="p">,</span><span class="w"> </span><span class="m">0.05</span><span class="p">)</span>
+<span class="n">u_on_Y</span><span class="w">         </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1.2</span>
+<span class="n">adjusted_eff</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">naive_effect</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">conf_strength</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">u_on_Y</span>
+<span class="n">cross_zero</span><span class="w">     </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">conf_strength</span><span class="p">[</span><span class="nf">which.min</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">adjusted_eff</span><span class="p">))]</span>
+
+<span class="n">p2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">tibble</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">strength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">conf_strength</span><span class="p">,</span><span class="w"> </span><span class="n">effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adjusted_eff</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strength</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">effect</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#3498DB&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_hline</span><span class="p">(</span><span class="n">yintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dashed&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_hline</span><span class="p">(</span><span class="n">yintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true_ate</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dotted&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#2ECC71&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cross_zero</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dotted&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#E74C3C&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">annotate</span><span class="p">(</span><span class="s">&quot;text&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cross_zero</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">0.05</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span>
+<span class="w">           </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;crosses 0\nat strength %.2f&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cross_zero</span><span class="p">),</span>
+<span class="w">           </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;#E74C3C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Sensitivity curve&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Strength of unmeasured confounder on T&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Adjusted effect estimate&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="n">p1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">plot_annotation</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Sensitivity Analysis&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">theme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">11</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Observed risk ratio : 1.50
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E-value             : 2.37
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-&gt; A hidden confounder would need RR &gt;= this with BOTH treatment AND outcome
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   to fully explain away the association.
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/8dbe0e5b8190d6809640dd4f8479378319e347c06505291c57ea959cf869616a.png"><img alt="../_images/8dbe0e5b8190d6809640dd4f8479378319e347c06505291c57ea959cf869616a.png" src="../_images/8dbe0e5b8190d6809640dd4f8479378319e347c06505291c57ea959cf869616a.png" style="width: 420px; height: 420px;" />
+</a>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="method-comparison-summary">
+<h2>Method Comparison Summary<a class="headerlink" href="#method-comparison-summary" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Key R function</p></th>
+<th class="head"><p>Identifies</p></th>
+<th class="head"><p>Main assumption</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>OLS with controls</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">lm(Y</span> <span class="pre">~</span> <span class="pre">T</span> <span class="pre">+</span> <span class="pre">X)</span></code></p></td>
+<td><p>ATE</p></td>
+<td><p>All confounders measured</p></td>
+</tr>
+<tr class="row-odd"><td><p>PSM</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">MatchIt::matchit()</span></code></p></td>
+<td><p>ATT</p></td>
+<td><p>All confounders + overlap</p></td>
+</tr>
+<tr class="row-even"><td><p>IPW</p></td>
+<td><p>manual with <code class="docutils literal notranslate"><span class="pre">glm()</span></code></p></td>
+<td><p>ATE</p></td>
+<td><p>All confounders + overlap</p></td>
+</tr>
+<tr class="row-odd"><td><p>AIPW</p></td>
+<td><p>manual (doubly robust)</p></td>
+<td><p>ATE</p></td>
+<td><p>Either outcome or PS model correct</p></td>
+</tr>
+<tr class="row-even"><td><p>DiD</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">lm(Y</span> <span class="pre">~</span> <span class="pre">post*treated)</span></code></p></td>
+<td><p>ATT</p></td>
+<td><p>Parallel trends</p></td>
+</tr>
+<tr class="row-odd"><td><p>RD</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdrobust::rdrobust()</span></code></p></td>
+<td><p>LATE at cutoff</p></td>
+<td><p>Continuity at cutoff</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="interview-q-a">
+<h3>Interview Q&amp;A<a class="headerlink" href="#interview-q-a" title="Link to this heading">#</a></h3>
+<p><strong>When do you use DiD vs PSM?</strong>
+DiD: unmeasured confounders exist but are time-invariant (fixed unit effects).
+PSM: confounders are measured and you can match on them.</p>
+<p><strong>Sharp vs Fuzzy RD?</strong>
+Sharp: crossing the cutoff <em>deterministically</em> assigns treatment.
+Fuzzy: crossing changes the <em>probability</em> of treatment – use IV (Wald estimator).</p>
+<p><strong>What is the bandwidth choice problem in RD?</strong>
+Too narrow: few observations, high variance. Too wide: units far from cutoff differ systematically.
+Use data-driven CCT bandwidth selection via <code class="docutils literal notranslate"><span class="pre">rdrobust</span></code>.</p>
+<p><strong>How do you report sensitivity of an observational estimate?</strong>
+Report the E-value alongside the estimate: “the conclusion holds unless an unmeasured
+confounder is associated with both treatment and outcome with risk ratio at least E.”
+If E is small (&lt; 1.5), the estimate is fragile.</p>
+</section>
+<section id="gotchas">
+<h3>Gotchas<a class="headerlink" href="#gotchas" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>PSM without an overlap check can silently extrapolate – always plot propensity scores first</p></li>
+<li><p>DiD requires parallel PRE-trends, not just parallel levels – always plot the pre-period</p></li>
+<li><p>RD estimates are local – do not generalise to units far from the cutoff</p></li>
+<li><p>IPW is sensitive to extreme propensity scores – trim at (0.05, 0.95)</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./Causal ML"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="cml2_experiments.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">How do you design and analyze experiments?</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="cml4_heterogeneous.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">How do you estimate individual-level treatment effects?</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
